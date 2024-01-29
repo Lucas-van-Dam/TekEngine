@@ -1,0 +1,6 @@
+#ifndef TEKENGINE_TEKENGINE_HPP
+#define TEKENGINE_TEKENGINE_HPP
+
+#include "Tek/Config.hpp"
+
+#endif //TEKENGINE_TEKENGINE_HPP
