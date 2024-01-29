@@ -1,0 +1,4 @@
+# ninja log v5
+366	954	7282418044220175	TekEngine.exe	df89c4c02d718177
+1	366	7282418042557123	CMakeFiles/TekEngine.dir/main.cpp.obj	45395317efc27009
+2	178	7282421044321090	build.ninja	a29eb8dec0ec5e12
