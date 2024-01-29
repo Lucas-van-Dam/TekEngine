@@ -7,8 +7,8 @@ Shader::Shader(const std::string &vertexFileName, const std::string &fragmentFil
     std::ifstream vShaderFile;
     std::ifstream fShaderFile;
     // ensure ifstream objects can throw exceptions:
-    vShaderFile.exceptions(std::ifstream::badbit);
-    fShaderFile.exceptions(std::ifstream::badbit);
+    vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     try {
         // open files
         std::string file = std::string(config::TEK_SHADER_PATH + vertexFileName);

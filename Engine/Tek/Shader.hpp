@@ -7,7 +7,8 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include "Config.hpp"
+#include "External/stb_image.h"
+#include "Core/Config.hpp"
 
 class Shader {
 public:
