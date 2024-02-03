@@ -10,7 +10,11 @@ add_executable(TekEngine main.cpp
         TekEngine.hpp
         Tek/Core/Logger.cpp
         Tek/Core/Logger.hpp
-        Tek/External/stb_image.h)
+        Tek/External/stb_image.h
+        Tek/Core/GameObject.cpp
+        Tek/Core/GameObject.hpp
+        Tek/Core/Components/Transform.cpp
+        Tek/Core/Components/Transform.hpp)
 
 find_package(glfw3 CONFIG REQUIRED)
 target_link_libraries(TekEngine PRIVATE glfw)
@@ -18,3 +22,5 @@ find_package(glad CONFIG REQUIRED)
 target_link_libraries(TekEngine PRIVATE glad::glad)
 find_package(imgui CONFIG REQUIRED)
 target_link_libraries(TekEngine PRIVATE imgui::imgui)
+find_package(glm CONFIG REQUIRED)
+target_link_libraries(TekEngine PRIVATE glm::glm)

@@ -3,6 +3,9 @@
 #include <GLFW/glfw3.h>
 #include "Tek/Shader.hpp"
 #include "TekEngine.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #define STB_IMAGE_IMPLEMENTATION
 #include "Tek/External/stb_image.h"
 
@@ -98,7 +101,6 @@ int main() {
     }
     stbi_image_free(data);
 
-
     glGenTextures(1, &texture2);
     glBindTexture(GL_TEXTURE_2D, texture2);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -121,6 +123,9 @@ int main() {
     glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0); // set it manually
     ourShader.setInt("texture2", 1); // or with shader class
 
+    unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
+
+
     // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray(0);
@@ -141,6 +146,11 @@ int main() {
 
         // render the triangle
         ourShader.use();
+        glm::mat4 trans = glm::mat4(1.0f);
+
+        trans = glm::rotate(trans,(GLfloat)glfwGetTime() * glm::radians(10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
         glActiveTexture(GL_TEXTURE1);

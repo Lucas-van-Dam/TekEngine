@@ -24,8 +24,8 @@ CMAKE_BUILD_TYPE:STRING=Debug
 //Enable colored diagnostics throughout.
 CMAKE_COLOR_DIAGNOSTICS:BOOL=ON
 
-//CXX compiler
-CMAKE_CXX_COMPILER:FILEPATH=C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.38.33130/bin/Hostx64/x64/cl.exe
+//No help, variable specified on the command line.
+CMAKE_CXX_COMPILER:UNINITIALIZED=C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.38.33130/bin/Hostx64/x64/cl.exe
 
 //Flags used by the CXX compiler during all build types.
 CMAKE_CXX_FLAGS:STRING=/DWIN32 /D_WINDOWS /EHsc
@@ -45,8 +45,8 @@ CMAKE_CXX_FLAGS_RELWITHDEBINFO:STRING=/O2 /Ob1 /DNDEBUG
 //Libraries linked by default with all C++ applications.
 CMAKE_CXX_STANDARD_LIBRARIES:STRING=kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
 
-//C compiler
-CMAKE_C_COMPILER:FILEPATH=C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.38.33130/bin/Hostx64/x64/cl.exe
+//No help, variable specified on the command line.
+CMAKE_C_COMPILER:UNINITIALIZED=C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.38.33130/bin/Hostx64/x64/cl.exe
 
 //Flags used by the C compiler during all build types.
 CMAKE_C_FLAGS:STRING=/DWIN32 /D_WINDOWS
@@ -268,6 +268,9 @@ glad_DIR:PATH=C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/installed/x64-windows/shar
 
 //The directory containing a CMake configuration file for glfw3.
 glfw3_DIR:PATH=C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/installed/x64-windows/share/glfw3
+
+//The directory containing a CMake configuration file for glm.
+glm_DIR:PATH=C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/installed/x64-windows/share/glm
 
 //The directory containing a CMake configuration file for imgui.
 imgui_DIR:PATH=C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/installed/x64-windows/share/imgui

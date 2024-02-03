@@ -1,0 +1,236 @@
+{
+	"inputs" : 
+	[
+		{
+			"path" : "CMakeLists.txt"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug-visual-studio/CMakeFiles/3.26.4/CMakeSystem.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/scripts/buildsystems/vcpkg.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeDependentOption.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeSystemSpecificInitialize.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug-visual-studio/CMakeFiles/3.26.4/CMakeCCompiler.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug-visual-studio/CMakeFiles/3.26.4/CMakeCXXCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeSystemSpecificInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeGenericSystem.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeInitializeConfigs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/WindowsPaths.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeCInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeLanguageInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/Compiler/MSVC-C.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/Compiler/MSVC.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/Compiler/CMakeCommonCompilerMacros.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-MSVC-C.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-MSVC.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug-visual-studio/CMakeFiles/3.26.4/CMakeRCCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeRCInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeCommonLanguageInclude.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeCXXInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeLanguageInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/Compiler/MSVC-CXX.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/Compiler/MSVC.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/Compiler/CMakeCommonCompilerMacros.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-MSVC-CXX.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-MSVC.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeCommonLanguageInclude.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/installed/x64-windows/share/glfw3/glfw3ConfigVersion.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/installed/x64-windows/share/glfw3/glfw3Config.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/installed/x64-windows/share/glfw3/glfw3Targets.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/installed/x64-windows/share/glfw3/glfw3Targets-debug.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/installed/x64-windows/share/glfw3/glfw3Targets-release.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/installed/x64-windows/share/glad/gladConfigVersion.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/installed/x64-windows/share/glad/gladConfig.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/installed/x64-windows/share/glad/gladTargets.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/installed/x64-windows/share/glad/gladTargets-debug.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/installed/x64-windows/share/glad/gladTargets-release.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/installed/x64-windows/share/imgui/imgui-config.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeFindDependencyMacro.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/installed/x64-windows/share/glfw3/glfw3ConfigVersion.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/installed/x64-windows/share/glfw3/glfw3Config.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/installed/x64-windows/share/glfw3/glfw3Targets.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/installed/x64-windows/share/imgui/imgui-targets.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/installed/x64-windows/share/imgui/imgui-targets-debug.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/installed/x64-windows/share/imgui/imgui-targets-release.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/LucasvanDam/.vcpkg-clion/vcpkg/installed/x64-windows/share/glm/glm-config.cmake"
+		}
+	],
+	"kind" : "cmakeFiles",
+	"paths" : 
+	{
+		"build" : "C:/Users/LucasvanDam/Documents/TekEngine/Engine/cmake-build-debug-visual-studio",
+		"source" : "C:/Users/LucasvanDam/Documents/TekEngine/Engine"
+	},
+	"version" : 
+	{
+		"major" : 1,
+		"minor" : 0
+	}
+}
