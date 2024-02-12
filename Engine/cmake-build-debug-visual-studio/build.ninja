@@ -94,6 +94,51 @@ build CMakeFiles\TekEngine.dir\Tek\Core\Components\Transform.cpp.obj: CXX_COMPIL
   TARGET_COMPILE_PDB = CMakeFiles\TekEngine.dir\
   TARGET_PDB = TekEngine.pdb
 
+build CMakeFiles\TekEngine.dir\Tek\Core\Math\Quaternion.cpp.obj: CXX_COMPILER__TekEngine_unscanned_Debug C$:\Users\LucasvanDam\Documents\TekEngine\Engine\Tek\Core\Math\Quaternion.cpp || cmake_object_order_depends_target_TekEngine
+  DEFINES = -DGLFW_DLL
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi
+  INCLUDES = -external:IC:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\include -external:W0
+  OBJECT_DIR = CMakeFiles\TekEngine.dir
+  OBJECT_FILE_DIR = CMakeFiles\TekEngine.dir\Tek\Core\Math
+  TARGET_COMPILE_PDB = CMakeFiles\TekEngine.dir\
+  TARGET_PDB = TekEngine.pdb
+
+build CMakeFiles\TekEngine.dir\Tek\Core\Components\Component.cpp.obj: CXX_COMPILER__TekEngine_unscanned_Debug C$:\Users\LucasvanDam\Documents\TekEngine\Engine\Tek\Core\Components\Component.cpp || cmake_object_order_depends_target_TekEngine
+  DEFINES = -DGLFW_DLL
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi
+  INCLUDES = -external:IC:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\include -external:W0
+  OBJECT_DIR = CMakeFiles\TekEngine.dir
+  OBJECT_FILE_DIR = CMakeFiles\TekEngine.dir\Tek\Core\Components
+  TARGET_COMPILE_PDB = CMakeFiles\TekEngine.dir\
+  TARGET_PDB = TekEngine.pdb
+
+build CMakeFiles\TekEngine.dir\Tek\Core\Scene.cpp.obj: CXX_COMPILER__TekEngine_unscanned_Debug C$:\Users\LucasvanDam\Documents\TekEngine\Engine\Tek\Core\Scene.cpp || cmake_object_order_depends_target_TekEngine
+  DEFINES = -DGLFW_DLL
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi
+  INCLUDES = -external:IC:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\include -external:W0
+  OBJECT_DIR = CMakeFiles\TekEngine.dir
+  OBJECT_FILE_DIR = CMakeFiles\TekEngine.dir\Tek\Core
+  TARGET_COMPILE_PDB = CMakeFiles\TekEngine.dir\
+  TARGET_PDB = TekEngine.pdb
+
+build CMakeFiles\TekEngine.dir\Tek\Core\Components\Camera.cpp.obj: CXX_COMPILER__TekEngine_unscanned_Debug C$:\Users\LucasvanDam\Documents\TekEngine\Engine\Tek\Core\Components\Camera.cpp || cmake_object_order_depends_target_TekEngine
+  DEFINES = -DGLFW_DLL
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi
+  INCLUDES = -external:IC:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\include -external:W0
+  OBJECT_DIR = CMakeFiles\TekEngine.dir
+  OBJECT_FILE_DIR = CMakeFiles\TekEngine.dir\Tek\Core\Components
+  TARGET_COMPILE_PDB = CMakeFiles\TekEngine.dir\
+  TARGET_PDB = TekEngine.pdb
+
+build CMakeFiles\TekEngine.dir\Tek\Core\EditorCamera.cpp.obj: CXX_COMPILER__TekEngine_unscanned_Debug C$:\Users\LucasvanDam\Documents\TekEngine\Engine\Tek\Core\EditorCamera.cpp || cmake_object_order_depends_target_TekEngine
+  DEFINES = -DGLFW_DLL
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi
+  INCLUDES = -external:IC:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\include -external:W0
+  OBJECT_DIR = CMakeFiles\TekEngine.dir
+  OBJECT_FILE_DIR = CMakeFiles\TekEngine.dir\Tek\Core
+  TARGET_COMPILE_PDB = CMakeFiles\TekEngine.dir\
+  TARGET_PDB = TekEngine.pdb
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target TekEngine
@@ -102,7 +147,7 @@ build CMakeFiles\TekEngine.dir\Tek\Core\Components\Transform.cpp.obj: CXX_COMPIL
 #############################################
 # Link the executable TekEngine.exe
 
-build TekEngine.exe: CXX_EXECUTABLE_LINKER__TekEngine_Debug CMakeFiles\TekEngine.dir\main.cpp.obj CMakeFiles\TekEngine.dir\Tek\Shader.cpp.obj CMakeFiles\TekEngine.dir\Tek\Core\Logger.cpp.obj CMakeFiles\TekEngine.dir\Tek\Core\GameObject.cpp.obj CMakeFiles\TekEngine.dir\Tek\Core\Components\Transform.cpp.obj | C$:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\debug\lib\glad.lib C$:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\debug\lib\imguid.lib C$:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\debug\lib\glfw3dll.lib
+build TekEngine.exe: CXX_EXECUTABLE_LINKER__TekEngine_Debug CMakeFiles\TekEngine.dir\main.cpp.obj CMakeFiles\TekEngine.dir\Tek\Shader.cpp.obj CMakeFiles\TekEngine.dir\Tek\Core\Logger.cpp.obj CMakeFiles\TekEngine.dir\Tek\Core\GameObject.cpp.obj CMakeFiles\TekEngine.dir\Tek\Core\Components\Transform.cpp.obj CMakeFiles\TekEngine.dir\Tek\Core\Math\Quaternion.cpp.obj CMakeFiles\TekEngine.dir\Tek\Core\Components\Component.cpp.obj CMakeFiles\TekEngine.dir\Tek\Core\Scene.cpp.obj CMakeFiles\TekEngine.dir\Tek\Core\Components\Camera.cpp.obj CMakeFiles\TekEngine.dir\Tek\Core\EditorCamera.cpp.obj | C$:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\debug\lib\glad.lib C$:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\debug\lib\imguid.lib C$:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\debug\lib\glfw3dll.lib
   FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -MDd -Zi
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console
   LINK_LIBRARIES = C:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\debug\lib\glad.lib  C:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\debug\lib\imguid.lib  C:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\debug\lib\glfw3dll.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib

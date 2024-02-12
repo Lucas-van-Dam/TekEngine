@@ -14,7 +14,18 @@ add_executable(TekEngine main.cpp
         Tek/Core/GameObject.cpp
         Tek/Core/GameObject.hpp
         Tek/Core/Components/Transform.cpp
-        Tek/Core/Components/Transform.hpp)
+        Tek/Core/Components/Transform.hpp
+        Tek/Core/Math.hpp
+        Tek/Core/Math/Quaternion.cpp
+        Tek/Core/Math/Quaternion.hpp
+        Tek/Core/Components/Component.cpp
+        Tek/Core/Components/Component.hpp
+        Tek/Core/Scene.cpp
+        Tek/Core/Scene.hpp
+        Tek/Core/Components/Camera.cpp
+        Tek/Core/Components/Camera.hpp
+        Tek/Core/EditorCamera.cpp
+        Tek/Core/EditorCamera.hpp)
 
 find_package(glfw3 CONFIG REQUIRED)
 target_link_libraries(TekEngine PRIVATE glfw)
