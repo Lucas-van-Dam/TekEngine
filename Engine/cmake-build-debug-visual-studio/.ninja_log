@@ -53,3 +53,6 @@
 640	1175	7292241382156040	TekEngine.exe	54895b3f65dae8f6
 2	854	7292241502745041	CMakeFiles/TekEngine.dir/main.cpp.obj	45395317efc27009
 854	1428	7292241504210026	TekEngine.exe	54895b3f65dae8f6
+9	903	7294320959600155	CMakeFiles/TekEngine.dir/Tek/Core/EditorCamera.cpp.obj	2bb2dbcce5ca6a8f
+2	1018	7294320960715271	CMakeFiles/TekEngine.dir/main.cpp.obj	45395317efc27009
+1018	2059	7294320963559342	TekEngine.exe	54895b3f65dae8f6
