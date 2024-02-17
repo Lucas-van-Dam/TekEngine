@@ -25,7 +25,15 @@ add_executable(TekEngine main.cpp
         Tek/Core/Components/Camera.cpp
         Tek/Core/Components/Camera.hpp
         Tek/Core/EditorCamera.cpp
-        Tek/Core/EditorCamera.hpp)
+        Tek/Core/EditorCamera.hpp
+        Tek/Core/Rendering/Mesh.cpp
+        Tek/Core/Rendering/Mesh.hpp
+        Tek/Core/Rendering/Mesh.hpp
+        Tek/Core/Rendering/Model.cpp
+        Tek/Core/Rendering/Model.hpp
+        Tek/Core/Rendering/Rendering.hpp
+        Tek/Core/Components/Renderer.cpp
+        Tek/Core/Components/Renderer.hpp)
 
 find_package(glfw3 CONFIG REQUIRED)
 target_link_libraries(TekEngine PRIVATE glfw)
@@ -35,3 +43,5 @@ find_package(imgui CONFIG REQUIRED)
 target_link_libraries(TekEngine PRIVATE imgui::imgui)
 find_package(glm CONFIG REQUIRED)
 target_link_libraries(TekEngine PRIVATE glm::glm)
+find_package(assimp CONFIG REQUIRED)
+target_link_libraries(TekEngine PRIVATE assimp::assimp)
