@@ -29,5 +29,14 @@ struct Texture {
     string type;
     string path;
 };
+struct LightData{
+    LightData(float intensity, glm::vec3 lightColor, glm::vec3 position = glm::vec3(std::numeric_limits<float>::max()), glm::vec3 direction = glm::vec3(),
+              float innerCutOff = -1, float outerCutOff = -1)
+        : position(position.x, position.y, position.x, innerCutOff), direction(direction.x, direction.y, direction.z, outerCutOff), lightColor(lightColor.x, lightColor.y, lightColor.z, intensity){
+    }
+    glm::vec4 position;
+    glm::vec4 direction;
+    glm::vec4 lightColor;
+};
 
 #endif //RENDERING_HPP

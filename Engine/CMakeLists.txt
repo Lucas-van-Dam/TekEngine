@@ -33,7 +33,13 @@ add_executable(TekEngine main.cpp
         Tek/Core/Rendering/Model.hpp
         Tek/Core/Rendering/Rendering.hpp
         Tek/Core/Components/Renderer.cpp
-        Tek/Core/Components/Renderer.hpp)
+        Tek/Core/Components/Renderer.hpp
+        Tek/Core/Audio/AudioManager.cpp
+        Tek/Core/Audio/AudioManager.hpp
+        Tek/Core/Rendering/LightManager.cpp
+        Tek/Core/Rendering/LightManager.hpp
+        Tek/Core/Components/Light.cpp
+        Tek/Core/Components/Light.hpp)
 
 find_package(glfw3 CONFIG REQUIRED)
 target_link_libraries(TekEngine PRIVATE glfw)

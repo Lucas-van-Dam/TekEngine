@@ -8,6 +8,13 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
     setupMesh();
 }
 
+void Mesh::Destroy()
+{
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
+}
+
 // initializes all the buffer objects/arrays
 void Mesh::setupMesh()
 {
@@ -15,6 +22,18 @@ void Mesh::setupMesh()
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
+    glGenBuffers(1, &SSBO);
+//    glGenFramebuffers(1, &depthMapFBO);
+//
+//    //Shadow preparation
+//    glGenTextures(1, &depthMap);
+//    glBindTexture(GL_TEXTURE_2D, depthMap);
+//    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+//                 SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     glBindVertexArray(VAO);
     // load data into vertex buffers
@@ -32,10 +51,10 @@ void Mesh::setupMesh()
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
     // vertex normals
-    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
     // vertex texture coords
-    glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(1);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
     // vertex tangent
     glEnableVertexAttribArray(3);
@@ -54,7 +73,7 @@ void Mesh::setupMesh()
 }
 
 // render the mesh
-void Mesh::Draw(Shader &shader)
+void Mesh::Draw(Shader &shader, std::vector<LightData> lightData)
 {
     // bind appropriate textures
     unsigned int diffuseNr  = 1;
@@ -81,6 +100,13 @@ void Mesh::Draw(Shader &shader)
         // and finally bind the texture
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
+    LightData* lightDataStatic = &lightData[0];
+
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, SSBO);
+    int totalSize = sizeof(LightData) * lightData.size();
+    glBufferData(GL_SHADER_STORAGE_BUFFER, totalSize, lightDataStatic, GL_DYNAMIC_DRAW); //sizeof(data) only works for statically sized C/C++ arrays.
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, SSBO);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // unbind
 
     // draw mesh
     glBindVertexArray(VAO);

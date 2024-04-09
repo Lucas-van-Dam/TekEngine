@@ -23,6 +23,8 @@ public:
 
         return translationMatrix * rotationMatrix * scalingMatrix;
     }
+    void Update(float deltaTime) override;
+
 
 private:
     // Create the rotation matrix from a quaternion

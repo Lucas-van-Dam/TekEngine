@@ -27,7 +27,7 @@ public:
         loadModel(path);
         Assimp::DefaultLogger::kill();
     }
-    void Draw(Shader &shader);
+    void Draw(Shader &shader, std::vector<LightData> lightData);
 private:
     void loadModel(const string& path);
     void processNode(aiNode *node, const aiScene *scene);

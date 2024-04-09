@@ -1,21 +1,9 @@
 #include "GameObject.hpp"
+#include "Scene.hpp"
 
+#include <utility>
+#include <stdexcept>
 
-template <typename T>
-T* GameObject::GetComponent() {
-    for (const auto& component : components) {
-        if (auto ptr = dynamic_cast<T*>(component.get())) {
-            return ptr;
-        }
-    }
-    return nullptr;
-}
-
-template <typename T>
-T* GameObject::AddComponent() {
-    components.emplace_back(std::make_unique<T>());
-    return dynamic_cast<T*>(components.back().get());
-}
 
 void GameObject::Update(float deltaTime) {
     for (const auto& component : components) {
@@ -38,4 +26,27 @@ std::shared_ptr<GameObject> GameObject::GetParent() {
 
 void GameObject::SetParent(std::shared_ptr<GameObject> newParent) {
     parent = std::move(newParent);
+}
+
+Transform* GameObject::GetTransform() {
+    return transform.get();
+}
+
+Scene *GameObject::GetScene() {
+    return scene.get();
+}
+
+void GameObject::SetScene(const std::shared_ptr<Scene>& newScene) {
+    if (scene) {
+        throw std::logic_error("Scene already assigned to GameObject");
+    }
+    scene.reset(newScene.get()); // Explicitly reset scene
+}
+
+GameObject::GameObject() {
+    transform = std::make_unique<Transform>();
+}
+
+GameObject::GameObject(const GameObject &) {
+
 }

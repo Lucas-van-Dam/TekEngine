@@ -10,6 +10,7 @@
 #include "External/stb_image.h"
 #include "Core/Config.hpp"
 #include "glm/glm.hpp"
+#include "Core/Rendering/LightManager.hpp"
 
 class Shader {
 public:
@@ -19,7 +20,7 @@ public:
     // constructor reads and builds the shader
     Shader(const std::string &vertexFileName, const std::string &fragmentFileName);
     // use/activate the shader
-    void use();
+    void use() const;
     // utility uniform functions
     void setBool(const std::string &name, bool value) const;
     void setInt(const std::string &name, int value) const;
@@ -34,10 +35,16 @@ public:
     void setMat3(const std::string &name, const glm::mat3 &mat) const;
     void setMat4(const std::string &name, const glm::mat4 &mat) const;
 
+    void LightingShaderGeneration(LightManager* lightManager);
+
 private:
     // utility function for checking shader compilation/linking errors.
     // ------------------------------------------------------------------------
     static void checkCompileErrors(unsigned int shader, const std::string& type);
+
+    std::string vertexPath, fragmentPath;
+    GLuint fragmentID, vertexID;
+
 
 
 };

@@ -6,57 +6,55 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 #define STB_IMAGE_IMPLEMENTATION
+
 #include "Tek/External/stb_image.h"
 #include "Tek/Core/EditorCamera.hpp"
 #include "Tek/Core/Rendering/Model.hpp"
+#include "Tek/Core/Scene.hpp"
+#include "Tek/Core/Components/Renderer.hpp"
+#include "Tek/Core/Audio/AudioManager.hpp"
 
 
-float deltaTime = 0.0f;	// Time between current frame and last frame
+float deltaTime = 0.0f;    // Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
-
-float lastX = SCR_WIDTH / 2.0f;
-float lastY = SCR_HEIGHT / 2.0f;
+float lastX = config::SCR_WIDTH / 2.0f;
+float lastY = config::SCR_HEIGHT / 2.0f;
 
 glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
-EditorCamera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+std::shared_ptr<EditorCamera> camera = std::make_shared<EditorCamera>(glm::vec3(0.0f, 0.0f, 3.0f));
 
-GLFWwindow* window;
-
+GLFWwindow *window;
 
 
 bool firstMouse = true;
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
+void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     glViewport(0, 0, width, height);
 }
 
-void processInput(GLFWwindow *window)
-{
-    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+void processInput(GLFWwindow *window) {
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    camera.ProcessShiftKey(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS);
+    camera->ProcessShiftKey(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS);
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(FORWARD, deltaTime);
+        camera->ProcessKeyboard(FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(BACKWARD, deltaTime);
+        camera->ProcessKeyboard(BACKWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(LEFT, deltaTime);
+        camera->ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(RIGHT, deltaTime);
+        camera->ProcessKeyboard(RIGHT, deltaTime);
 }
 
-void mouse_callback(GLFWwindow* window, double xposIn, double yposIn){
+void mouse_callback(GLFWwindow *window, double xposIn, double yposIn) {
     auto xpos = static_cast<float>(xposIn);
     auto ypos = static_cast<float>(yposIn);
 
-    if (firstMouse)
-    {
+    if (firstMouse) {
         lastX = xpos;
         lastY = ypos;
         firstMouse = false;
@@ -68,31 +66,45 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn){
     lastX = xpos;
     lastY = ypos;
 
-    camera.ProcessMouseMovement(xoffset, yoffset);
+    camera->ProcessMouseMovement(xoffset, yoffset);
 }
 
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
-    camera.ProcessMouseScroll(static_cast<float>(yoffset));
+void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
+    camera->ProcessMouseScroll(static_cast<float>(yoffset));
 }
 
-void InitializeWindow(){
+void debugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message,
+                          const void *userParam) {
+    // Handle the debug message (e.g., log it, display it, etc.)
+    printf("OpenGL Debug Message: %s\n", message);
+}
+
+void InitializeWindow() {
     glfwInit();
-    window = glfwCreateWindow(SCR_WIDTH,SCR_HEIGHT,"TekEngine", NULL, NULL);
-    glfwWindowHint(GLFW_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    if(window == NULL)
-    {
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+
+    window = glfwCreateWindow(config::SCR_WIDTH, config::SCR_HEIGHT, "TekEngine", NULL, NULL);
+
+    if (window == NULL) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
     }
+
     glfwMakeContextCurrent(window);
 
-    if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)){
+    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
     }
+
+//    AudioManager* audio = new AudioManager;
+//
+//    audio->Initialize();
+//
+//    delete audio;
 
     glViewport(0, 0, 800, 600);
 
@@ -102,6 +114,11 @@ void InitializeWindow(){
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glEnable(GL_DEBUG_OUTPUT);
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+    glDebugMessageCallback(debugMessageCallback, nullptr);
+    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
@@ -115,10 +132,34 @@ void InitializeWindow(){
 
 }
 
-unsigned int loadTexture(const char* path);
+unsigned int loadTexture(const char *path);
 
 int main() {
-
+//    // Create an EditorCamera instance
+//   // EditorCamera camera1();
+//    std::shared_ptr<EditorCamera> camera_shared= std::make_shared<EditorCamera>(glm::vec3(0.0f, 0.0f, 3.0f));
+//    // Assign the camera to the scene
+//    Scene scene1;
+//    //std::shared_ptr<EditorCamera> camera_test(new EditorCamera());
+//    scene1.camera = camera_shared;
+//
+//
+//    // Print initial position
+//    std::cout << "Position 1: "
+//              << scene1.camera->GetPosition().x
+//              << ", " << scene1.camera->GetPosition().y
+//              << ", " << scene1.camera->GetPosition().z << std::endl;
+//
+//    // Update the camera position
+//    camera_shared->SetPosition(glm::vec3(1, 2, 4));
+//
+//    // Print updated position
+//    std::cout << "Position 2: "
+//              << scene1.camera->GetPosition().x
+//              << ", " << scene1.camera->GetPosition().y
+//              << ", " << scene1.camera->GetPosition().z << std::endl;
+//
+//    return 0;
 
     InitializeWindow();
 
@@ -130,16 +171,47 @@ int main() {
 
     char path[] = "C:/Users/LucasvanDam/Documents/TekEngine/Engine/Tek/Models/backpack/backpack.obj";
 
+    Shader objShader("Texture.vert", "Texture.frag");
+    Model modelObj(path);
+    std::shared_ptr<Scene> scene = std::make_shared<Scene>();
+    scene->camera = camera;
+    std::shared_ptr<GameObject> backPack = std::make_shared<GameObject>();
+    std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>(&modelObj, &objShader);
+    scene->AddGameObject(backPack);
+    backPack->AddComponent<Renderer>(renderer);
+
+    backPack->GetTransform()->position = glm::vec3(0.0f, 0.0f, 0.0f);
+    backPack->GetTransform()->scale = glm::vec3(2.0f, 2.0f, 2.0f);
+
+    //std::shared_ptr<Renderer> renderer1 = std::make_shared<Renderer>(&modelObj, &objShader);
+    std::shared_ptr<GameObject> light = std::make_shared<GameObject>();
+    std::shared_ptr<Light> lightComponent = std::make_shared<Light>(Spot, 4, glm::vec3(1.0f, 0.1f, 0.1f));
+    scene->AddGameObject(light);
+    light->AddComponent<Light>(lightComponent);
+    //light->AddComponent<Renderer>(renderer1);
+    light->GetTransform()->position = glm::vec3(-1, 1, 4);
+    scene->lightManager->AddLight(lightComponent);
+
+    //std::shared_ptr<Renderer> renderer2 = std::make_shared<Renderer>(&modelObj, &objShader);
+    std::shared_ptr<GameObject> light2 = std::make_shared<GameObject>();
+    std::shared_ptr<Light> lightComponent2 = std::make_shared<Light>(Spot, 5, glm::vec3(0.1f, 1.0f, 0.1f));
+    scene->AddGameObject(light2);
+    light2->AddComponent<Light>(lightComponent2);
+    //light2->AddComponent<Renderer>(renderer2);
+    light2->GetTransform()->position = glm::vec3(-1, 1, 4);
+    scene->lightManager->AddLight(lightComponent2);
+
+
     Shader shader("Transparent.vert", "Transparent.frag");
 
-    Model modelObj(path, shader);
+
 
     // positions of the point lights
     glm::vec3 pointLightPositions[] = {
-            glm::vec3( 0.7f,  0.2f,  2.0f),
-            glm::vec3( 2.3f, -3.3f, -4.0f),
-            glm::vec3(-4.0f,  2.0f, -12.0f),
-            glm::vec3( 0.0f,  0.0f, -3.0f)
+            glm::vec3(0.7f, 0.2f, 2.0f),
+            glm::vec3(2.3f, -3.3f, -4.0f),
+            glm::vec3(-4.0f, 2.0f, -12.0f),
+            glm::vec3(0.0f, 0.0f, -3.0f)
     };
 
 //    litShader.setInt("material.diffuse", 0);
@@ -154,69 +226,70 @@ int main() {
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
     float cubeVertices[] = {
-            // positions          // texture Coords
-            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-            0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+            // positions                      // texture Coords    // normals
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f,
+            0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, -1.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 0.0f, -1.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 0.0f, -1.0f,
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, -1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f,
 
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+            -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
 
-            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+            -0.5f, 0.5f, -0.5f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f,
 
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
 
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f,
+            0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f, -1.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, -1.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, -1.0f, 0.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f,
 
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f
     };
     float planeVertices[] = {
-            // positions          // texture Coords
-            5.0f, -0.5f,  5.0f,  2.0f, 0.0f,
-            -5.0f, -0.5f,  5.0f,  0.0f, 0.0f,
-            -5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
+            // positions          // texture Coords               // normals
+            5.0f, -0.5f, 5.0f, 2.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            -5.0f, -0.5f, 5.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            -5.0f, -0.5f, -5.0f, 0.0f, 2.0f, 0.0f, 1.0f, 0.0f,
 
-            5.0f, -0.5f,  5.0f,  2.0f, 0.0f,
-            -5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
-            5.0f, -0.5f, -5.0f,  2.0f, 2.0f
+            5.0f, -0.5f, 5.0f, 2.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            -5.0f, -0.5f, -5.0f, 0.0f, 2.0f, 0.0f, 1.0f, 0.0f,
+            5.0f, -0.5f, -5.0f, 2.0f, 2.0f, 0.0f, 1.0f, 0.0f
     };
     float transparentVertices[] = {
             // positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
-            0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
-            0.0f, -0.5f,  0.0f,  0.0f,  1.0f,
-            1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
+            0.0f, 0.5f, 0.0f, 0.0f, 0.0f,
+            0.0f, -0.5f, 0.0f, 0.0f, 1.0f,
+            1.0f, -0.5f, 0.0f, 1.0f, 1.0f,
 
-            0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
-            1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
-            1.0f,  0.5f,  0.0f,  1.0f,  0.0f
+            0.0f, 0.5f, 0.0f, 0.0f, 0.0f,
+            1.0f, -0.5f, 0.0f, 1.0f, 1.0f,
+            1.0f, 0.5f, 0.0f, 1.0f, 0.0f
     };
+
     // cube VAO
     unsigned int cubeVAO, cubeVBO;
     glGenVertexArrays(1, &cubeVAO);
@@ -225,9 +298,11 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (3 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (5 * sizeof(float)));
     // plane VAO
     unsigned int planeVAO, planeVBO;
     glGenVertexArrays(1, &planeVAO);
@@ -236,9 +311,11 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), &planeVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (3 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (5 * sizeof(float)));
     // transparent VAO
     unsigned int transparentVAO, transparentVBO;
     glGenVertexArrays(1, &transparentVAO);
@@ -247,42 +324,59 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, transparentVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(transparentVertices), transparentVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
     glBindVertexArray(0);
 
     // load textures
     // -------------
-    unsigned int cubeTexture = loadTexture("C:\\Users\\LucasvanDam\\Documents\\TekEngine\\Engine\\Tek\\Textures\\wall.jpg");
-    unsigned int floorTexture = loadTexture("C:\\Users\\LucasvanDam\\Documents\\TekEngine\\Engine\\Tek\\Textures\\container.jpg");
-    unsigned int transparentTexture = loadTexture("C:\\Users\\LucasvanDam\\Documents\\TekEngine\\Engine\\Tek\\Textures\\blending_transparent_window.png");
+    unsigned int cubeTexture = loadTexture(
+            "C:\\Users\\LucasvanDam\\Documents\\TekEngine\\Engine\\Tek\\Textures\\wall.jpg");
+    unsigned int floorTexture = loadTexture(
+            "C:\\Users\\LucasvanDam\\Documents\\TekEngine\\Engine\\Tek\\Textures\\container.jpg");
+    unsigned int transparentTexture = loadTexture(
+            "C:\\Users\\LucasvanDam\\Documents\\TekEngine\\Engine\\Tek\\Textures\\blending_transparent_window.png");
 
     // transparent vegetation locations
     // --------------------------------
     vector<glm::vec3> vegetation
             {
                     glm::vec3(-1.5f, 0.0f, -0.48f),
-                    glm::vec3( 1.5f, 0.0f, 0.51f),
-                    glm::vec3( 0.0f, 0.0f, 0.7f),
+                    glm::vec3(1.5f, 0.0f, 0.51f),
+                    glm::vec3(0.0f, 0.0f, 0.7f),
                     glm::vec3(-0.3f, 0.0f, -2.3f),
-                    glm::vec3 (0.5f, 0.0f, -0.6f)
+                    glm::vec3(0.5f, 0.0f, -0.6f)
             };
 
     // shader configuration
     // --------------------
-    shader.use();
     shader.setInt("texture1", 0);
+
+
+    double lastTime = glfwGetTime();
+    int nbFrames = 0;
+
+    //objShader.LightingShaderGeneration(scene->lightManager.get());
 
     // render loop
     // -----------
-    while (!glfwWindowShouldClose(window))
-    {
-// per-frame time logic
+    while (!glfwWindowShouldClose(window)) {
+        // per-frame time logic
         // --------------------
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+
+//        // Measure speed
+//        double currentTime = glfwGetTime();
+//        nbFrames++;
+//        if (currentTime - lastTime >= 1.0) { // If last prinf() was more than 1 sec ago
+//            // printf and reset timer
+//            printf("%f ms/frame\n", 1000.0 / double(nbFrames));
+//            nbFrames = 0;
+//            lastTime += 1.0;
+//        }
 
         // input
         // -----
@@ -293,55 +387,43 @@ int main() {
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-        // draw objects
-        shader.use();
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        glm::mat4 view = camera.GetViewMatrix();
-        glm::mat4 model = glm::mat4(1.0f);
-        shader.setMat4("projection", projection);
-        shader.setMat4("view", view);
-        // cubes
-        glBindVertexArray(cubeVAO);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, cubeTexture);
-        model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-        shader.setMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
-        shader.setMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        // floor
-        glBindVertexArray(planeVAO);
-        glBindTexture(GL_TEXTURE_2D, floorTexture);
-        model = glm::mat4(1.0f);
-        shader.setMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        // vegetation
-        glBindVertexArray(transparentVAO);
-        glBindTexture(GL_TEXTURE_2D, transparentTexture);
-        for (unsigned int i = 0; i < vegetation.size(); i++)
-        {
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, vegetation[i]);
-            shader.setMat4("model", model);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-        }
-        // don't forget to enable shader before setting uniforms
-        ourShader.use();
-
-        // view/projection transformations
-        projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        view = camera.GetViewMatrix();
-        ourShader.setMat4("projection", projection);
-        ourShader.setMat4("view", view);
-
-        // render the loaded model
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 3.0f, 0.0f)); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
-        ourShader.setMat4("model", model);
-        modelObj.Draw();
+//        // draw objects
+//        shader.use();
+//        glm::mat4 projection = camera->GetProjectionMatrix();
+//        glm::mat4 view = camera->GetViewMatrix();
+//        glm::mat4 model = glm::mat4(1.0f);
+//        shader.setMat4("projection", projection);
+//        shader.setMat4("view", view);
+//        // cubes
+//        glBindVertexArray(cubeVAO);
+//        glActiveTexture(GL_TEXTURE0);
+//        glBindTexture(GL_TEXTURE_2D, cubeTexture);
+//        model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
+//        shader.setMat4("model", model);
+//        glDrawArrays(GL_TRIANGLES, 0, 36);
+//        model = glm::mat4(1.0f);
+//        model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+//        shader.setMat4("model", model);
+//        glDrawArrays(GL_TRIANGLES, 0, 36);
+//        // floor
+//        glBindVertexArray(planeVAO);
+//        glBindTexture(GL_TEXTURE_2D, floorTexture);
+//        model = glm::mat4(1.0f);
+//        shader.setMat4("model", model);
+//        glDrawArrays(GL_TRIANGLES, 0, 6);
+////        // vegetation
+////        glBindVertexArray(transparentVAO);
+////        glBindTexture(GL_TEXTURE_2D, transparentTexture);
+////        for (unsigned int i = 0; i < vegetation.size(); i++)
+////        {
+////            model = glm::mat4(1.0f);
+////            model = glm::translate(model, vegetation[i]);
+////            shader.setMat4("model", model);
+////            glDrawArrays(GL_TRIANGLES, 0, 6);
+////        }
+        light->GetTransform()->position = glm::vec3(sin(currentFrame) * 3, 3, cos(currentFrame) * 3);
+        light2->GetTransform()->position = glm::vec3(-sin(currentFrame) * 3, 3, -cos(currentFrame) * 3);
+        scene->UpdateScene(deltaTime);
 
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -356,15 +438,13 @@ int main() {
     return 0;
 }
 
-unsigned int loadTexture(char const * path)
-{
+unsigned int loadTexture(char const *path) {
     unsigned int textureID;
     glGenTextures(1, &textureID);
 
     int width, height, nrComponents;
     unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
-    if (data)
-    {
+    if (data) {
         GLenum format;
         if (nrComponents == 1)
             format = GL_RED;
@@ -377,15 +457,14 @@ unsigned int loadTexture(char const * path)
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT); // for this tutorial: use GL_CLAMP_TO_EDGE to prevent semi-transparent borders. Due to interpolation it takes texels from next repeat
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE
+                                                                            : GL_REPEAT); // for this tutorial: use GL_CLAMP_TO_EDGE to prevent semi-transparent borders. Due to interpolation it takes texels from next repeat
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         stbi_image_free(data);
-    }
-    else
-    {
+    } else {
         std::cout << "Texture failed to load at path: " << path << std::endl;
         stbi_image_free(data);
     }

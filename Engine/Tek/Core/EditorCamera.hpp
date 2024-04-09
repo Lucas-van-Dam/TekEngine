@@ -5,8 +5,10 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 
 #include <vector>
+#include "Config.hpp"
 
 // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
 enum Camera_Movement {
@@ -53,6 +55,7 @@ public:
         Yaw = yaw;
         Pitch = pitch;
         updateCameraVectors();
+        //std::cout << Zoom;
     }
     // constructor with scalar values
     EditorCamera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), ShiftSpeed(SHIFTSPEED), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
@@ -64,10 +67,28 @@ public:
         updateCameraVectors();
     }
 
+    void SetPosition(glm::vec3 position){
+        Position = position;
+    }
+
+    glm::vec3 GetPosition(){
+        return Position;
+    }
+
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
-    glm::mat4 GetViewMatrix()
+    glm::mat4 GetViewMatrix() const
     {
+      //  return glm::tra();
+        //return glm::lookAt(glm::vec3(0,0,3), glm::vec3(0,0,6) , glm::vec3(0,1,0));
+        //std::cout << Position.x << "," << Position.y << "," << Position.z << std::endl;
         return glm::lookAt(Position, Position + Front, Up);
+    }
+
+    glm::mat4 GetProjectionMatrix()
+    {
+     //   std::cout << "test" << Zoom;
+    //    Zoom =45;
+        return glm::perspective(glm::radians(Zoom), (float)config::SCR_WIDTH / (float)config::SCR_HEIGHT, 0.1f, 100.0f);
     }
 
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)

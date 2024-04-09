@@ -1,9 +1,9 @@
 #include "Model.hpp"
 
-void Model::Draw(Shader &shader)
+void Model::Draw(Shader &shader, std::vector<LightData> lightData)
 {
     for(auto & mesh : meshes)
-        mesh.Draw(shader);
+        mesh.Draw(shader, lightData);
 }
 
 // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.

@@ -15,15 +15,18 @@ public:
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture> textures;
-    unsigned int VAO;
+    unsigned int VAO, SSBO;
 
     Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
 
-    void Draw(Shader &shader);
+    void Draw(Shader &shader, std::vector<LightData> lightData);
+    void Destroy();
 
 private:
     //  render data
     unsigned int VBO, EBO;
+    const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+    unsigned int depthMap;
 
     void setupMesh();
 };
