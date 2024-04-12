@@ -5,22 +5,21 @@
 #include "Component.hpp"
 
 enum LightType{
-    Point,
-    Directional,
-    Spot,
-    Ambient
+    Spot = 0,
+    Directional = 1,
+    Ambient = 2,
+    Point = 3
 };
 
 class Light : public Component{
 public:
-    explicit Light(LightType type = Spot, float intensity = 1, glm::vec3 color = glm::vec3(1,1,1), float innerCutOff = -1, float outerCutOff = -1);
+    explicit Light(LightType type = Spot, float intensity = 1, glm::vec3 color = glm::vec3(1,1,1), float cutOff = -1, float outerCutOff = -1);
 
     void Update(float deltaTime) override;
     LightType type;
     float intensity;
     glm::vec3 color;
-    float innerCutOff;
-    float outerCutOff;
+    float cutOff;
 private:
 
 };

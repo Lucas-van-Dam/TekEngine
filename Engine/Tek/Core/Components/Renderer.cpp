@@ -36,7 +36,7 @@ std::vector<LightData> Renderer::SetLightingBuffer() {
     for (int i = 0; i < amountOfLights; ++i) {
         Light* light = gameObject->GetScene()->lightManager->lights[i].get();
         LightData data(light->intensity,light->color, light->gameObject->GetTransform()->position,
-                       light->gameObject->GetTransform()->rotation.getEulerAngles(), light->innerCutOff, light->outerCutOff);
+                       light->gameObject->GetTransform()->rotation.getEulerAngles(), light->cutOff, light->type);
         lights.emplace_back(data);
     }
     return lights;

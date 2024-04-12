@@ -11,6 +11,7 @@ void Model::loadModel(string const &path)
 {
     // read file via ASSIMP
     Assimp::Importer importer;
+    importer.SetPropertyInteger("UpdateImporterScale", 100);
     const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
     // check for errors
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
@@ -18,6 +19,10 @@ void Model::loadModel(string const &path)
         cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << endl;
         return;
     }
+    double factor(0.0);
+    scene->mMetaData->Get("UpdateImporterScale", factor);
+    scene->mMetaData->Set("UpdateImporterScale", 100.0);
+
     // retrieve the directory path of the filepath
     directory = path.substr(0, path.find_last_of('/'));
 

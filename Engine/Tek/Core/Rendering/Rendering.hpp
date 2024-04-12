@@ -31,8 +31,10 @@ struct Texture {
 };
 struct LightData{
     LightData(float intensity, glm::vec3 lightColor, glm::vec3 position = glm::vec3(std::numeric_limits<float>::max()), glm::vec3 direction = glm::vec3(),
-              float innerCutOff = -1, float outerCutOff = -1)
-        : position(position.x, position.y, position.x, innerCutOff), direction(direction.x, direction.y, direction.z, outerCutOff), lightColor(lightColor.x, lightColor.y, lightColor.z, intensity){
+              float cutOff = -1, int type = 0)
+        : position(position.x, position.y, position.x, type), direction(direction.x, direction.y, direction.z, cutOff), lightColor(lightColor.x, lightColor.y, lightColor.z, intensity)
+    {
+
     }
     glm::vec4 position;
     glm::vec4 direction;

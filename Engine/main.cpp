@@ -112,6 +112,8 @@ void InitializeWindow() {
 
     glEnable(GL_STENCIL_TEST);
 
+    glEnable(GL_CULL_FACE);
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -169,7 +171,7 @@ int main() {
     Shader litShader("TestShader.vert", "TestShader.frag");
     Shader lightShader("LightShader.vert", "LightShader.frag");
 
-    char path[] = "C:/Users/LucasvanDam/Documents/TekEngine/Engine/Tek/Models/backpack/backpack.obj";
+    char path[] = "C:/Users/LucasvanDam/Documents/TekEngine/Engine/Tek/Models/Sponza-master/sponza.obj";
 
     Shader objShader("Texture.vert", "Texture.frag");
     Model modelObj(path);
@@ -181,11 +183,11 @@ int main() {
     backPack->AddComponent<Renderer>(renderer);
 
     backPack->GetTransform()->position = glm::vec3(0.0f, 0.0f, 0.0f);
-    backPack->GetTransform()->scale = glm::vec3(2.0f, 2.0f, 2.0f);
+    backPack->GetTransform()->scale = glm::vec3(0.01f, 0.01f, 0.01f);
 
     //std::shared_ptr<Renderer> renderer1 = std::make_shared<Renderer>(&modelObj, &objShader);
     std::shared_ptr<GameObject> light = std::make_shared<GameObject>();
-    std::shared_ptr<Light> lightComponent = std::make_shared<Light>(Spot, 4, glm::vec3(1.0f, 0.1f, 0.1f));
+    std::shared_ptr<Light> lightComponent = std::make_shared<Light>(Point, 1, glm::vec3(1.0f, 0.1f, 0.1f));
     scene->AddGameObject(light);
     light->AddComponent<Light>(lightComponent);
     //light->AddComponent<Renderer>(renderer1);
@@ -194,7 +196,7 @@ int main() {
 
     //std::shared_ptr<Renderer> renderer2 = std::make_shared<Renderer>(&modelObj, &objShader);
     std::shared_ptr<GameObject> light2 = std::make_shared<GameObject>();
-    std::shared_ptr<Light> lightComponent2 = std::make_shared<Light>(Spot, 5, glm::vec3(0.1f, 1.0f, 0.1f));
+    std::shared_ptr<Light> lightComponent2 = std::make_shared<Light>(Point, 1, glm::vec3(0.1f, 1.0f, 0.1f));
     scene->AddGameObject(light2);
     light2->AddComponent<Light>(lightComponent2);
     //light2->AddComponent<Renderer>(renderer2);
@@ -351,7 +353,7 @@ int main() {
 
     // shader configuration
     // --------------------
-    shader.setInt("texture1", 0);
+    //shader.setInt("texture1", 0);
 
 
     double lastTime = glfwGetTime();
@@ -384,7 +386,7 @@ int main() {
 
         // render
         // ------
-        glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+        glClearColor(0.15f, 0.05f, 0.55f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 //        // draw objects
@@ -421,9 +423,10 @@ int main() {
 ////            shader.setMat4("model", model);
 ////            glDrawArrays(GL_TRIANGLES, 0, 6);
 ////        }
-        light->GetTransform()->position = glm::vec3(sin(currentFrame) * 3, 3, cos(currentFrame) * 3);
-        light2->GetTransform()->position = glm::vec3(-sin(currentFrame) * 3, 3, -cos(currentFrame) * 3);
+        light->GetTransform()->position = glm::vec3(glm::cos(currentFrame), 1, 0);
+        light2->GetTransform()->position = glm::vec3(-glm::cos(currentFrame), 1, glm::sin(glm::radians(currentFrame * 10)));
         scene->UpdateScene(deltaTime);
+
 
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
