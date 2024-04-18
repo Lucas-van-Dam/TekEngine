@@ -23,6 +23,12 @@ public:
 
         return translationMatrix * rotationMatrix * scalingMatrix;
     }
+
+    glm::vec3 GetForwardVector() const {
+        // Assuming your rotation quaternion is normalized
+        glm::vec3 forward = glm::mat3_cast(glm::normalize(rotation)) * glm::vec3(0.0f, 0.0f, 1.0f);
+        return glm::normalize(forward);
+    }
     void Update(float deltaTime) override;
 
 

@@ -25,7 +25,7 @@ float lastY = config::SCR_HEIGHT / 2.0f;
 
 glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
-std::shared_ptr<EditorCamera> camera = std::make_shared<EditorCamera>(glm::vec3(0.0f, 0.0f, 3.0f));
+std::shared_ptr<EditorCamera> camera = std::make_shared<EditorCamera>(glm::vec3(0.0f, 2.0f, 0.0f));
 
 GLFWwindow *window;
 
@@ -185,6 +185,7 @@ int main() {
     backPack->GetTransform()->position = glm::vec3(0.0f, 0.0f, 0.0f);
     backPack->GetTransform()->scale = glm::vec3(0.01f, 0.01f, 0.01f);
 
+#pragma region Lights
     //std::shared_ptr<Renderer> renderer1 = std::make_shared<Renderer>(&modelObj, &objShader);
     std::shared_ptr<GameObject> light = std::make_shared<GameObject>();
     std::shared_ptr<Light> lightComponent = std::make_shared<Light>(Point, 1, glm::vec3(1.0f, 0.1f, 0.1f));
@@ -193,6 +194,10 @@ int main() {
     //light->AddComponent<Renderer>(renderer1);
     light->GetTransform()->position = glm::vec3(-1, 1, 4);
     scene->lightManager->AddLight(lightComponent);
+
+    LightType type = Point;
+    float typefloat = type;
+    std::cout << typefloat << std::endl;
 
     //std::shared_ptr<Renderer> renderer2 = std::make_shared<Renderer>(&modelObj, &objShader);
     std::shared_ptr<GameObject> light2 = std::make_shared<GameObject>();
@@ -203,6 +208,16 @@ int main() {
     light2->GetTransform()->position = glm::vec3(-1, 1, 4);
     scene->lightManager->AddLight(lightComponent2);
 
+    //std::shared_ptr<Renderer> renderer3 = std::make_shared<Renderer>(&modelObj, &objShader);
+    std::shared_ptr<GameObject> light3 = std::make_shared<GameObject>();
+    std::shared_ptr<Light> lightComponent3 = std::make_shared<Light>(Spot, 5, glm::vec3(0.1f, 0.1f, 1.0f), 50, 60);
+    scene->AddGameObject(light3);
+    light3->AddComponent<Light>(lightComponent3);
+    //light3->AddComponent<Renderer>(renderer3);
+    light3->GetTransform()->position = glm::vec3(0, 3, 0);
+    //light3->GetTransform()->rotation.setFromEulerAngles(0, 0, 90);
+    scene->lightManager->AddLight(lightComponent3);
+#pragma endregion
 
     Shader shader("Transparent.vert", "Transparent.frag");
 
@@ -224,7 +239,7 @@ int main() {
     // build and compile shaders
     // -------------------------
 
-
+#pragma region Unused Data
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
     float cubeVertices[] = {
@@ -354,6 +369,7 @@ int main() {
     // shader configuration
     // --------------------
     //shader.setInt("texture1", 0);
+#pragma endregion
 
 
     double lastTime = glfwGetTime();
@@ -424,7 +440,8 @@ int main() {
 ////            glDrawArrays(GL_TRIANGLES, 0, 6);
 ////        }
         light->GetTransform()->position = glm::vec3(glm::cos(currentFrame), 1, 0);
-        light2->GetTransform()->position = glm::vec3(-glm::cos(currentFrame), 1, glm::sin(glm::radians(currentFrame * 10)));
+        light2->GetTransform()->position = glm::vec3(-glm::cos(currentFrame), 1, 0);
+        light3->GetTransform()->rotation.setFromEulerAngles(30, currentFrame * 10, 0);
         scene->UpdateScene(deltaTime);
 
 

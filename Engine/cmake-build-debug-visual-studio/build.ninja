@@ -51,7 +51,7 @@ build cmake_object_order_depends_target_TekEngine: phony || CMakeFiles\TekEngine
 
 build CMakeFiles\TekEngine.dir\main.cpp.obj: CXX_COMPILER__TekEngine_unscanned_Debug C$:\Users\LucasvanDam\Documents\TekEngine\Engine\main.cpp || cmake_object_order_depends_target_TekEngine
   DEFINES = -DGLFW_DLL
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
   INCLUDES = -external:IC:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\include -external:W0
   OBJECT_DIR = CMakeFiles\TekEngine.dir
   OBJECT_FILE_DIR = CMakeFiles\TekEngine.dir
@@ -60,7 +60,7 @@ build CMakeFiles\TekEngine.dir\main.cpp.obj: CXX_COMPILER__TekEngine_unscanned_D
 
 build CMakeFiles\TekEngine.dir\Tek\Shader.cpp.obj: CXX_COMPILER__TekEngine_unscanned_Debug C$:\Users\LucasvanDam\Documents\TekEngine\Engine\Tek\Shader.cpp || cmake_object_order_depends_target_TekEngine
   DEFINES = -DGLFW_DLL
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
   INCLUDES = -external:IC:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\include -external:W0
   OBJECT_DIR = CMakeFiles\TekEngine.dir
   OBJECT_FILE_DIR = CMakeFiles\TekEngine.dir\Tek
@@ -69,7 +69,7 @@ build CMakeFiles\TekEngine.dir\Tek\Shader.cpp.obj: CXX_COMPILER__TekEngine_unsca
 
 build CMakeFiles\TekEngine.dir\Tek\Core\Logger.cpp.obj: CXX_COMPILER__TekEngine_unscanned_Debug C$:\Users\LucasvanDam\Documents\TekEngine\Engine\Tek\Core\Logger.cpp || cmake_object_order_depends_target_TekEngine
   DEFINES = -DGLFW_DLL
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
   INCLUDES = -external:IC:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\include -external:W0
   OBJECT_DIR = CMakeFiles\TekEngine.dir
   OBJECT_FILE_DIR = CMakeFiles\TekEngine.dir\Tek\Core
@@ -78,7 +78,7 @@ build CMakeFiles\TekEngine.dir\Tek\Core\Logger.cpp.obj: CXX_COMPILER__TekEngine_
 
 build CMakeFiles\TekEngine.dir\Tek\Core\GameObject.cpp.obj: CXX_COMPILER__TekEngine_unscanned_Debug C$:\Users\LucasvanDam\Documents\TekEngine\Engine\Tek\Core\GameObject.cpp || cmake_object_order_depends_target_TekEngine
   DEFINES = -DGLFW_DLL
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
   INCLUDES = -external:IC:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\include -external:W0
   OBJECT_DIR = CMakeFiles\TekEngine.dir
   OBJECT_FILE_DIR = CMakeFiles\TekEngine.dir\Tek\Core
@@ -87,7 +87,7 @@ build CMakeFiles\TekEngine.dir\Tek\Core\GameObject.cpp.obj: CXX_COMPILER__TekEng
 
 build CMakeFiles\TekEngine.dir\Tek\Core\Components\Transform.cpp.obj: CXX_COMPILER__TekEngine_unscanned_Debug C$:\Users\LucasvanDam\Documents\TekEngine\Engine\Tek\Core\Components\Transform.cpp || cmake_object_order_depends_target_TekEngine
   DEFINES = -DGLFW_DLL
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
   INCLUDES = -external:IC:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\include -external:W0
   OBJECT_DIR = CMakeFiles\TekEngine.dir
   OBJECT_FILE_DIR = CMakeFiles\TekEngine.dir\Tek\Core\Components
@@ -96,7 +96,7 @@ build CMakeFiles\TekEngine.dir\Tek\Core\Components\Transform.cpp.obj: CXX_COMPIL
 
 build CMakeFiles\TekEngine.dir\Tek\Core\Math\Quaternion.cpp.obj: CXX_COMPILER__TekEngine_unscanned_Debug C$:\Users\LucasvanDam\Documents\TekEngine\Engine\Tek\Core\Math\Quaternion.cpp || cmake_object_order_depends_target_TekEngine
   DEFINES = -DGLFW_DLL
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
   INCLUDES = -external:IC:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\include -external:W0
   OBJECT_DIR = CMakeFiles\TekEngine.dir
   OBJECT_FILE_DIR = CMakeFiles\TekEngine.dir\Tek\Core\Math
@@ -105,7 +105,7 @@ build CMakeFiles\TekEngine.dir\Tek\Core\Math\Quaternion.cpp.obj: CXX_COMPILER__T
 
 build CMakeFiles\TekEngine.dir\Tek\Core\Components\Component.cpp.obj: CXX_COMPILER__TekEngine_unscanned_Debug C$:\Users\LucasvanDam\Documents\TekEngine\Engine\Tek\Core\Components\Component.cpp || cmake_object_order_depends_target_TekEngine
   DEFINES = -DGLFW_DLL
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
   INCLUDES = -external:IC:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\include -external:W0
   OBJECT_DIR = CMakeFiles\TekEngine.dir
   OBJECT_FILE_DIR = CMakeFiles\TekEngine.dir\Tek\Core\Components
@@ -114,7 +114,7 @@ build CMakeFiles\TekEngine.dir\Tek\Core\Components\Component.cpp.obj: CXX_COMPIL
 
 build CMakeFiles\TekEngine.dir\Tek\Core\Scene.cpp.obj: CXX_COMPILER__TekEngine_unscanned_Debug C$:\Users\LucasvanDam\Documents\TekEngine\Engine\Tek\Core\Scene.cpp || cmake_object_order_depends_target_TekEngine
   DEFINES = -DGLFW_DLL
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
   INCLUDES = -external:IC:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\include -external:W0
   OBJECT_DIR = CMakeFiles\TekEngine.dir
   OBJECT_FILE_DIR = CMakeFiles\TekEngine.dir\Tek\Core
@@ -123,7 +123,7 @@ build CMakeFiles\TekEngine.dir\Tek\Core\Scene.cpp.obj: CXX_COMPILER__TekEngine_u
 
 build CMakeFiles\TekEngine.dir\Tek\Core\Components\Camera.cpp.obj: CXX_COMPILER__TekEngine_unscanned_Debug C$:\Users\LucasvanDam\Documents\TekEngine\Engine\Tek\Core\Components\Camera.cpp || cmake_object_order_depends_target_TekEngine
   DEFINES = -DGLFW_DLL
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
   INCLUDES = -external:IC:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\include -external:W0
   OBJECT_DIR = CMakeFiles\TekEngine.dir
   OBJECT_FILE_DIR = CMakeFiles\TekEngine.dir\Tek\Core\Components
@@ -132,7 +132,7 @@ build CMakeFiles\TekEngine.dir\Tek\Core\Components\Camera.cpp.obj: CXX_COMPILER_
 
 build CMakeFiles\TekEngine.dir\Tek\Core\EditorCamera.cpp.obj: CXX_COMPILER__TekEngine_unscanned_Debug C$:\Users\LucasvanDam\Documents\TekEngine\Engine\Tek\Core\EditorCamera.cpp || cmake_object_order_depends_target_TekEngine
   DEFINES = -DGLFW_DLL
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
   INCLUDES = -external:IC:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\include -external:W0
   OBJECT_DIR = CMakeFiles\TekEngine.dir
   OBJECT_FILE_DIR = CMakeFiles\TekEngine.dir\Tek\Core
@@ -141,7 +141,7 @@ build CMakeFiles\TekEngine.dir\Tek\Core\EditorCamera.cpp.obj: CXX_COMPILER__TekE
 
 build CMakeFiles\TekEngine.dir\Tek\Core\Rendering\Mesh.cpp.obj: CXX_COMPILER__TekEngine_unscanned_Debug C$:\Users\LucasvanDam\Documents\TekEngine\Engine\Tek\Core\Rendering\Mesh.cpp || cmake_object_order_depends_target_TekEngine
   DEFINES = -DGLFW_DLL
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
   INCLUDES = -external:IC:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\include -external:W0
   OBJECT_DIR = CMakeFiles\TekEngine.dir
   OBJECT_FILE_DIR = CMakeFiles\TekEngine.dir\Tek\Core\Rendering
@@ -150,7 +150,7 @@ build CMakeFiles\TekEngine.dir\Tek\Core\Rendering\Mesh.cpp.obj: CXX_COMPILER__Te
 
 build CMakeFiles\TekEngine.dir\Tek\Core\Rendering\Model.cpp.obj: CXX_COMPILER__TekEngine_unscanned_Debug C$:\Users\LucasvanDam\Documents\TekEngine\Engine\Tek\Core\Rendering\Model.cpp || cmake_object_order_depends_target_TekEngine
   DEFINES = -DGLFW_DLL
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
   INCLUDES = -external:IC:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\include -external:W0
   OBJECT_DIR = CMakeFiles\TekEngine.dir
   OBJECT_FILE_DIR = CMakeFiles\TekEngine.dir\Tek\Core\Rendering
@@ -159,7 +159,7 @@ build CMakeFiles\TekEngine.dir\Tek\Core\Rendering\Model.cpp.obj: CXX_COMPILER__T
 
 build CMakeFiles\TekEngine.dir\Tek\Core\Components\Renderer.cpp.obj: CXX_COMPILER__TekEngine_unscanned_Debug C$:\Users\LucasvanDam\Documents\TekEngine\Engine\Tek\Core\Components\Renderer.cpp || cmake_object_order_depends_target_TekEngine
   DEFINES = -DGLFW_DLL
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
   INCLUDES = -external:IC:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\include -external:W0
   OBJECT_DIR = CMakeFiles\TekEngine.dir
   OBJECT_FILE_DIR = CMakeFiles\TekEngine.dir\Tek\Core\Components
@@ -168,7 +168,7 @@ build CMakeFiles\TekEngine.dir\Tek\Core\Components\Renderer.cpp.obj: CXX_COMPILE
 
 build CMakeFiles\TekEngine.dir\Tek\Core\Audio\AudioManager.cpp.obj: CXX_COMPILER__TekEngine_unscanned_Debug C$:\Users\LucasvanDam\Documents\TekEngine\Engine\Tek\Core\Audio\AudioManager.cpp || cmake_object_order_depends_target_TekEngine
   DEFINES = -DGLFW_DLL
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
   INCLUDES = -external:IC:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\include -external:W0
   OBJECT_DIR = CMakeFiles\TekEngine.dir
   OBJECT_FILE_DIR = CMakeFiles\TekEngine.dir\Tek\Core\Audio
@@ -177,7 +177,7 @@ build CMakeFiles\TekEngine.dir\Tek\Core\Audio\AudioManager.cpp.obj: CXX_COMPILER
 
 build CMakeFiles\TekEngine.dir\Tek\Core\Rendering\LightManager.cpp.obj: CXX_COMPILER__TekEngine_unscanned_Debug C$:\Users\LucasvanDam\Documents\TekEngine\Engine\Tek\Core\Rendering\LightManager.cpp || cmake_object_order_depends_target_TekEngine
   DEFINES = -DGLFW_DLL
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
   INCLUDES = -external:IC:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\include -external:W0
   OBJECT_DIR = CMakeFiles\TekEngine.dir
   OBJECT_FILE_DIR = CMakeFiles\TekEngine.dir\Tek\Core\Rendering
@@ -186,7 +186,7 @@ build CMakeFiles\TekEngine.dir\Tek\Core\Rendering\LightManager.cpp.obj: CXX_COMP
 
 build CMakeFiles\TekEngine.dir\Tek\Core\Components\Light.cpp.obj: CXX_COMPILER__TekEngine_unscanned_Debug C$:\Users\LucasvanDam\Documents\TekEngine\Engine\Tek\Core\Components\Light.cpp || cmake_object_order_depends_target_TekEngine
   DEFINES = -DGLFW_DLL
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
   INCLUDES = -external:IC:\Users\LucasvanDam\.vcpkg-clion\vcpkg\installed\x64-windows\include -external:W0
   OBJECT_DIR = CMakeFiles\TekEngine.dir
   OBJECT_FILE_DIR = CMakeFiles\TekEngine.dir\Tek\Core\Components

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.26)
 project(TekEngine)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 add_executable(TekEngine main.cpp
         Tek/Core/Config.hpp

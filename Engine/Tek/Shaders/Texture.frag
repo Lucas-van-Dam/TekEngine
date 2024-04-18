@@ -20,9 +20,9 @@ layout(std140, binding = 1) buffer LightingBuffer {
     Light lights[];
 };
 
-uniform float constant = 0.5f;
-uniform float linear = 0.3f;
-uniform float quadratic = 0.1f;
+uniform float constant = 1.0f;
+uniform float linear = 0.14f;
+uniform float quadratic = 0.07f;
 
 uniform sampler2D texture1;
 
@@ -36,6 +36,26 @@ void main()
     for (int i = 0; i < lights.length(); i++) {
         if(lights[i].position.w == 0){
             // TODO: SPOT LIGHT CALCULATION
+            vec3 lightDir   = normalize(lights[i].position.xyz - fragPosition);
+
+            float theta = dot(lightDir, normalize(-lights[i].direction.xyz));
+
+            if(theta > lights[i].direction.w)
+            {
+                float dis = abs(distance(fragPosition, lights[i].position.xyz));
+
+                vec3 viewDir    = normalize(fragViewPos - fragPosition);
+                vec3 halfwayDir = normalize(lightDir + viewDir);
+
+                float spotEffect = smoothstep(0.9, 1.0, theta); // Gradual fade from 90% to 100%
+
+                float diffuse = max(dot(fragNormal, lightDir), 0.0);
+                diffuse = diffuse / (constant + linear * dis + quadratic * dis * dis);
+                float specular = pow(max(dot(fragNormal, halfwayDir), 0.0), 10);
+                specular = specular / (constant + linear * dis + quadratic * dis * dis);
+
+                finalColor += ((diffuseColor * diffuse + diffuseColor * specular) * vec4(lights[i].lightColor.xyz,1)) * lights[i].lightColor.w * (spotEffect);
+            }
         }
         else if(lights[i].position.w == 1){
             // TODO: DIRECTIONAL LIGHT CALCULATION
