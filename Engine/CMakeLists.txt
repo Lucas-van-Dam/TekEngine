@@ -39,7 +39,9 @@ add_executable(TekEngine main.cpp
         Tek/Core/Rendering/LightManager.cpp
         Tek/Core/Rendering/LightManager.hpp
         Tek/Core/Components/Light.cpp
-        Tek/Core/Components/Light.hpp)
+        Tek/Core/Components/Light.hpp
+        Tek/Core/Rendering/RenderManager.cpp
+        Tek/Core/Rendering/RenderManager.hpp)
 
 find_package(glfw3 CONFIG REQUIRED)
 target_link_libraries(TekEngine PRIVATE glfw)

@@ -1,8 +1,8 @@
 #include "Scene.hpp"
 
 void Scene::AddGameObject(std::shared_ptr<GameObject> gameObject) {
-    gameObject->SetScene(shared_from_this());
     gameObjects.push_back(gameObject);
+    gameObject->SetScene(shared_from_this());
 }
 
 void Scene::UpdateScene(float deltaTime) {
@@ -17,4 +17,5 @@ EditorCamera* Scene::GetEditorCamera() {
 
 Scene::Scene() {
     lightManager = std::make_unique<LightManager>(5);
+    renderManager = std::make_unique<RenderManager>();
 }

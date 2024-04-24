@@ -22,7 +22,6 @@ void Renderer::Update(float deltaTime) {
     modelMatrix = glm::scale(modelMatrix, transform->scale);
     viewMatrix = gameObject->GetScene()->GetEditorCamera()->GetViewMatrix();
     projectionMatrix = gameObject->GetScene()->GetEditorCamera()->GetProjectionMatrix();
-    Draw();
 }
 
 Renderer::Renderer(Model *model1, Shader *shader1): model(model1), shader(shader1)
@@ -40,4 +39,15 @@ std::vector<LightData> Renderer::SetLightingBuffer() {
         lights.emplace_back(data);
     }
     return lights;
+}
+
+void Renderer::OnGameobjectAddedToScene() {
+    try{
+    auto point = shared_from_this();
+    gameObject->GetScene()->renderManager->AddRenderer(point);
+} catch (const std::bad_weak_ptr& e) {
+    // Handle the 'std::bad_weak_ptr' exception
+    std::cerr << "Caught std::bad_weak_ptr: " << e.what() << std::endl;
+    // You can add custom error handling logic here
+}
 }

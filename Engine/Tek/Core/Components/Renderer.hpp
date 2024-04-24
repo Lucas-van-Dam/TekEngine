@@ -10,7 +10,7 @@
 
 class Transform;
 
-class Renderer : public Component{
+class Renderer : public Component, public std::enable_shared_from_this<Renderer>{
 public:
     std::shared_ptr<Model> model;
     std::shared_ptr<Shader> shader;
@@ -19,6 +19,8 @@ public:
     void Draw();
 
     void Update(float deltaTime) override;
+
+    void OnGameobjectAddedToScene() override;
 
 private:
     std::vector<LightData> SetLightingBuffer();

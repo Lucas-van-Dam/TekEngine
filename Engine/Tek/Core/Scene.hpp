@@ -7,6 +7,7 @@
 #include "EditorCamera.hpp"
 #include "Components/Light.hpp"
 #include "Rendering/LightManager.hpp"
+#include "Rendering/RenderManager.hpp"
 
 
 class Scene: public std::enable_shared_from_this<Scene> {
@@ -17,6 +18,7 @@ public:
     EditorCamera* GetEditorCamera();
     std::shared_ptr<EditorCamera> camera;
     std::unique_ptr<LightManager> lightManager;
+    std::unique_ptr<RenderManager> renderManager;
 
 private:
     std::vector<std::shared_ptr<GameObject>> gameObjects;
