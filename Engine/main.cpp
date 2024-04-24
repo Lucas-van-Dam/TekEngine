@@ -171,7 +171,7 @@ int main() {
     Shader litShader("TestShader.vert", "TestShader.frag");
     Shader lightShader("LightShader.vert", "LightShader.frag");
 
-    char path[] = "C:/Users/LucasvanDam/Documents/TekEngine/Engine/Tek/Models/Sponza-master/sponza.obj";
+    char path[] = "../Tek/Models/Sponza-master/sponza.obj";
 
     Shader objShader("Texture.vert", "Texture.frag");
     Model modelObj(path);

@@ -35,3 +35,8 @@
 55	1913	7353244821211440	CMakeFiles/TekEngine.dir/Tek/Core/Components/Renderer.cpp.obj	3744ad17396044b5
 2	2444	7353244826492884	CMakeFiles/TekEngine.dir/main.cpp.obj	9f72d83aea360962
 2444	3630	7353244828643436	TekEngine.exe	4f83e7b85bf0391f
+11	1937	7356602875126283	CMakeFiles/TekEngine.dir/Tek/Core/Rendering/Model.cpp.obj	ea676f4f282e26b3
+4	2363	7356602879379347	CMakeFiles/TekEngine.dir/main.cpp.obj	9f72d83aea360962
+2363	3429	7356602881928200	TekEngine.exe	4f83e7b85bf0391f
+3	1973	7356603059014024	CMakeFiles/TekEngine.dir/main.cpp.obj	9f72d83aea360962
+1974	2813	7356603061489244	TekEngine.exe	4f83e7b85bf0391f
