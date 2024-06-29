@@ -13,7 +13,7 @@
 class RenderManager {
 private:
     std::vector<std::shared_ptr<Renderer>> renderers;
-    std::vector<unsigned int> depthCubeMaps;
+    std::vector<int> depthCubeMaps;
     std::vector<unsigned int> additionalDepthFBOs;
     void RenderOpaques();
     void RenderTransparents();

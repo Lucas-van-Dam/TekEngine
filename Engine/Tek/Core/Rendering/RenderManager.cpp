@@ -78,7 +78,7 @@ void RenderManager::GenerateMainLightShadows() {
     DirectionalShadowShader->setMat4("lightSpaceMatrix", lightSpaceMatrix);
     glDisable( GL_CULL_FACE );
     for(const auto& renderer : renderers){
-        renderer->Draw(mainLightView, mainLightProj, std::vector<unsigned int>(), 0, DirectionalShadowShader);
+        renderer->Draw(mainLightView, mainLightProj, std::vector<int>(), 0, DirectionalShadowShader);
     }
     glEnable( GL_CULL_FACE );
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -92,7 +92,7 @@ void RenderManager::GenerateAdditionalShadows() {
         std::shared_ptr<Light> light = pointLights[i];
         glm::vec3 lightPos = light->gameObject->GetTransform()->position;
         float near_plane = 1.0f;
-        float far_plane  = 25.0f;
+        float far_plane  = 100.0f;
         glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), (float)ADDITIONAL_SHADOW_WIDTH / (float)ADDITIONAL_SHADOW_HEIGHT, near_plane, far_plane);
         std::vector<glm::mat4> shadowTransforms;
         shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)));
@@ -106,11 +106,11 @@ void RenderManager::GenerateAdditionalShadows() {
         glClear(GL_DEPTH_BUFFER_BIT);
         AdditionalShadowShader->use();
         for (unsigned int j = 0; j < 6; ++j)
-            AdditionalShadowShader->setMat4("shadowMatrices[" + std::to_string(j) + "]", shadowTransforms[i]);
+            AdditionalShadowShader->setMat4("shadowMatrices[" + std::to_string(j) + "]", shadowTransforms[j]);
         AdditionalShadowShader->setFloat("far_plane", far_plane);
         AdditionalShadowShader->setVec3("lightPos", lightPos);
         for(const auto& renderer : renderers){
-            renderer->Draw(glm::mat4(), glm::mat4(), std::vector<unsigned int>(), 0, AdditionalShadowShader);
+            renderer->Draw(glm::mat4(), glm::mat4(), std::vector<int>(), 0, AdditionalShadowShader);
         }
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, config::SCR_WIDTH, config::SCR_HEIGHT);
