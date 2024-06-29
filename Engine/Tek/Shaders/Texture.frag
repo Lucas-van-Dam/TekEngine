@@ -40,7 +40,25 @@ uniform sampler2D texture_metallic1;
 
 uniform sampler2D shadowMap;
 
-float ShadowCalculation(vec4 fragPosLightSpace)
+uniform float far_plane;
+
+float AdditionalShadowCalculation(vec3 fragPos, vec3 lightPos, samplerCube depthMap){
+    // get vector between fragment position and light position
+    vec3 fragToLight = fragPos - lightPos;
+    // use the light to fragment vector to sample from the depth map
+    float closestDepth = texture(depthMap, fragToLight).r;
+    // it is currently in linear range between [0,1]. Re-transform back to original value
+    closestDepth *= far_plane;
+    // now get current linear depth as the length between the fragment and light position
+    float currentDepth = length(fragToLight);
+    // now test for shadows
+    float bias = 0.05;
+    float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;
+
+    return shadow;
+}
+
+float MainShadowCalculation(vec4 fragPosLightSpace)
 {
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     projCoords.xyz = projCoords.xyz * 0.5 + 0.5;
@@ -123,7 +141,7 @@ void main()
             float diffuse = max(dot(normal, lightDir), 0.0);
             float specular = pow(max(dot(normal, halfwayDir), 0.0), 70);
 
-            float shadow = ShadowCalculation(fragLightSpacePos);
+            float shadow = MainShadowCalculation(fragLightSpacePos);
 
             finalColor += ((diffuseColor * diffuse + diffuseColor * specular) * vec4(lights[i].lightColor.xyz,1) * (1.0 - shadow)) * lights[i].lightColor.w;
         }
@@ -148,6 +166,9 @@ void main()
                 vec3 radiance = lights[i].lightColor.xyz * attenuation;
                 vec3 diffuse = (vec3(1.0) - specular) * (1.0 - 0) * diffuseColor.xyz / M_PI;
                 float NdotL = max(dot(normal, lightDir), 0.0);
+
+                //float shadow = AdditionalShadowCalculation(fragPosition, lights[i].position.xyz, lights[i].shadowCube);
+
                 finalColor += vec4((diffuse + specular) * radiance * NdotL, 1);
             }
         }
@@ -156,6 +177,6 @@ void main()
     finalColor += vec4(diffuseColor.xyz * 0.1f, 1);
     FragColor = vec4(finalColor.xyz, diffuseColor.w);
 
-    //float shadow = ShadowCalculation(fragLightSpacePos);
+    //float shadow = MainShadowCalculation(fragLightSpacePos);
     //FragColor = vec4(shadow, shadow, shadow, 1.0f);
 }

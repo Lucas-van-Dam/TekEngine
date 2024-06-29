@@ -16,14 +16,14 @@ public:
     std::shared_ptr<Shader> shader;
 
     Renderer(Model *model1, Shader *shader1);
-    void Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj,int shadowMapId,const shared_ptr<Shader>& overrideShader = nullptr);
+    void Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, std::vector<unsigned int> depthCubeId = std::vector<unsigned int>(),int shadowMapId = 0,const shared_ptr<Shader>& overrideShader = nullptr);
 
     void Update(float deltaTime) override;
 
     void OnGameobjectAddedToScene() override;
 
 private:
-    std::vector<LightData> SetLightingBuffer(glm::mat4 mainLightView, glm::mat4 mainLightProj);
+    std::vector<LightData> SetLightingBuffer(glm::mat4 mainLightView, glm::mat4 mainLightProj, const std::vector<unsigned int>& depthCubeId);
     glm::mat4 modelMatrix;
     glm::mat4 viewMatrix;
     glm::mat4 projectionMatrix;

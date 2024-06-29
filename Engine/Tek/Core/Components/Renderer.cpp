@@ -3,8 +3,8 @@
 #include "../GameObject.hpp"
 #include "../Scene.hpp"
 
-void Renderer::Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, int shadowMapId,const shared_ptr<Shader>& overrideShader) {
-    auto data = SetLightingBuffer(mainLightView, mainLightProj);
+void Renderer::Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, std::vector<unsigned int> depthCubeId, int shadowMapId, const shared_ptr<Shader>& overrideShader) {
+    auto data = SetLightingBuffer(mainLightView, mainLightProj, depthCubeId);
     if(overrideShader != nullptr){
         overrideShader->use();
         overrideShader->setMat4("model", modelMatrix);
@@ -40,14 +40,16 @@ Renderer::Renderer(Model *model1, Shader *shader1): model(model1), shader(shader
 
 }
 
-std::vector<LightData> Renderer::SetLightingBuffer(glm::mat4 mainLightView, glm::mat4 mainLightProj) {
+std::vector<LightData> Renderer::SetLightingBuffer(glm::mat4 mainLightView, glm::mat4 mainLightProj, const std::vector<unsigned int>& depthCubeId) {
     int amountOfLights = gameObject->GetScene()->lightManager->lights.size();
+    int pointIndex = 0;
     std::vector<LightData> lights;
     for (int i = 0; i < amountOfLights; ++i) {
+        unsigned int depthCube = -1;
         Light* light = gameObject->GetScene()->lightManager->lights[i].get();
 
         LightData data(light->intensity,light->color, light->gameObject->GetTransform()->position,
-                       light->gameObject->GetTransform()->GetForwardVector(), light->innerCutOff, light->outerCutOff, light->type, mainLightProj, mainLightView);
+                       light->gameObject->GetTransform()->GetForwardVector(), light->innerCutOff, light->outerCutOff, light->type, mainLightProj, mainLightView, -1);
         lights.emplace_back(data);
     }
     return lights;

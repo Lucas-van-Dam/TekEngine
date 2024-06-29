@@ -5,8 +5,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(TekEngine main.cpp
         Tek/Core/Config.hpp
-        Tek/Shader.cpp
-        Tek/Shader.hpp
+        Tek/Core/Rendering/Shader.cpp
+        Tek/Core/Rendering/Shader.hpp
         TekEngine.hpp
         Tek/Core/Logger.cpp
         Tek/Core/Logger.hpp

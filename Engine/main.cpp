@@ -1,7 +1,7 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "Tek/Shader.hpp"
+#include "Tek/Core/Rendering/Shader.hpp"
 #include "TekEngine.hpp"
 #include <glm/glm.hpp>
 
@@ -208,9 +208,13 @@ int main() {
     light4->GetTransform()->rotation.setFromEulerAngles(90, 0, 0);
     scene->lightManager->AddLight(lightComponent4);
 
+
+
 #pragma endregion
 
-    glClearColor(0.15f, 0.05f, 0.55f, 1.0f);
+    scene->renderManager->Initialize();
+
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
     // render loop
     // -----------

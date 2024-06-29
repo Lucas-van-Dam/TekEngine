@@ -103,13 +103,17 @@ void Mesh::Draw(Shader &shader, std::vector<LightData> lightData)
         // and finally bind the texture
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
-    LightData* lightDataStatic = &lightData[0];
 
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, SSBO);
-    int totalSize = sizeof(LightData) * lightData.size();
-    glBufferData(GL_SHADER_STORAGE_BUFFER, totalSize, lightDataStatic, GL_DYNAMIC_DRAW); //sizeof(data) only works for statically sized C/C++ arrays.
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, SSBO);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // unbind
+    if(!lightData.empty()) {
+        LightData *lightDataStatic = &lightData.front();
+
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, SSBO);
+        int totalSize = sizeof(LightData) * lightData.size();
+        glBufferData(GL_SHADER_STORAGE_BUFFER, totalSize, lightDataStatic,
+                     GL_DYNAMIC_DRAW); //sizeof(data) only works for statically sized C/C++ arrays.
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, SSBO);
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // unbind
+    }
 
     // draw mesh
     glBindVertexArray(VAO);
