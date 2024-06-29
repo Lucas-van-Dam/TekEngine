@@ -7,6 +7,7 @@ out vec4 FragColor;
 in vec2 TexCoords;
 in vec3 fragPosition;
 in vec3 fragViewPos;
+in vec4 fragLightSpacePos;
 
 in vec3 T;
 in vec3 N;
@@ -18,6 +19,10 @@ struct Light{
     vec4 direction;
     //W = intensity
     vec4 lightColor;
+
+    //directional light only
+    mat4 projection;
+    mat4 view;
 };
 
 layout(std140, binding = 1) buffer LightingBuffer {
@@ -32,6 +37,33 @@ uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_normal1;
 uniform sampler2D texture_shininess1;
 uniform sampler2D texture_metallic1;
+
+uniform sampler2D shadowMap;
+
+float ShadowCalculation(vec4 fragPosLightSpace)
+{
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    projCoords.xyz = projCoords.xyz * 0.5 + 0.5;
+    float currentDepth = projCoords.z;
+    float bias = max(0.005 * (1.0 - dot(normalize(N), normalize(-lights[0].direction.xyz))), 0.0005);
+
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+    for(int x = -1; x <= 1; ++x)
+    {
+        for (int y = -1; y <= 1; ++y)
+        {
+            float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
+            shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
+        }
+    }
+    shadow /= 9.0;
+
+    if(projCoords.z > 1.0)
+        shadow = 0.0;
+
+    return shadow;
+}
 
 void main()
 {
@@ -91,7 +123,9 @@ void main()
             float diffuse = max(dot(normal, lightDir), 0.0);
             float specular = pow(max(dot(normal, halfwayDir), 0.0), 70);
 
-            finalColor += ((diffuseColor * diffuse + diffuseColor * specular) * vec4(lights[i].lightColor.xyz,1)) * lights[i].lightColor.w;
+            float shadow = ShadowCalculation(fragLightSpacePos);
+
+            finalColor += ((diffuseColor * diffuse + diffuseColor * specular) * vec4(lights[i].lightColor.xyz,1) * (1.0 - shadow)) * lights[i].lightColor.w;
         }
         else if(lights[i].position.w == 2){
             // TODO: AMBIENT LIGHT CALCULATION
@@ -118,6 +152,10 @@ void main()
             }
         }
     }
+
     finalColor += vec4(diffuseColor.xyz * 0.1f, 1);
     FragColor = vec4(finalColor.xyz, diffuseColor.w);
+
+    //float shadow = ShadowCalculation(fragLightSpacePos);
+    //FragColor = vec4(shadow, shadow, shadow, 1.0f);
 }

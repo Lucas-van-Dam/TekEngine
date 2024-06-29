@@ -17,11 +17,11 @@ public:
 
     // Get the transformation matrix
     glm::mat4 GetTransformationMatrix() const {
-        glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), position);
-        glm::mat4 rotationMatrix = CreateRotationMatrix(rotation); // Custom function
-        glm::mat4 scalingMatrix = glm::scale(glm::mat4(1.0f), scale);
+        glm::mat4 transformationMatrix = CreateRotationMatrix(rotation);
+        transformationMatrix = glm::scale(transformationMatrix, scale);
+        transformationMatrix = glm::translate(transformationMatrix, position);
 
-        return translationMatrix * rotationMatrix * scalingMatrix;
+        return transformationMatrix;
     }
 
     glm::vec3 GetForwardVector() const {

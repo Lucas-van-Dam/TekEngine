@@ -30,15 +30,18 @@ struct Texture {
     string path;
 };
 struct LightData{
-    LightData(float intensity, glm::vec3 lightColor, glm::vec3 position = glm::vec3(std::numeric_limits<float>::max()), glm::vec3 direction = glm::vec3(),
-              float innerCutOff = 0, float outerCutOff = -1, float type = 0)
-        : position(position.x, position.y, position.z, type), direction(direction.x, direction.y, direction.z, glm::radians(innerCutOff)), lightColor(lightColor.x, lightColor.y, lightColor.z, intensity)
+    LightData(float intensity, glm::vec3 lightColor, glm::vec3 position, glm::vec3 direction,
+              float innerCutOff, float outerCutOff, float type, glm::mat4 projection, glm::mat4 view)
+        : position(position.x, position.y, position.z, type), direction(direction.x, direction.y, direction.z, glm::radians(innerCutOff)), lightColor(lightColor.x, lightColor.y, lightColor.z, intensity),
+        projection(projection), view(view)
     {
 
     }
     glm::vec4 position;
     glm::vec4 direction;
     glm::vec4 lightColor;
+    glm::mat4 projection;
+    glm::mat4 view;
 };
 
 #endif //RENDERING_HPP

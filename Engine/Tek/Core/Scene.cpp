@@ -17,5 +17,5 @@ EditorCamera* Scene::GetEditorCamera() {
 
 Scene::Scene() {
     lightManager = std::make_unique<LightManager>(5);
-    renderManager = std::make_unique<RenderManager>();
+    renderManager = std::make_unique<RenderManager>(lightManager);
 }

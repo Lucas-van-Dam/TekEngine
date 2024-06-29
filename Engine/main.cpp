@@ -133,6 +133,8 @@ void InitializeWindow() {
 int main() {
     InitializeWindow();
 
+
+
     // build and compile our shader program
     // ------------------------------------
     Shader ourShader("TestShader.vert", "TestShader.frag"); // you can name your shader files however you like
@@ -151,11 +153,22 @@ int main() {
     backPack->AddComponent<Renderer>(renderer);
     scene->AddGameObject(backPack);
 
+    std::shared_ptr<GameObject> cube = std::make_shared<GameObject>();
+    std::shared_ptr<Renderer> renderer2 = std::make_shared<Renderer>(&modelObj, &objShader);
+    cube->AddComponent<Renderer>(renderer2);
+    scene->AddGameObject(cube);
+
+    cube->GetTransform()->position = glm::vec3(0.0f, 3.5f, 0.0f);
+    cube->GetTransform()->scale = glm::vec3(0.5f, 0.5f, 0.5f);
+    cube->GetTransform()->rotation.setFromEulerAngles(0.0f, 12.5f, 0.0f);
+
 
     backPack->GetTransform()->position = glm::vec3(0.0f, 0.0f, 0.0f);
     backPack->GetTransform()->scale = glm::vec3(1, 1, 1);
 
 #pragma region Lights
+
+/**/
     //std::shared_ptr<Renderer> renderer1 = std::make_shared<Renderer>(&modelObj, &objShader);
     std::shared_ptr<GameObject> light = std::make_shared<GameObject>();
     std::shared_ptr<Light> lightComponent = std::make_shared<Light>(Point, 3, glm::vec3(1.0f, 0.1f, 0.1f));
@@ -184,14 +197,17 @@ int main() {
     //light3->GetTransform()->rotation.setFromEulerAngles(0, 0, 90);
     scene->lightManager->AddLight(lightComponent3);
 
+    /**/
+
     //std::shared_ptr<Renderer> renderer2 = std::make_shared<Renderer>(&modelObj, &objShader);
     std::shared_ptr<GameObject> light4 = std::make_shared<GameObject>();
     std::shared_ptr<Light> lightComponent4 = std::make_shared<Light>(Directional, 3, glm::vec3(0.1f, 0.1f, 0.1f));
-    //scene->AddGameObject(light4);
+    scene->AddGameObject(light4);
     light4->AddComponent<Light>(lightComponent4);
     //light2->AddComponent<Renderer>(renderer2);
-    light4->GetTransform()->rotation.setFromEulerAngles(70, 0, 0);
-    //scene->lightManager->AddLight(lightComponent4);
+    light4->GetTransform()->rotation.setFromEulerAngles(90, 0, 0);
+    scene->lightManager->AddLight(lightComponent4);
+
 #pragma endregion
 
     glClearColor(0.15f, 0.05f, 0.55f, 1.0f);
@@ -216,10 +232,11 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 
-        light->GetTransform()->position = glm::vec3(glm::cos(currentFrame), 4, 0);
-        light2->GetTransform()->position = glm::vec3(-glm::cos(currentFrame), 4, 0);
-        light3->GetTransform()->rotation.setFromEulerAngles(30, currentFrame * 10, 0);
-        light4->GetTransform()->rotation.setFromEulerAngles(currentFrame * 10, 0, 0);
+        //light->GetTransform()->position = glm::vec3(glm::cos(currentFrame), 4, 0);
+        //light2->GetTransform()->position = glm::vec3(-glm::cos(currentFrame), 4, 0);
+        //light3->GetTransform()->rotation.setFromEulerAngles(30, currentFrame * 10, 0);
+        //light4->GetTransform()->rotation.setFromEulerAngles(90 + std::sin(currentFrame) * 10, 0, 0);
+        cube->GetTransform()->rotation.setFromEulerAngles(0.0f, currentFrame*10, 0.0f);
         scene->UpdateScene(deltaTime);
         scene->renderManager->Render();
 
@@ -228,11 +245,12 @@ int main() {
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
-        glfwPollEvents();
-    }catch(std::exception& e){
-        std::cerr << "Caught: " << e.what() << std::endl;
+        glfwPollEvents();}
+            catch(std::exception& e){
+                std::cerr << "Caught: " << e.what() << std::endl;
+            }
     }
-    }
+
 
 
     // glfw: terminate, clearing all previously allocated GLFW resources.

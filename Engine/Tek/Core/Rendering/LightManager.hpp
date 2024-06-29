@@ -10,7 +10,8 @@ public:
 
     std::vector<std::shared_ptr<Light>> lights;
     int maxLights;
-    void AddLight(std::shared_ptr<Light> light);
+    void AddLight(const std::shared_ptr<Light>& light);
+    std::shared_ptr<Light> mainLight;
 };
 
 

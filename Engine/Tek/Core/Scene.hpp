@@ -17,7 +17,7 @@ public:
     void UpdateScene(float deltaTime);
     EditorCamera* GetEditorCamera();
     std::shared_ptr<EditorCamera> camera;
-    std::unique_ptr<LightManager> lightManager;
+    std::shared_ptr<LightManager> lightManager;
     std::unique_ptr<RenderManager> renderManager;
 
 private:
