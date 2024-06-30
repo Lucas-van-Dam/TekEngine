@@ -23,9 +23,7 @@ void Renderer::Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, std::vecto
     glBindTexture(GL_TEXTURE_2D, shadowMapId);
 
     for (int i = 0; i < depthCubeId.size(); i++) {
-        glActiveTexture(GL_TEXTURE5 + i);
-        shader->setInt("shadowCubes[" + std::to_string(i) + "]", 5+i);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubeId[i]);
+        glBindTextureUnit(5 + i, depthCubeId[i]);
     }
 
     model->Draw(*shader, data);

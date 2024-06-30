@@ -2,6 +2,8 @@
 
 #define M_PI 3.1415926535897932384626433832795
 
+layout(binding = 5) uniform samplerCube shadowCubes[10];
+
 out vec4 FragColor;
 
 in vec2 TexCoords;
@@ -40,8 +42,6 @@ uniform sampler2D texture_metallic1;
 
 uniform sampler2D shadowMap;
 
-uniform samplerCube shadowCubes[10];
-
 uniform float far_plane;
 
 float AdditionalShadowCalculation(vec3 fragPos, Light light, int index){
@@ -65,7 +65,7 @@ float MainShadowCalculation(vec4 fragPosLightSpace)
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     projCoords.xyz = projCoords.xyz * 0.5 + 0.5;
     float currentDepth = projCoords.z;
-    float bias = max(0.005 * (1.0 - dot(normalize(N), normalize(-lights[0].direction.xyz))), 0.0005);
+    float bias = max(0.005 * (1.0 - dot(normalize(N), normalize(lights[0].position.xyz-lights[0].direction.xyz))), 0.0005);
 
     float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(shadowMap, 0);

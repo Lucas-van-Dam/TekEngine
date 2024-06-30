@@ -112,3 +112,7 @@ fabric.properties
 *.cap
 *.zip
 Engine/Tek/Models
+
+# CLion project files
+.idea
+cmake-build-*

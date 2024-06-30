@@ -1,3 +1,0 @@
-C:/Users/LucasvanDam/Documents/TekEngine/Engine/cmake-build-debug-visual-studio/CMakeFiles/TekEngine.dir
-C:/Users/LucasvanDam/Documents/TekEngine/Engine/cmake-build-debug-visual-studio/CMakeFiles/edit_cache.dir
-C:/Users/LucasvanDam/Documents/TekEngine/Engine/cmake-build-debug-visual-studio/CMakeFiles/rebuild_cache.dir

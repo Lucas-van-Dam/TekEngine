@@ -1,7 +1,3 @@
-//
-// Created by LucasvanDam on 11/06/2024.
-//
-
 #ifndef RENDERMANAGER_HPP
 #define RENDERMANAGER_HPP
 #include <vector>
@@ -33,6 +29,21 @@ private:
     glm::mat4 mainLightView;
     glm::mat4 mainLightProj;
     std::vector<std::shared_ptr<Light>> pointLights;
+
+    shared_ptr<Shader> screenShader;
+    float quadVertices[24] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+            // positions   // texCoords
+            -1.0f,  1.0f,  0.0f, 1.0f,
+            -1.0f, -1.0f,  0.0f, 0.0f,
+            1.0f, -1.0f,  1.0f, 0.0f,
+
+            -1.0f,  1.0f,  0.0f, 1.0f,
+            1.0f, -1.0f,  1.0f, 0.0f,
+            1.0f,  1.0f,  1.0f, 1.0f
+    };
+    unsigned int framebuffer, textureColorbuffer, rbo;
+    unsigned int quadVAO, quadVBO;
+
 
 public:
     void Render();

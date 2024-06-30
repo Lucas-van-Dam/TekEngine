@@ -77,9 +77,10 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
 void debugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message,
                           const void *userParam) {
     // Handle the debug message (e.g., log it, display it, etc.)
-    if (id == 131185) // Filter out annoying Nvidia message of: Buffer you made will use VRAM because you told us that you want it to allocate VRAM.
+    if (id == 131185 || id == 131204) // Filter out annoying Nvidia message of: Buffer you made will use VRAM because you told us that you want it to allocate VRAM.
         return;
-    printf("OpenGL Debug Message: %s\n", message);
+
+    printf("OpenGL Debug Message (id: %d): %s\n", id, message);
 }
 
 void InitializeWindow() {
@@ -137,10 +138,6 @@ int main() {
 
     // build and compile our shader program
     // ------------------------------------
-    Shader ourShader("TestShader.vert", "TestShader.frag"); // you can name your shader files however you like
-    Shader litShader("TestShader.vert", "TestShader.frag");
-    Shader lightShader("LightShader.vert", "LightShader.frag");
-
     char path[] = "../Tek/Models/StandardCube/StandardCube.gltf";
     //char path[] = "../Tek/Models/Main.1_Sponza/NewSponza_Main_glTF_002.gltf";
 
@@ -179,41 +176,43 @@ int main() {
     //light->GetTransform()->scale = glm::vec3(0.1f, 0.1f, 0.1f);
     scene->lightManager->AddLight(lightComponent);
 
-//    //std::shared_ptr<Renderer> renderer2 = std::make_shared<Renderer>(&modelObj, &objShader);
-//    std::shared_ptr<GameObject> light2 = std::make_shared<GameObject>();
-//    std::shared_ptr<Light> lightComponent2 = std::make_shared<Light>(Point, 3, glm::vec3(0.1f, 1.0f, 0.1f));
-//    scene->AddGameObject(light2);
-//    light2->AddComponent<Light>(lightComponent2);
-//    //light2->AddComponent<Renderer>(renderer2);
-//    light2->GetTransform()->position = glm::vec3(-1, 1, 4);
-//    scene->lightManager->AddLight(lightComponent2);
+    //std::shared_ptr<Renderer> renderer2 = std::make_shared<Renderer>(&modelObj, &objShader);
+    std::shared_ptr<GameObject> light2 = std::make_shared<GameObject>();
+    std::shared_ptr<Light> lightComponent2 = std::make_shared<Light>(Point, 3, glm::vec3(0.1f, 1.0f, 0.1f));
+    scene->AddGameObject(light2);
+    light2->AddComponent<Light>(lightComponent2);
+    //light2->AddComponent<Renderer>(renderer2);
+    light2->GetTransform()->position = glm::vec3(-1, 4, 4);
+    scene->lightManager->AddLight(lightComponent2);
 
 //    //std::shared_ptr<Renderer> renderer3 = std::make_shared<Renderer>(&modelObj, &objShader);
 //    std::shared_ptr<GameObject> light3 = std::make_shared<GameObject>();
-//    std::shared_ptr<Light> lightComponent3 = std::make_shared<Light>(Spot, 5, glm::vec3(0.1f, 0.1f, 1.0f), 50, 60);
+//    std::shared_ptr<Light> lightComponent3 = std::make_shared<Light>(Point, 5, glm::vec3(0.1f, 0.1f, 1.0f));
 //    scene->AddGameObject(light3);
 //    light3->AddComponent<Light>(lightComponent3);
 //    //light3->AddComponent<Renderer>(renderer3);
-//    light3->GetTransform()->position = glm::vec3(0, 3, 0);
+//    light3->GetTransform()->position = glm::vec3(3, 5, -2);
 //    //light3->GetTransform()->rotation.setFromEulerAngles(0, 0, 90);
 //    scene->lightManager->AddLight(lightComponent3);
 
     /**/
 
-//    //std::shared_ptr<Renderer> renderer2 = std::make_shared<Renderer>(&modelObj, &objShader);
-//    std::shared_ptr<GameObject> light4 = std::make_shared<GameObject>();
-//    std::shared_ptr<Light> lightComponent4 = std::make_shared<Light>(Directional, 3, glm::vec3(0.1f, 0.1f, 0.1f));
-//    scene->AddGameObject(light4);
-//    light4->AddComponent<Light>(lightComponent4);
-//    //light2->AddComponent<Renderer>(renderer2);
-//    light4->GetTransform()->rotation.setFromEulerAngles(90, 0, 0);
-//    scene->lightManager->AddLight(lightComponent4);
+    //std::shared_ptr<Renderer> renderer2 = std::make_shared<Renderer>(&modelObj, &objShader);
+    std::shared_ptr<GameObject> light4 = std::make_shared<GameObject>();
+    std::shared_ptr<Light> lightComponent4 = std::make_shared<Light>(Directional, 3, glm::vec3(0.1f, 0.1f, 0.1f));
+    scene->AddGameObject(light4);
+    light4->AddComponent<Light>(lightComponent4);
+    //light2->AddComponent<Renderer>(renderer2);
+    light4->GetTransform()->rotation.setFromEulerAngles(90, 0, 0);
+    scene->lightManager->AddLight(lightComponent4);
 
 
 
 #pragma endregion
 
     scene->renderManager->Initialize();
+
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
