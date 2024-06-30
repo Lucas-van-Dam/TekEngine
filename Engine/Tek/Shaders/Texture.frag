@@ -2,7 +2,8 @@
 
 #define M_PI 3.1415926535897932384626433832795
 
-layout(binding = 5) uniform samplerCube shadowCubes[10];
+layout(binding = 5) uniform samplerCube skyboxCube;
+layout(binding = 6) uniform samplerCube shadowCubes[10];
 
 out vec4 FragColor;
 
@@ -178,8 +179,19 @@ void main()
         }
     }
 
+    int skyboxMipMaps = textureQueryLevels(skyboxCube);
+
+    if(skyboxMipMaps > 0){
+        vec3 viewDir    = normalize(fragPosition - fragViewPos);
+        vec3 samplingDir = normalize(reflect(-viewDir, normal));
+        vec3 diffuse = textureLod(skyboxCube, samplingDir, 6).xyz;
+        finalColor += vec4(diffuse, 1.0f); // = vec4(samplingDir, 1.0f);
+    }
+
     finalColor += vec4(diffuseColor.xyz * 0.1f, 1);
     FragColor = vec4(finalColor.xyz, diffuseColor.w);
+
+    //FragColor = vec4(skyboxMipMaps - 12);
 
 //    float shadow = 1 - AdditionalShadowCalculation(fragPosition, lights[1].position.xyz, shadowCubes);
 //    FragColor = vec4(shadow, shadow, shadow, 1.0f);

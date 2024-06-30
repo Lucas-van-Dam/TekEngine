@@ -3,7 +3,7 @@
 #include "../GameObject.hpp"
 #include "../Scene.hpp"
 
-void Renderer::Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, std::vector<int> depthCubeId, int shadowMapId, const shared_ptr<Shader>& overrideShader) {
+void Renderer::Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, int skyboxId, std::vector<int> depthCubeId, int shadowMapId, const shared_ptr<Shader>& overrideShader) {
     auto data = SetLightingBuffer(mainLightView, mainLightProj);
     if(overrideShader != nullptr){
         overrideShader->use();
@@ -22,8 +22,17 @@ void Renderer::Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, std::vecto
     glUniform1i(glGetUniformLocation(shader->ID, "shadowMap"), 4);
     glBindTexture(GL_TEXTURE_2D, shadowMapId);
 
+    if(skyboxId >= 0){
+
+        glActiveTexture(GL_TEXTURE5);
+        glUniform1i(glGetUniformLocation(shader->ID, "skyboxCube"), 5);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxId);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+    }
+
     for (int i = 0; i < depthCubeId.size(); i++) {
-        glBindTextureUnit(5 + i, depthCubeId[i]);
+        glBindTextureUnit(6 + i, depthCubeId[i]);
     }
 
     model->Draw(*shader, data);

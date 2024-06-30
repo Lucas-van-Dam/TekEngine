@@ -22,8 +22,6 @@ add_executable(TekEngine main.cpp
         Tek/Core/Components/Component.hpp
         Tek/Core/Scene.cpp
         Tek/Core/Scene.hpp
-        Tek/Core/Components/Camera.cpp
-        Tek/Core/Components/Camera.hpp
         Tek/Core/EditorCamera.cpp
         Tek/Core/EditorCamera.hpp
         Tek/Core/Rendering/Mesh.cpp

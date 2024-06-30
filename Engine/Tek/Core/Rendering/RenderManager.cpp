@@ -6,6 +6,7 @@ void RenderManager::Render() {
     GenerateShadows();
     RenderOpaques();
     RenderTransparents();
+    RenderSkyBox();
     RenderPostProcessing();
 }
 
@@ -13,15 +14,29 @@ void RenderManager::AddRenderer(std::shared_ptr<Renderer> renderer) {
     renderers.push_back(renderer);
 }
 
-void RenderManager::RenderOpaques() {
+void RenderManager::RenderSkyBox() {
+    glDepthFunc(GL_LEQUAL);
+    skyboxShader->use();
+    skyboxShader->setMat4("view", glm::mat4(glm::mat3(camera->GetViewMatrix())));
+    skyboxShader->setMat4("projection", camera->GetProjectionMatrix());
 
+    glBindVertexArray(skyboxVAO);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
+    skyboxShader->setInt("skybox", 0);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glBindVertexArray(0);
+    glDepthFunc(GL_LESS);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void RenderManager::RenderOpaques() {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
     glEnable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     for(const auto& renderer : renderers){
-        renderer->Draw(mainLightView, mainLightProj, depthCubeMaps, depthMap);
+        renderer->Draw(mainLightView, mainLightProj, skyboxTexture, depthCubeMaps, depthMap);
     }
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void RenderManager::RenderTransparents() {
@@ -30,11 +45,12 @@ void RenderManager::RenderTransparents() {
 
 void RenderManager::RenderPostProcessing() {
     glDisable(GL_DEPTH_TEST);
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+    screenShader->use();
     glBindVertexArray(quadVAO);
     glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
     glDrawArrays(GL_TRIANGLES, 0, 6);
+    glEnable(GL_DEPTH_TEST);
 }
 
 void RenderManager::GenerateShadows() {
@@ -42,11 +58,13 @@ void RenderManager::GenerateShadows() {
     GenerateAdditionalShadows();
 }
 
-RenderManager::RenderManager(std::shared_ptr<LightManager> lightManager) : lightManager(std::move(lightManager)), DirectionalShadowShader(
+RenderManager::RenderManager(std::shared_ptr<LightManager> lightManager, std::shared_ptr<EditorCamera> camera) : lightManager(std::move(lightManager)), DirectionalShadowShader(
         make_shared<Shader>("DirectionalShadow.vert", "DirectionalShadow.frag")),
         AdditionalShadowShader(make_shared<Shader>("OmnidirectionalShadow.vert", "OmnidirectionalShadow.frag", "OmnidirectionalShadow.geom")),
-        screenShader(make_shared<Shader>("fullScreen.vert", "fullScreen.frag")){
+        screenShader(make_shared<Shader>("fullScreen.vert", "fullScreen.frag")),
+        skyboxShader(make_shared<Shader>("SkyBox.vert", "SkyBox.frag")){
     //Initialize main light shadow maps
+    this->camera = std::move(camera);
     glGenFramebuffers(1, &depthMapFBO);
     glGenTextures(1, &depthMap);
     glBindTexture(GL_TEXTURE_2D, depthMap);
@@ -89,6 +107,9 @@ RenderManager::RenderManager(std::shared_ptr<LightManager> lightManager) : light
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+    //Initialize skybox
+    InitializeSkyBox();
 }
 
 void RenderManager::GenerateMainLightShadows() {
@@ -114,7 +135,7 @@ void RenderManager::GenerateMainLightShadows() {
     DirectionalShadowShader->setMat4("lightSpaceMatrix", lightSpaceMatrix);
     glDisable( GL_CULL_FACE );
     for(const auto& renderer : renderers){
-        renderer->Draw(mainLightView, mainLightProj, std::vector<int>(), 0, DirectionalShadowShader);
+        renderer->Draw(mainLightView, mainLightProj, -1, std::vector<int>(), 0, DirectionalShadowShader);
     }
     glEnable( GL_CULL_FACE );
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -146,7 +167,7 @@ void RenderManager::GenerateAdditionalShadows() {
         AdditionalShadowShader->setFloat("far_plane", far_plane);
         AdditionalShadowShader->setVec3("lightPos", lightPos);
         for(const auto& renderer : renderers){
-            renderer->Draw(glm::mat4(), glm::mat4(), std::vector<int>(), 0, AdditionalShadowShader);
+            renderer->Draw(glm::mat4(), glm::mat4(), -1, std::vector<int>(), 0, AdditionalShadowShader);
         }
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, config::SCR_WIDTH, config::SCR_HEIGHT);
@@ -180,5 +201,46 @@ void RenderManager::Initialize() {
         }
     }
 }
+
+void RenderManager::InitializeSkyBox()
+{
+    //stbi_set_flip_vertically_on_load(false);
+    glGenTextures(1, &skyboxTexture);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
+
+    int width, height, nrChannels;
+    for (unsigned int i = 0; i < faces.size(); i++)
+    {
+        unsigned char *data = stbi_load((skyboxLocation+ faces[i]).c_str(), &width, &height, &nrChannels, 0);
+        if (data)
+        {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                         0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+            );
+            stbi_image_free(data);
+        }
+        else
+        {
+            std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
+            stbi_image_free(data);
+        }
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    glGenVertexArrays(1, &skyboxVAO);
+    glGenBuffers(1, &skyboxVBO);
+    glBindVertexArray(skyboxVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    //stbi_set_flip_vertically_on_load(true);
+}
+
+
 
 

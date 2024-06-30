@@ -143,8 +143,7 @@ int main() {
 
     Shader objShader("Texture.vert", "Texture.frag");
     Model modelObj(path);
-    std::shared_ptr<Scene> scene = std::make_shared<Scene>();
-    scene->camera = camera;
+    std::shared_ptr<Scene> scene = std::make_shared<Scene>(camera);
     std::shared_ptr<GameObject> backPack = std::make_shared<GameObject>();
     std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>(&modelObj, &objShader);
     backPack->AddComponent<Renderer>(renderer);
@@ -166,24 +165,24 @@ int main() {
 #pragma region Lights
 
 /**/
-    //std::shared_ptr<Renderer> renderer1 = std::make_shared<Renderer>(&modelObj, &objShader);
-    std::shared_ptr<GameObject> light = std::make_shared<GameObject>();
-    std::shared_ptr<Light> lightComponent = std::make_shared<Light>(Point, 3, glm::vec3(1.0f, 0.1f, 0.1f));
-    scene->AddGameObject(light);
-    light->AddComponent<Light>(lightComponent);
-    //light->AddComponent<Renderer>(renderer1);
-    light->GetTransform()->position = glm::vec3(-2, 3, 1);
-    //light->GetTransform()->scale = glm::vec3(0.1f, 0.1f, 0.1f);
-    scene->lightManager->AddLight(lightComponent);
-
-    //std::shared_ptr<Renderer> renderer2 = std::make_shared<Renderer>(&modelObj, &objShader);
-    std::shared_ptr<GameObject> light2 = std::make_shared<GameObject>();
-    std::shared_ptr<Light> lightComponent2 = std::make_shared<Light>(Point, 3, glm::vec3(0.1f, 1.0f, 0.1f));
-    scene->AddGameObject(light2);
-    light2->AddComponent<Light>(lightComponent2);
-    //light2->AddComponent<Renderer>(renderer2);
-    light2->GetTransform()->position = glm::vec3(-1, 4, 4);
-    scene->lightManager->AddLight(lightComponent2);
+//    //std::shared_ptr<Renderer> renderer1 = std::make_shared<Renderer>(&modelObj, &objShader);
+//    std::shared_ptr<GameObject> light = std::make_shared<GameObject>();
+//    std::shared_ptr<Light> lightComponent = std::make_shared<Light>(Point, 3, glm::vec3(1.0f, 0.1f, 0.1f));
+//    scene->AddGameObject(light);
+//    light->AddComponent<Light>(lightComponent);
+//    //light->AddComponent<Renderer>(renderer1);
+//    light->GetTransform()->position = glm::vec3(-2, 3, 1);
+//    //light->GetTransform()->scale = glm::vec3(0.1f, 0.1f, 0.1f);
+//    scene->lightManager->AddLight(lightComponent);
+//
+//    //std::shared_ptr<Renderer> renderer2 = std::make_shared<Renderer>(&modelObj, &objShader);
+//    std::shared_ptr<GameObject> light2 = std::make_shared<GameObject>();
+//    std::shared_ptr<Light> lightComponent2 = std::make_shared<Light>(Point, 3, glm::vec3(0.1f, 1.0f, 0.1f));
+//    scene->AddGameObject(light2);
+//    light2->AddComponent<Light>(lightComponent2);
+//    //light2->AddComponent<Renderer>(renderer2);
+//    light2->GetTransform()->position = glm::vec3(-1, 4, 4);
+//    scene->lightManager->AddLight(lightComponent2);
 
 //    //std::shared_ptr<Renderer> renderer3 = std::make_shared<Renderer>(&modelObj, &objShader);
 //    std::shared_ptr<GameObject> light3 = std::make_shared<GameObject>();

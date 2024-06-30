@@ -16,7 +16,7 @@ public:
     std::shared_ptr<Shader> shader;
 
     Renderer(Model *model1, Shader *shader1);
-    void Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, std::vector<int> depthCubeId = std::vector<int>(),int shadowMapId = 0,const shared_ptr<Shader>& overrideShader = nullptr);
+    void Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, int skyboxId, std::vector<int> depthCubeId = std::vector<int>(),int shadowMapId = 0,const shared_ptr<Shader>& overrideShader = nullptr);
 
     void Update(float deltaTime) override;
 
