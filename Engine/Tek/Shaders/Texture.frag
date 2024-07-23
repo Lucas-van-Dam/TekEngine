@@ -41,6 +41,10 @@ uniform sampler2D texture_normal1;
 uniform sampler2D texture_shininess1;
 uniform sampler2D texture_metallic1;
 
+float diffuse;
+float roughness;
+float metallic;
+
 uniform sampler2D shadowMap;
 
 uniform float far_plane;
@@ -96,13 +100,18 @@ void main()
     mat3 TBN = mat3(fragTangent, fragBiTangent, fragNormal);
 
     vec4 diffuseColor = texture(texture_diffuse1, TexCoords).xyzw;
-    float shininess = texture(texture_shininess1, TexCoords).r;
-    float metallic = texture(texture_metallic1, TexCoords).r;
+    diffuseColor.rgb /= vec3(M_PI);
+    roughness = texture(texture_metallic1, TexCoords).g;
+    metallic = texture(texture_metallic1, TexCoords).r;
 
     vec3 normal = texture(texture_normal1, TexCoords).rgb;
     normal.y * -1;
     normal = normalize(normal * 2.0 - 1.0);
     normal = normalize((TBN) * normal);
+
+    vec3 specularColor = mix(vec3(0.04), diffuseColor.rgb, metallic);
+
+    vec3 viewDir    = normalize(fragViewPos - fragPosition);
 
     if(diffuseColor.a < 0.7)
         discard;
@@ -123,8 +132,6 @@ void main()
             if(theta > lights[i].direction.w)
             {
                 float dis = abs(distance(fragPosition, lights[i].position.xyz));
-
-                vec3 viewDir    = normalize(fragViewPos - fragPosition);
                 vec3 halfwayDir = normalize(lightDir + viewDir);
 
                 float spotEffect = smoothstep(0.9, 1.0, theta); // Gradual fade from 90% to 100%
@@ -162,14 +169,12 @@ void main()
             if(attenuation > 0.0)
             {
                 vec3 lightDir   = normalize(lights[i].position.xyz - fragPosition);
-                vec3 viewDir    = normalize(fragViewPos - fragPosition);
                 vec3 halfwayDir = normalize(lightDir + viewDir);
 
-                vec3 specularColor = mix(vec3(0.04), diffuseColor.rgb, metallic);
-                vec3 specular = specularColor * pow(max(dot(normal, halfwayDir), 0.0), max(shininess * 256.0, 0.0001));
+                vec3 specular = specularColor * pow(max(dot(normal, halfwayDir), 0.0), max(1/roughness * 256.0, 0.0001));
 
                 vec3 radiance = lights[i].lightColor.xyz * attenuation;
-                vec3 diffuse = (vec3(1.0) - specular) * (1.0 - 0) * diffuseColor.xyz / M_PI;
+                vec3 diffuse = (vec3(1.0) - specular) * (1.0 - 0) * diffuseColor.xyz;
                 float NdotL = max(dot(normal, lightDir), 0.0);
 
                 float shadow = AdditionalShadowCalculation(fragPosition, lights[i], pointLightCount++);
@@ -182,16 +187,20 @@ void main()
     int skyboxMipMaps = textureQueryLevels(skyboxCube);
 
     if(skyboxMipMaps > 0){
-        vec3 viewDir    = normalize(fragPosition - fragViewPos);
-        vec3 samplingDir = normalize(reflect(-viewDir, normal));
-        vec3 diffuse = textureLod(skyboxCube, samplingDir, 6).xyz;
-        finalColor += vec4(diffuse, 1.0f); // = vec4(samplingDir, 1.0f);
+        vec3 samplingDir = normalize(reflect(viewDir, normal));
+        vec3 diffuseRadiance = textureLod(skyboxCube, samplingDir, skyboxMipMaps - 2).xyz * M_PI;
+        vec3 specularRadiance = (textureLod(skyboxCube, samplingDir, (skyboxMipMaps - 1) * roughness).xyz) / (2 * M_PI);
+        vec3 specularLighting = specularRadiance * specularColor * 1/roughness / M_PI;
+        vec3 diffuseLighting = (vec3(1) - specularLighting) * (1 - metallic) * diffuseColor.rgb * diffuseRadiance;
+        vec3 color = diffuseLighting + specularLighting;
+        finalColor += vec4(color, 1.0f);
     }
-
-    finalColor += vec4(diffuseColor.xyz * 0.1f, 1);
+    else{
+        finalColor += vec4(diffuseColor.xyz * 0.1f, 1);
+    }
     FragColor = vec4(finalColor.xyz, diffuseColor.w);
 
-    //FragColor = vec4(skyboxMipMaps - 12);
+    //FragColor = vec4(1);
 
 //    float shadow = 1 - AdditionalShadowCalculation(fragPosition, lights[1].position.xyz, shadowCubes);
 //    FragColor = vec4(shadow, shadow, shadow, 1.0f);

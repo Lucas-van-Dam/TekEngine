@@ -116,6 +116,13 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
     // specular: texture_specularN
     // normal: texture_normalN
 
+    aiColor4D color;
+    aiGetMaterialColor(material, AI_MATKEY_BASE_COLOR, &color);
+    float metallic = -1;
+    aiGetMaterialFloat(material, AI_MATKEY_METALLIC_FACTOR, &metallic);
+    float roughness = -1;
+    aiGetMaterialFloat(material, AI_MATKEY_ROUGHNESS_FACTOR, &roughness);
+
     // 1. diffuse maps
     vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());

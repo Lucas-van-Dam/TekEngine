@@ -86,7 +86,7 @@ RenderManager::RenderManager(std::shared_ptr<LightManager> lightManager, std::sh
 
     glGenTextures(1, &textureColorbuffer);
     glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, config::SCR_WIDTH, config::SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, config::SCR_WIDTH, config::SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
@@ -239,6 +239,15 @@ void RenderManager::InitializeSkyBox()
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     //stbi_set_flip_vertically_on_load(true);
+}
+
+void RenderManager::HotReloadShaders() {
+    for(std::shared_ptr<Renderer> renderer : renderers){
+        renderer->material->shader->ReloadShader();
+    }
+    DirectionalShadowShader->ReloadShader();
+    AdditionalShadowShader->ReloadShader();
+    screenShader->ReloadShader();
 }
 
 

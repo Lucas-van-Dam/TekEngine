@@ -1,4 +1,6 @@
 #include "Renderer.hpp"
+
+#include <utility>
 #include "Transform.hpp"
 #include "../GameObject.hpp"
 #include "../Scene.hpp"
@@ -13,19 +15,18 @@ void Renderer::Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, int skybox
         model->Draw(*overrideShader, data);
         return;
     }
-    shader->use();
-    shader->setMat4("model", modelMatrix);
-    shader->setMat4("view", viewMatrix);
-    shader->setMat4("projection", projectionMatrix);
-    shader->setFloat("far_plane", 100.0f);
+    material->shader->use();
+    material->shader->setMat4("model", modelMatrix);
+    material->shader->setMat4("view", viewMatrix);
+    material->shader->setMat4("projection", projectionMatrix);
+    material->shader->setFloat("far_plane", 100.0f);
     glActiveTexture(GL_TEXTURE4);
-    glUniform1i(glGetUniformLocation(shader->ID, "shadowMap"), 4);
+    glUniform1i(glGetUniformLocation(material->shader->ID, "shadowMap"), 4);
     glBindTexture(GL_TEXTURE_2D, shadowMapId);
 
     if(skyboxId >= 0){
-
         glActiveTexture(GL_TEXTURE5);
-        glUniform1i(glGetUniformLocation(shader->ID, "skyboxCube"), 5);
+        glUniform1i(glGetUniformLocation(material->shader->ID, "skyboxCube"), 5);
         glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxId);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
@@ -35,7 +36,7 @@ void Renderer::Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, int skybox
         glBindTextureUnit(6 + i, depthCubeId[i]);
     }
 
-    model->Draw(*shader, data);
+    model->Draw(*material->shader, data);
 }
 
 void Renderer::Update(float deltaTime) {
@@ -47,7 +48,7 @@ void Renderer::Update(float deltaTime) {
     projectionMatrix = gameObject->GetScene()->GetEditorCamera()->GetProjectionMatrix();
 }
 
-Renderer::Renderer(Model *model1, Shader *shader1): model(model1), shader(shader1)
+Renderer::Renderer(std::shared_ptr<Model> model, std::shared_ptr<Material> material): model(std::move(model)), material(std::move(material))
 {
 
 }

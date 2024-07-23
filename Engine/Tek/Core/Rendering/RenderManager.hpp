@@ -50,8 +50,10 @@ private:
     unsigned int skyboxVAO, skyboxVBO;
     unsigned int skyboxTexture;
     std::shared_ptr<Shader> skyboxShader;
-    std::string skyboxLocation = "../Tek/Textures/skybox/";
+    std::string skyboxLocation = "../Tek/Textures/Footballfield/";
     void InitializeSkyBox();
+
+#pragma region data
     vector<std::string> faces
     {
         "right.jpg",
@@ -105,12 +107,14 @@ private:
             -1.0f, -1.0f,  1.0f,
             1.0f, -1.0f,  1.0f
     };
+#pragma endregion
 
 public:
     void Render();
     void AddRenderer(std::shared_ptr<Renderer> renderer);
     RenderManager(std::shared_ptr<LightManager> lightManager, std::shared_ptr<EditorCamera> camera);
     void Initialize();
+    void HotReloadShaders();
 };
 
 

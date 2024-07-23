@@ -13,6 +13,7 @@
 #include "Tek/Core/Scene.hpp"
 #include "Tek/Core/Components/Renderer.hpp"
 #include "Tek/Core/Audio/AudioManager.hpp"
+#include "Tek/Core/SceneManager.hpp"
 
 __declspec(dllexport) DWORD NvOptimusEnablement = 0x0000001;
 
@@ -23,9 +24,13 @@ float lastX = config::SCR_WIDTH / 2.0f;
 float lastY = config::SCR_HEIGHT / 2.0f;
 
 std::shared_ptr<EditorCamera> camera = std::make_shared<EditorCamera>(glm::vec3(-5.0f, 1.0f, 1.0f));
+std::unique_ptr<SceneManager> sceneManager = std::make_unique<SceneManager>();
 
 GLFWwindow *window;
 
+bool reloadedShaders = false;
+bool buttonPressed = false;
+bool mouseLocked = true;
 
 bool firstMouse = true;
 
@@ -34,7 +39,7 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
 }
 
 void processInput(GLFWwindow *window) {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_F2) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     camera->ProcessShiftKey(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS);
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
@@ -49,9 +54,34 @@ void processInput(GLFWwindow *window) {
         camera->ProcessKeyboard(UP, deltaTime);
     if(glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
         camera->ProcessKeyboard(DOWN, deltaTime);
+    if(glfwGetKey(window, GLFW_KEY_F1) == GLFW_PRESS){
+        if(reloadedShaders)
+            return;
+        sceneManager->activeScene->renderManager->HotReloadShaders();
+        reloadedShaders = true;
+    }
+    else{
+        reloadedShaders = false;
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
+        if(buttonPressed)
+            return;
+        glfwSetInputMode(window, GLFW_CURSOR, mouseLocked ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
+        mouseLocked = !mouseLocked;
+        firstMouse = true;
+        buttonPressed = true;
+    }
+    else{
+        buttonPressed = false;
+    }
+
 }
 
 void mouse_callback(GLFWwindow *window, double xposIn, double yposIn) {
+    if(!mouseLocked)
+        return;
+
     auto xpos = static_cast<float>(xposIn);
     auto ypos = static_cast<float>(yposIn);
 
@@ -134,23 +164,24 @@ void InitializeWindow() {
 int main() {
     InitializeWindow();
 
-
-
     // build and compile our shader program
     // ------------------------------------
     char path[] = "../Tek/Models/StandardCube/StandardCube.gltf";
     //char path[] = "../Tek/Models/Main.1_Sponza/NewSponza_Main_glTF_002.gltf";
+    //char path[] = "../Tek/Models/SPHERES/untitled.gltf";
 
-    Shader objShader("Texture.vert", "Texture.frag");
-    Model modelObj(path);
-    std::shared_ptr<Scene> scene = std::make_shared<Scene>(camera);
+    std::shared_ptr<Shader> objShader = make_shared<Shader>("Texture.vert", "Texture.frag");
+    std::shared_ptr<Material> material = make_shared<Material>(objShader);
+    std::shared_ptr<Model> modelObj = make_shared<Model>(path);
+    std::shared_ptr<Scene> scene = make_shared<Scene>(camera);
+    sceneManager->activeScene = scene;
     std::shared_ptr<GameObject> backPack = std::make_shared<GameObject>();
-    std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>(&modelObj, &objShader);
+    std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>(modelObj, material);
     backPack->AddComponent<Renderer>(renderer);
     scene->AddGameObject(backPack);
 
     std::shared_ptr<GameObject> cube = std::make_shared<GameObject>();
-    std::shared_ptr<Renderer> renderer2 = std::make_shared<Renderer>(&modelObj, &objShader);
+    std::shared_ptr<Renderer> renderer2 = std::make_shared<Renderer>(modelObj, material);
     cube->AddComponent<Renderer>(renderer2);
     scene->AddGameObject(cube);
 
@@ -165,24 +196,24 @@ int main() {
 #pragma region Lights
 
 /**/
-//    //std::shared_ptr<Renderer> renderer1 = std::make_shared<Renderer>(&modelObj, &objShader);
-//    std::shared_ptr<GameObject> light = std::make_shared<GameObject>();
-//    std::shared_ptr<Light> lightComponent = std::make_shared<Light>(Point, 3, glm::vec3(1.0f, 0.1f, 0.1f));
-//    scene->AddGameObject(light);
-//    light->AddComponent<Light>(lightComponent);
-//    //light->AddComponent<Renderer>(renderer1);
-//    light->GetTransform()->position = glm::vec3(-2, 3, 1);
-//    //light->GetTransform()->scale = glm::vec3(0.1f, 0.1f, 0.1f);
-//    scene->lightManager->AddLight(lightComponent);
-//
-//    //std::shared_ptr<Renderer> renderer2 = std::make_shared<Renderer>(&modelObj, &objShader);
-//    std::shared_ptr<GameObject> light2 = std::make_shared<GameObject>();
-//    std::shared_ptr<Light> lightComponent2 = std::make_shared<Light>(Point, 3, glm::vec3(0.1f, 1.0f, 0.1f));
-//    scene->AddGameObject(light2);
-//    light2->AddComponent<Light>(lightComponent2);
-//    //light2->AddComponent<Renderer>(renderer2);
-//    light2->GetTransform()->position = glm::vec3(-1, 4, 4);
-//    scene->lightManager->AddLight(lightComponent2);
+    //std::shared_ptr<Renderer> renderer1 = std::make_shared<Renderer>(&modelObj, &objShader);
+    std::shared_ptr<GameObject> light = std::make_shared<GameObject>();
+    std::shared_ptr<Light> lightComponent = std::make_shared<Light>(Point, 3, glm::vec3(1.0f, 0.1f, 0.1f));
+    scene->AddGameObject(light);
+    light->AddComponent<Light>(lightComponent);
+    //light->AddComponent<Renderer>(renderer1);
+    light->GetTransform()->position = glm::vec3(-2, 3, 1);
+    //light->GetTransform()->scale = glm::vec3(0.1f, 0.1f, 0.1f);
+    scene->lightManager->AddLight(lightComponent);
+
+    //std::shared_ptr<Renderer> renderer2 = std::make_shared<Renderer>(&modelObj, &objShader);
+    std::shared_ptr<GameObject> light2 = std::make_shared<GameObject>();
+    std::shared_ptr<Light> lightComponent2 = std::make_shared<Light>(Point, 3, glm::vec3(0.1f, 1.0f, 0.1f));
+    scene->AddGameObject(light2);
+    light2->AddComponent<Light>(lightComponent2);
+    //light2->AddComponent<Renderer>(renderer2);
+    light2->GetTransform()->position = glm::vec3(-1, 4, 4);
+    scene->lightManager->AddLight(lightComponent2);
 
 //    //std::shared_ptr<Renderer> renderer3 = std::make_shared<Renderer>(&modelObj, &objShader);
 //    std::shared_ptr<GameObject> light3 = std::make_shared<GameObject>();
@@ -248,7 +279,8 @@ int main() {
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
-        glfwPollEvents();}
+        glfwPollEvents();
+        }
             catch(std::exception& e){
                 std::cerr << "Caught: " << e.what() << std::endl;
             }
