@@ -1,9 +1,10 @@
 #include "Mesh.hpp"
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures) {
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, std::shared_ptr<Material> material) {
     this->vertices = vertices;
     this->indices = indices;
     this->textures = textures;
+    this->material = std::move(material);
 
     setupMesh();
 }
@@ -103,6 +104,10 @@ void Mesh::Draw(Shader &shader, std::vector<LightData> lightData)
         // and finally bind the texture
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
+
+//    shader.setFloat("roughness", material->Roughness);
+//    shader.setFloat("metallic", material->Metallic);
+//    shader.setVec4("diffuse", material->AlbedoColor);
 
     if(!lightData.empty()) {
         LightData *lightDataStatic = &lightData.front();

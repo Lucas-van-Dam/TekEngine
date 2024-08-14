@@ -22,7 +22,6 @@ struct Light{
     vec4 direction;
     //W = intensity
     vec4 lightColor;
-
     //directional light only
     mat4 projection;
     mat4 view;
@@ -41,9 +40,12 @@ uniform sampler2D texture_normal1;
 uniform sampler2D texture_shininess1;
 uniform sampler2D texture_metallic1;
 
-float diffuse;
-float roughness;
-float metallic;
+uniform vec4 diffuse;
+uniform float roughness = -1;
+uniform float metallic = -1;
+
+float roughnessInternal;
+float metallicInternal;
 
 uniform sampler2D shadowMap;
 
@@ -101,15 +103,25 @@ void main()
 
     vec4 diffuseColor = texture(texture_diffuse1, TexCoords).xyzw;
     diffuseColor.rgb /= vec3(M_PI);
-    roughness = texture(texture_metallic1, TexCoords).g;
-    metallic = texture(texture_metallic1, TexCoords).r;
+    if(roughness == -1){
+        roughnessInternal = texture(texture_metallic1, TexCoords).g;
+    }
+    else{
+        roughnessInternal = roughness;
+    }
+    if(metallic == -1){
+        metallicInternal = texture(texture_metallic1, TexCoords).r;
+    }
+    else{
+        metallicInternal = metallic;
+    }
 
     vec3 normal = texture(texture_normal1, TexCoords).rgb;
     normal.y * -1;
     normal = normalize(normal * 2.0 - 1.0);
     normal = normalize((TBN) * normal);
 
-    vec3 specularColor = mix(vec3(0.04), diffuseColor.rgb, metallic);
+    vec3 specularColor = mix(vec3(0.04), diffuseColor.rgb, metallicInternal);
 
     vec3 viewDir    = normalize(fragViewPos - fragPosition);
 
@@ -171,7 +183,7 @@ void main()
                 vec3 lightDir   = normalize(lights[i].position.xyz - fragPosition);
                 vec3 halfwayDir = normalize(lightDir + viewDir);
 
-                vec3 specular = specularColor * pow(max(dot(normal, halfwayDir), 0.0), max(1/roughness * 256.0, 0.0001));
+                vec3 specular = specularColor * pow(max(dot(normal, halfwayDir), 0.0), max(1/roughnessInternal * 256.0, 0.0001));
 
                 vec3 radiance = lights[i].lightColor.xyz * attenuation;
                 vec3 diffuse = (vec3(1.0) - specular) * (1.0 - 0) * diffuseColor.xyz;
@@ -189,9 +201,9 @@ void main()
     if(skyboxMipMaps > 0){
         vec3 samplingDir = normalize(reflect(viewDir, normal));
         vec3 diffuseRadiance = textureLod(skyboxCube, samplingDir, skyboxMipMaps - 2).xyz * M_PI;
-        vec3 specularRadiance = (textureLod(skyboxCube, samplingDir, (skyboxMipMaps - 1) * roughness).xyz) / (2 * M_PI);
-        vec3 specularLighting = specularRadiance * specularColor * 1/roughness / M_PI;
-        vec3 diffuseLighting = (vec3(1) - specularLighting) * (1 - metallic) * diffuseColor.rgb * diffuseRadiance;
+        vec3 specularRadiance = (textureLod(skyboxCube, samplingDir, (skyboxMipMaps - 1) * roughnessInternal).xyz) / (2 * M_PI);
+        vec3 specularLighting = specularRadiance * specularColor * 1/roughnessInternal / M_PI;
+        vec3 diffuseLighting = (vec3(1) - specularLighting) * (1 - metallicInternal) * diffuseColor.rgb * diffuseRadiance;
         vec3 color = diffuseLighting + specularLighting;
         finalColor += vec4(color, 1.0f);
     }

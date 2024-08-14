@@ -36,7 +36,7 @@ void Renderer::Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, int skybox
         glBindTextureUnit(6 + i, depthCubeId[i]);
     }
 
-    model->Draw(*material->shader, data);
+    model->Draw(material->shader, data);
 }
 
 void Renderer::Update(float deltaTime) {
@@ -68,6 +68,6 @@ std::vector<LightData> Renderer::SetLightingBuffer(glm::mat4 mainLightView, glm:
     return lights;
 }
 
-void Renderer::OnGameobjectAddedToScene() {
+void Renderer::OnGameObjectAddedToScene() {
     gameObject->GetScene()->renderManager->AddRenderer(shared_from_this());
 }

@@ -55,6 +55,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
     vector<Vertex> vertices;
     vector<unsigned int> indices;
     vector<Texture> textures;
+    std::shared_ptr<Material> material = make_shared<Material>();
 
     // walk through each of the mesh's vertices
     for(unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -108,7 +109,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
             indices.push_back(face.mIndices[j]);
     }
     // process materials
-    aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+    aiMaterial* aiMaterial = scene->mMaterials[mesh->mMaterialIndex];
     // we assume a convention for sampler names in the shaders. Each diffuse texture should be named
     // as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER.
     // Same applies to other texture as the following list summarizes:
@@ -116,32 +117,36 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
     // specular: texture_specularN
     // normal: texture_normalN
 
-    aiColor4D color;
-    aiGetMaterialColor(material, AI_MATKEY_BASE_COLOR, &color);
+    auto color = aiColor4D(1, 1, 1, 1);
+    aiGetMaterialColor(aiMaterial, AI_MATKEY_BASE_COLOR, &color);
     float metallic = -1;
-    aiGetMaterialFloat(material, AI_MATKEY_METALLIC_FACTOR, &metallic);
+    aiGetMaterialFloat(aiMaterial, AI_MATKEY_METALLIC_FACTOR, &metallic);
     float roughness = -1;
-    aiGetMaterialFloat(material, AI_MATKEY_ROUGHNESS_FACTOR, &roughness);
+    aiGetMaterialFloat(aiMaterial, AI_MATKEY_ROUGHNESS_FACTOR, &roughness);
 
     // 1. diffuse maps
-    vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+    vector<Texture> diffuseMaps = loadMaterialTextures(aiMaterial, aiTextureType_DIFFUSE, "texture_diffuse");
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
     // 2. normal maps
-    std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, "texture_normal");
+    std::vector<Texture> normalMaps = loadMaterialTextures(aiMaterial, aiTextureType_NORMALS, "texture_normal");
     textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
     // 3. height maps
-    std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+    std::vector<Texture> heightMaps = loadMaterialTextures(aiMaterial, aiTextureType_AMBIENT, "texture_height");
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
     // 4. shininess maps
-    vector<Texture> shininessMaps = loadMaterialTextures(material, aiTextureType_SHININESS, "texture_shininess");
+    vector<Texture> shininessMaps = loadMaterialTextures(aiMaterial, aiTextureType_SHININESS, "texture_shininess");
     textures.insert(textures.end(), shininessMaps.begin(), shininessMaps.end());
     // 5. metalness maps
-    vector<Texture> metallicMaps = loadMaterialTextures(material, aiTextureType_METALNESS, "texture_metallic");
+    vector<Texture> metallicMaps = loadMaterialTextures(aiMaterial, aiTextureType_METALNESS, "texture_metallic");
     textures.insert(textures.end(), metallicMaps.begin(), metallicMaps.end());
+
+    material->Metallic = metallic;
+    material->Roughness = roughness;
+    material->AlbedoColor = glm::vec4(color.r, color.g, color.b, color.a);
 
 
     // return a mesh object created from the extracted mesh data
-    return {vertices, indices, textures};
+    return {vertices, indices, textures, material};
 }
 
 // checks all material textures of a given type and loads the textures if they're not loaded yet.

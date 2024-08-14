@@ -11,7 +11,7 @@ public:
     //virtual void Initialize() = 0;
     std::shared_ptr<GameObject> gameObject;
 
-    virtual void OnGameobjectAddedToScene();
+    virtual void OnGameObjectAddedToScene();
 };
 
 

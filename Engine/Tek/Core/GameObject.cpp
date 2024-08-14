@@ -42,7 +42,7 @@ void GameObject::SetScene(const std::shared_ptr<Scene>& newScene) {
     }
     scene.reset(newScene.get()); // Explicitly reset scene
     for(const auto& component : components){
-        component->OnGameobjectAddedToScene();
+        component->OnGameObjectAddedToScene();
     }
 }
 

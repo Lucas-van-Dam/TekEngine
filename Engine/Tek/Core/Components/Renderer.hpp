@@ -21,7 +21,7 @@ public:
 
     void Update(float deltaTime) override;
 
-    void OnGameobjectAddedToScene() override;
+    void OnGameObjectAddedToScene() override;
 
 private:
     std::vector<LightData> SetLightingBuffer(glm::mat4 mainLightView, glm::mat4 mainLightProj);

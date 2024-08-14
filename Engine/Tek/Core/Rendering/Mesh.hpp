@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include "Rendering.hpp"
+#include "Material.hpp"
 
 using namespace std;
 
@@ -15,9 +16,10 @@ public:
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture> textures;
+    std::shared_ptr<Material> material;
     unsigned int VAO, SSBO;
 
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, std::shared_ptr<Material> material);
 
     void Draw(Shader &shader, std::vector<LightData> lightData);
     void Destroy();

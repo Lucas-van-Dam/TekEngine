@@ -1,5 +1,5 @@
 #include "Component.hpp"
 
-void Component::OnGameobjectAddedToScene() {
+void Component::OnGameObjectAddedToScene() {
 
 }
