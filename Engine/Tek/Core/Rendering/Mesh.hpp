@@ -15,13 +15,11 @@ public:
     // mesh data
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    std::vector<Texture> textures;
-    std::shared_ptr<Material> material;
     unsigned int VAO, SSBO;
 
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, std::shared_ptr<Material> material);
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
 
-    void Draw(Shader &shader, std::vector<LightData> lightData);
+    void Draw(Material &material, std::vector<LightData> lightData);
     void Destroy();
 
 private:

@@ -166,28 +166,31 @@ int main() {
 
     // build and compile our shader program
     // ------------------------------------
-    char path[] = "../Tek/Models/StandardCube/StandardCube.gltf";
+    //char path[] = "../Tek/Models/StandardCube/StandardCube.gltf";
     //char path[] = "../Tek/Models/Main.1_Sponza/NewSponza_Main_glTF_002.gltf";
-    //char path[] = "../Tek/Models/SPHERES/untitled.gltf";
+    char path[] = "../Tek/Models/SPHERES/untitled.gltf";
 
-    std::shared_ptr<Shader> objShader = make_shared<Shader>("Texture.vert", "Texture.frag");
-    std::shared_ptr<Material> material = make_shared<Material>(objShader);
-    std::shared_ptr<Model> modelObj = make_shared<Model>(path);
+//    std::shared_ptr<Shader> objShader = make_shared<Shader>("Texture.vert", "Texture.frag");
+//    std::shared_ptr<Material> material = make_shared<Material>(objShader);
+    std::shared_ptr<GameObject> backPack = std::make_shared<GameObject>();
+
     std::shared_ptr<Scene> scene = make_shared<Scene>(camera);
     sceneManager->activeScene = scene;
-    std::shared_ptr<GameObject> backPack = std::make_shared<GameObject>();
-    std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>(modelObj, material);
-    backPack->AddComponent<Renderer>(renderer);
+
+    //std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>(modelObj, material);
+    //backPack->AddComponent<Renderer>(renderer);
     scene->AddGameObject(backPack);
+    Model::LoadModelToGameObject(path, backPack);
+    scene->PrintSceneHierarchy();
 
-    std::shared_ptr<GameObject> cube = std::make_shared<GameObject>();
-    std::shared_ptr<Renderer> renderer2 = std::make_shared<Renderer>(modelObj, material);
-    cube->AddComponent<Renderer>(renderer2);
-    scene->AddGameObject(cube);
-
-    cube->GetTransform()->position = glm::vec3(0.0f, 3.5f, 0.0f);
-    cube->GetTransform()->scale = glm::vec3(0.5f, 0.5f, 0.5f);
-    cube->GetTransform()->rotation.setFromEulerAngles(0.0f, 12.5f, 0.0f);
+    //std::shared_ptr<GameObject> cube = std::make_shared<GameObject>();
+    //std::shared_ptr<Renderer> renderer2 = std::make_shared<Renderer>(modelObj, material);
+    //cube->AddComponent<Renderer>(renderer2);
+//    scene->AddGameObject(cube);
+//
+//    cube->GetTransform()->position = glm::vec3(0.0f, 3.5f, 0.0f);
+//    cube->GetTransform()->scale = glm::vec3(0.5f, 0.5f, 0.5f);
+//    cube->GetTransform()->rotation.setFromEulerAngles(0.0f, 12.5f, 0.0f);
 
 
     backPack->GetTransform()->position = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -202,7 +205,7 @@ int main() {
     scene->AddGameObject(light);
     light->AddComponent<Light>(lightComponent);
     //light->AddComponent<Renderer>(renderer1);
-    light->GetTransform()->position = glm::vec3(-2, 3, 1);
+    light->GetTransform()->position = glm::vec3(-7, 3, 3);
     //light->GetTransform()->scale = glm::vec3(0.1f, 0.1f, 0.1f);
     scene->lightManager->AddLight(lightComponent);
 
@@ -212,7 +215,7 @@ int main() {
     scene->AddGameObject(light2);
     light2->AddComponent<Light>(lightComponent2);
     //light2->AddComponent<Renderer>(renderer2);
-    light2->GetTransform()->position = glm::vec3(-1, 4, 4);
+    light2->GetTransform()->position = glm::vec3(-5, 4, 3);
     scene->lightManager->AddLight(lightComponent2);
 
 //    //std::shared_ptr<Renderer> renderer3 = std::make_shared<Renderer>(&modelObj, &objShader);
@@ -229,7 +232,7 @@ int main() {
 
     //std::shared_ptr<Renderer> renderer2 = std::make_shared<Renderer>(&modelObj, &objShader);
     std::shared_ptr<GameObject> light4 = std::make_shared<GameObject>();
-    std::shared_ptr<Light> lightComponent4 = std::make_shared<Light>(Directional, 3, glm::vec3(0.1f, 0.1f, 0.1f));
+    std::shared_ptr<Light> lightComponent4 = std::make_shared<Light>(Directional, 10, glm::vec3(1, 1, 1));
     scene->AddGameObject(light4);
     light4->AddComponent<Light>(lightComponent4);
     //light2->AddComponent<Renderer>(renderer2);
@@ -270,7 +273,7 @@ int main() {
         //light2->GetTransform()->position = glm::vec3(-glm::cos(currentFrame), 4, 0);
         //light3->GetTransform()->rotation.setFromEulerAngles(30, currentFrame * 10, 0);
         //light4->GetTransform()->rotation.setFromEulerAngles(90 + std::sin(currentFrame) * 10, 0, 0);
-        cube->GetTransform()->rotation.setFromEulerAngles(0.0f, currentFrame*10, 0.0f);
+        //cube->GetTransform()->rotation.setFromEulerAngles(0.0f, currentFrame*10, 0.0f);
         scene->UpdateScene(deltaTime);
         scene->renderManager->Render();
 

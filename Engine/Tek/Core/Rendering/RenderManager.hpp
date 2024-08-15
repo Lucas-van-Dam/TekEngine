@@ -1,5 +1,6 @@
 #ifndef RENDERMANAGER_HPP
 #define RENDERMANAGER_HPP
+#include <unordered_map>
 #include <vector>
 #include <memory>
 #include "../Components/Renderer.hpp"
@@ -9,6 +10,7 @@
 
 class RenderManager {
 private:
+    std::unordered_map<std::shared_ptr<Shader>, std::vector<std::shared_ptr<Renderer>>> shaderToRenderer;
     std::vector<std::shared_ptr<Renderer>> renderers;
     std::vector<int> depthCubeMaps;
     std::vector<unsigned int> additionalDepthFBOs;
@@ -49,8 +51,12 @@ private:
 
     unsigned int skyboxVAO, skyboxVBO;
     unsigned int skyboxTexture;
+    unsigned int hdrTexture;
+    unsigned int irradianceMap;
+    std::shared_ptr<Shader> irradianceShader;
     std::shared_ptr<Shader> skyboxShader;
-    std::string skyboxLocation = "../Tek/Textures/Footballfield/";
+    std::shared_ptr<Shader> skyboxMappingShader;
+    std::string skyboxLocation = "../Tek/Textures/brown_photostudio_02_4k.hdr";
     void InitializeSkyBox();
 
 #pragma region data
@@ -111,7 +117,7 @@ private:
 
 public:
     void Render();
-    void AddRenderer(std::shared_ptr<Renderer> renderer);
+    void AddRenderer(const std::shared_ptr<Renderer>& renderer);
     RenderManager(std::shared_ptr<LightManager> lightManager, std::shared_ptr<EditorCamera> camera);
     void Initialize();
     void HotReloadShaders();

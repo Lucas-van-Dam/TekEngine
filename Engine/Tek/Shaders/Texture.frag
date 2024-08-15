@@ -11,6 +11,7 @@ in vec2 TexCoords;
 in vec3 fragPosition;
 in vec3 fragViewPos;
 in vec4 fragLightSpacePos;
+in vec3 fragNormal;
 
 in vec3 T;
 in vec3 N;
@@ -35,12 +36,17 @@ uniform float constant = 1.0f;
 uniform float linear = 0.14f;
 uniform float quadratic = 0.07f;
 
-uniform sampler2D texture_diffuse1;
-uniform sampler2D texture_normal1;
-uniform sampler2D texture_shininess1;
-uniform sampler2D texture_metallic1;
+uniform sampler2D texture_albedo;
+uniform sampler2D texture_normal;
+uniform sampler2D texture_roughness;
+uniform sampler2D texture_metallic;
 
-uniform vec4 diffuse;
+uniform bool useAlbedoTexture = true;
+uniform bool useRoughnessTexture = true;
+uniform bool useMetallicTexture = true;
+uniform bool useNormalTexture = true;
+
+uniform vec4 albedo;
 uniform float roughness = -1;
 uniform float metallic = -1;
 
@@ -94,32 +100,23 @@ float MainShadowCalculation(vec4 fragPosLightSpace)
 
 void main()
 {
-    vec3 fragNormal = normalize(N);
+    vec3 normalComponent = normalize(N);
     vec3 fragTangent = normalize(T);
-    fragTangent = normalize(fragTangent - dot(fragTangent, fragNormal) * fragNormal);
-    vec3 fragBiTangent = cross(fragNormal, fragTangent);
+    fragTangent = normalize(fragTangent - dot(fragTangent, normalComponent) * normalComponent);
+    vec3 fragBiTangent = cross(normalComponent, fragTangent);
 
-    mat3 TBN = mat3(fragTangent, fragBiTangent, fragNormal);
+    mat3 TBN = mat3(fragTangent, fragBiTangent, normalComponent);
 
-    vec4 diffuseColor = texture(texture_diffuse1, TexCoords).xyzw;
+    vec4 diffuseColor = useAlbedoTexture ? texture(texture_albedo, TexCoords).xyzw : albedo;
     diffuseColor.rgb /= vec3(M_PI);
-    if(roughness == -1){
-        roughnessInternal = texture(texture_metallic1, TexCoords).g;
-    }
-    else{
-        roughnessInternal = roughness;
-    }
-    if(metallic == -1){
-        metallicInternal = texture(texture_metallic1, TexCoords).r;
-    }
-    else{
-        metallicInternal = metallic;
-    }
 
-    vec3 normal = texture(texture_normal1, TexCoords).rgb;
-    normal.y * -1;
+    roughnessInternal = useRoughnessTexture ? texture(texture_roughness, TexCoords).r : roughness;
+    metallicInternal = useMetallicTexture ? texture(texture_metallic, TexCoords).r : metallic;
+
+    vec3 normal = useNormalTexture ? texture(texture_normal, TexCoords).rgb : normalize(N);
+    //normal.y * -1;
     normal = normalize(normal * 2.0 - 1.0);
-    normal = normalize((TBN) * normal);
+    //normal = normalize((TBN) * normal);
 
     vec3 specularColor = mix(vec3(0.04), diffuseColor.rgb, metallicInternal);
 
@@ -198,11 +195,11 @@ void main()
 
     int skyboxMipMaps = textureQueryLevels(skyboxCube);
 
-    if(skyboxMipMaps > 0){
+    if(false) {//skyboxMipMaps > 0){
         vec3 samplingDir = normalize(reflect(viewDir, normal));
         vec3 diffuseRadiance = textureLod(skyboxCube, samplingDir, skyboxMipMaps - 2).xyz * M_PI;
         vec3 specularRadiance = (textureLod(skyboxCube, samplingDir, (skyboxMipMaps - 1) * roughnessInternal).xyz) / (2 * M_PI);
-        vec3 specularLighting = specularRadiance * specularColor * 1/roughnessInternal / M_PI;
+        vec3 specularLighting = specularRadiance * specularColor * 1 / roughnessInternal / M_PI;
         vec3 diffuseLighting = (vec3(1) - specularLighting) * (1 - metallicInternal) * diffuseColor.rgb * diffuseRadiance;
         vec3 color = diffuseLighting + specularLighting;
         finalColor += vec4(color, 1.0f);
@@ -215,5 +212,5 @@ void main()
     //FragColor = vec4(1);
 
 //    float shadow = 1 - AdditionalShadowCalculation(fragPosition, lights[1].position.xyz, shadowCubes);
-//    FragColor = vec4(shadow, shadow, shadow, 1.0f);
+    //FragColor = vec4(normal, 1.0f);
 }

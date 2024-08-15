@@ -13,11 +13,11 @@ class Transform;
 
 class Renderer : public Component, public std::enable_shared_from_this<Renderer>{
 public:
-    std::shared_ptr<Model> model;
+    std::shared_ptr<Mesh> mesh;
     std::shared_ptr<Material> material;
 
-    Renderer(std::shared_ptr<Model> model, std::shared_ptr<Material> material);
-    void Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, int skyboxId, std::vector<int> depthCubeId = std::vector<int>(),int shadowMapId = 0,const shared_ptr<Shader>& overrideShader = nullptr);
+    Renderer(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);
+    void Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, int skyboxId, int irradianceMapId, std::vector<int> depthCubeId = std::vector<int>(),int shadowMapId = 0,const shared_ptr<Shader>& overrideShader = nullptr);
 
     void Update(float deltaTime) override;
 

@@ -1,5 +1,7 @@
 #ifndef GAMEOBJECT_HPP
 #define GAMEOBJECT_HPP
+
+#include <string>
 #include "Components/Transform.hpp"
 #include "memory"
 #include "vector"
@@ -42,6 +44,10 @@ public:
 
     Scene* GetScene();
 
+    void SetName(std::string newName);
+
+    std::string GetName();
+
     void SetScene(const std::shared_ptr<Scene> &newScene);
 
 
@@ -49,6 +55,7 @@ private:
     std::vector<std::shared_ptr<Component>> components;
     std::vector<std::shared_ptr<GameObject>> children;
     std::shared_ptr<GameObject> parent;
+    std::string name;
 
     std::unique_ptr<Transform> transform;
 

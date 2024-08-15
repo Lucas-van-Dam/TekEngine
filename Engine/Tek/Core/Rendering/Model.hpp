@@ -8,37 +8,43 @@
 #include <assimp/postprocess.h>
 #include <assimp/DefaultLogger.hpp>
 #include "glad/glad.h"
+#include "../GameObject.hpp"
 
 inline unsigned int TextureFromFile(const char *path, const string &directory, bool gamma = false);
 
-class Model
-{
+class Model {
 public:
     // model data
-    vector<Texture> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
-    vector<Mesh>    meshes;
+    vector<Texture> textures_loaded;    // stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
+    vector<Mesh> meshes;
     string directory;
-    bool gammaCorrection;
-    explicit Model(const char *path)
-    {
+
+    explicit Model(const char *path, const std::shared_ptr<GameObject> &parent) {
         Assimp::DefaultLogger::create("", Assimp::Logger::VERBOSE);
-        Assimp::LogStream* stderrStream = Assimp::LogStream::createDefaultStream(aiDefaultLogStream_STDERR);
-        Assimp::DefaultLogger::get()->attachStream(stderrStream, Assimp::Logger::NORMAL | Assimp::Logger::DEBUGGING | Assimp::Logger::VERBOSE);
-        loadModel(path);
+        Assimp::LogStream *stderrStream = Assimp::LogStream::createDefaultStream(aiDefaultLogStream_STDERR);
+        Assimp::DefaultLogger::get()->attachStream(stderrStream, Assimp::Logger::NORMAL | Assimp::Logger::DEBUGGING |
+                                                                 Assimp::Logger::VERBOSE);
+        loadModel(path, parent);
         Assimp::DefaultLogger::kill();
     }
+
     void Draw(Shader &shader, std::vector<LightData> lightData);
+
+    static void LoadModelToGameObject(const char filePath[], const std::shared_ptr<GameObject> &parentObject);
+
 private:
-    void loadModel(const string& path);
-    void processNode(aiNode *node, const aiScene *scene);
-    Mesh processMesh(aiMesh *mesh, const aiScene *scene);
-    vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type,
-                                         const string& typeName);
+    void loadModel(const string &path, const std::shared_ptr<GameObject> &parent);
+
+    void processNode(aiNode *node, const aiScene *scene, const std::shared_ptr<GameObject> &parent);
+
+    std::shared_ptr<GameObject> processMesh(aiMesh *mesh, const aiScene *scene);
+
+    std::shared_ptr<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type,
+                                 const string &typeName);
 
 };
 
-inline unsigned int TextureFromFile(const char *path, const string &directory, bool gamma)
-{
+inline unsigned int TextureFromFile(const char *path, const string &directory, bool gamma) {
     string filename = string(path);
     filename = directory + '/' + filename;
 
@@ -47,8 +53,7 @@ inline unsigned int TextureFromFile(const char *path, const string &directory, b
 
     int width, height, nrComponents;
     unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
-    if (data)
-    {
+    if (data) {
         GLenum format;
         if (nrComponents == 1)
             format = GL_RED;
@@ -67,9 +72,7 @@ inline unsigned int TextureFromFile(const char *path, const string &directory, b
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         stbi_image_free(data);
-    }
-    else
-    {
+    } else {
         std::cout << "Texture failed to load at path: " << filename << std::endl;
         stbi_image_free(data);
     }

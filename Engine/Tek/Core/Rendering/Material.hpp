@@ -10,12 +10,13 @@ class Material {
 private:
 
 public:
-    Texture AlbedoTexture;
+    std::shared_ptr<Texture> AlbedoTexture;
     glm::vec4 AlbedoColor;
-    Texture MetallicTexture;
+    std::shared_ptr<Texture> MetallicTexture;
     float Metallic;
+    std::shared_ptr<Texture> RoughnessTexture;
     float Roughness;
-    Texture NormalTexture;
+    std::shared_ptr<Texture> NormalTexture;
     std::shared_ptr<Shader> shader;
     Material(std::shared_ptr<Shader> shader);
     Material();

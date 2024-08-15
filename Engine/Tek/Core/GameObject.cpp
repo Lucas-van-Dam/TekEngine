@@ -17,6 +17,7 @@ void GameObject::Update(float deltaTime) {
 
 void GameObject::AddChild(std::shared_ptr<GameObject> child){
     child->SetParent(shared_from_this());
+    child->SetScene(scene);
     children.emplace_back(std::move(child));
 }
 
@@ -52,4 +53,12 @@ GameObject::GameObject() {
 
 GameObject::GameObject(const GameObject &) {
 
+}
+
+void GameObject::SetName(std::string newName) {
+    this->name = std::move(newName);
+}
+
+std::string GameObject::GetName() {
+    return name;
 }

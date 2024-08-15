@@ -1,10 +1,8 @@
 #include "Mesh.hpp"
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, std::shared_ptr<Material> material) {
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices) {
     this->vertices = vertices;
     this->indices = indices;
-    this->textures = textures;
-    this->material = std::move(material);
 
     setupMesh();
 }
@@ -74,40 +72,53 @@ void Mesh::setupMesh()
 }
 
 // render the mesh
-void Mesh::Draw(Shader &shader, std::vector<LightData> lightData)
+void Mesh::Draw(Material &material, std::vector<LightData> lightData)
 {
-    // bind appropriate textures
-    unsigned int diffuseNr  = 1;
-    unsigned int normalNr   = 1;
-    unsigned int heightNr   = 1;
-    unsigned int shininessNr = 1;
-    unsigned int metallicNr = 1;
-    for(unsigned int i = 0; i < textures.size(); i++)
-    {
-        glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
-        // retrieve texture number (the N in diffuse_textureN)
-        string number;
-        string name = textures[i].type;
-        if(name == "texture_diffuse")
-            number = std::to_string(diffuseNr++);
-        else if(name == "texture_normal")
-            number = std::to_string(normalNr++); // transfer unsigned int to string
-        else if(name == "texture_height")
-            number = std::to_string(heightNr++); // transfer unsigned int to string
-        else if(name == "texture_shininess")
-                number = std::to_string(shininessNr++);
-        else if(name == "texture_metallic")
-            number = std::to_string(metallicNr++);
-
-        // now set the sampler to the correct texture unit
-        glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
-        // and finally bind the texture
-        glBindTexture(GL_TEXTURE_2D, textures[i].id);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    //load textures or flat values
+    //diffuse
+    if(material.AlbedoTexture == nullptr){
+        material.shader->setBool("useAlbedoTexture", false);
+        material.shader->setVec4("albedo", material.AlbedoColor);
     }
-
-//    shader.setFloat("roughness", material->Roughness);
-//    shader.setFloat("metallic", material->Metallic);
-//    shader.setVec4("diffuse", material->AlbedoColor);
+    else{
+        glActiveTexture(GL_TEXTURE0);
+        glUniform1i(glGetUniformLocation(material.shader->ID, "texture_albedo"), 0);
+        glBindTexture(GL_TEXTURE_2D, material.AlbedoTexture->id);
+    }
+    //normal
+    if(material.NormalTexture == nullptr){
+        material.shader->setBool("useNormalTexture", false);
+    }
+    else{
+        glActiveTexture(GL_TEXTURE1);
+        glUniform1i(glGetUniformLocation(material.shader->ID, "texture_normal"), 1);
+        glBindTexture(GL_TEXTURE_2D, material.NormalTexture->id);
+    }
+    //roughness
+    if(material.RoughnessTexture == nullptr){
+        material.shader->setBool("useRoughnessTexture", false);
+        material.shader->setFloat("roughness", material.Roughness);
+    }
+    else{
+        glActiveTexture(GL_TEXTURE2);
+        glUniform1i(glGetUniformLocation(material.shader->ID, "texture_roughness"), 2);
+        glBindTexture(GL_TEXTURE_2D, material.RoughnessTexture->id);
+    }
+    //metallic
+    if(material.MetallicTexture == nullptr){
+        material.shader->setBool("useMetallicTexture", false);
+        material.shader->setFloat("metallic", material.Metallic);
+    }
+    else{
+        glActiveTexture(GL_TEXTURE3);
+        glUniform1i(glGetUniformLocation(material.shader->ID, "texture_metallic"), 3);
+        glBindTexture(GL_TEXTURE_2D, material.MetallicTexture->id);
+    }
+//    material->shader->setFloat("roughness", material->Roughness);
+//    material->shader->setFloat("metallic", material->Metallic);
+//    material->shader->setVec4("diffuse", material->AlbedoColor);
 
     if(!lightData.empty()) {
         LightData *lightDataStatic = &lightData.front();
@@ -115,7 +126,7 @@ void Mesh::Draw(Shader &shader, std::vector<LightData> lightData)
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, SSBO);
         int totalSize = sizeof(LightData) * lightData.size();
         glBufferData(GL_SHADER_STORAGE_BUFFER, totalSize, lightDataStatic,
-                     GL_DYNAMIC_DRAW); //sizeof(data) only works for statically sized C/C++ arrays.
+                     GL_DYNAMIC_DRAW);
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, SSBO);
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // unbind
     }

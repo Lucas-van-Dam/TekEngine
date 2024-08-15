@@ -5,17 +5,18 @@
 #include "../GameObject.hpp"
 #include "../Scene.hpp"
 
-void Renderer::Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, int skyboxId, std::vector<int> depthCubeId, int shadowMapId, const shared_ptr<Shader>& overrideShader) {
+void Renderer::Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, int skyboxId, int irradianceMapId, std::vector<int> depthCubeId, int shadowMapId,
+                    const shared_ptr<Shader>& overrideShader) {
     auto data = SetLightingBuffer(mainLightView, mainLightProj);
     if(overrideShader != nullptr){
         overrideShader->use();
         overrideShader->setMat4("model", modelMatrix);
         overrideShader->setMat4("view", viewMatrix);
         overrideShader->setMat4("projection", projectionMatrix);
-        model->Draw(*overrideShader, data);
+        Material overrideMaterial(overrideShader);
+        mesh->Draw(overrideMaterial, data);
         return;
     }
-    material->shader->use();
     material->shader->setMat4("model", modelMatrix);
     material->shader->setMat4("view", viewMatrix);
     material->shader->setMat4("projection", projectionMatrix);
@@ -28,15 +29,19 @@ void Renderer::Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, int skybox
         glActiveTexture(GL_TEXTURE5);
         glUniform1i(glGetUniformLocation(material->shader->ID, "skyboxCube"), 5);
         glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxId);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+
+        if(irradianceMapId >= 0){
+            glActiveTexture(GL_TEXTURE6);
+            glUniform1i(glGetUniformLocation(material->shader->ID, "irradianceMap"), 6);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMapId);
+        }
     }
 
     for (int i = 0; i < depthCubeId.size(); i++) {
-        glBindTextureUnit(6 + i, depthCubeId[i]);
+        glBindTextureUnit(7 + i, depthCubeId[i]);
     }
 
-    model->Draw(material->shader, data);
+    mesh->Draw(*material, data);
 }
 
 void Renderer::Update(float deltaTime) {
@@ -48,7 +53,7 @@ void Renderer::Update(float deltaTime) {
     projectionMatrix = gameObject->GetScene()->GetEditorCamera()->GetProjectionMatrix();
 }
 
-Renderer::Renderer(std::shared_ptr<Model> model, std::shared_ptr<Material> material): model(std::move(model)), material(std::move(material))
+Renderer::Renderer(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material): mesh(std::move(mesh)), material(std::move(material))
 {
 
 }

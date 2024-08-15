@@ -10,7 +10,8 @@ void RenderManager::Render() {
     RenderPostProcessing();
 }
 
-void RenderManager::AddRenderer(std::shared_ptr<Renderer> renderer) {
+void RenderManager::AddRenderer(const std::shared_ptr<Renderer>& renderer) {
+    shaderToRenderer[renderer->material->shader].push_back(renderer);
     renderers.push_back(renderer);
 }
 
@@ -34,8 +35,15 @@ void RenderManager::RenderOpaques() {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
     glEnable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    for(const auto& renderer : renderers){
-        renderer->Draw(mainLightView, mainLightProj, skyboxTexture, depthCubeMaps, depthMap);
+    for (const auto& pair : shaderToRenderer) {
+        shared_ptr<Shader> shader = pair.first;
+        const auto& renderersFromShader = pair.second;
+
+        shader->use();
+
+        for (const auto &renderer: renderersFromShader) {
+            renderer->Draw(mainLightView, mainLightProj, skyboxTexture, irradianceMap, depthCubeMaps, depthMap);
+        }
     }
 }
 
@@ -62,7 +70,9 @@ RenderManager::RenderManager(std::shared_ptr<LightManager> lightManager, std::sh
         make_shared<Shader>("DirectionalShadow.vert", "DirectionalShadow.frag")),
         AdditionalShadowShader(make_shared<Shader>("OmnidirectionalShadow.vert", "OmnidirectionalShadow.frag", "OmnidirectionalShadow.geom")),
         screenShader(make_shared<Shader>("fullScreen.vert", "fullScreen.frag")),
-        skyboxShader(make_shared<Shader>("SkyBox.vert", "SkyBox.frag")){
+        skyboxShader(make_shared<Shader>("SkyBox.vert", "SkyBox.frag")),
+        skyboxMappingShader(make_shared<Shader>("CubeProjection.vert", "CubeProjection.frag")),
+        irradianceShader(make_shared<Shader>("CubeProjection.vert", "IrradianceMap.frag")){
     //Initialize main light shadow maps
     this->camera = std::move(camera);
     glGenFramebuffers(1, &depthMapFBO);
@@ -135,7 +145,7 @@ void RenderManager::GenerateMainLightShadows() {
     DirectionalShadowShader->setMat4("lightSpaceMatrix", lightSpaceMatrix);
     glDisable( GL_CULL_FACE );
     for(const auto& renderer : renderers){
-        renderer->Draw(mainLightView, mainLightProj, -1, std::vector<int>(), 0, DirectionalShadowShader);
+        renderer->Draw(mainLightView, mainLightProj, -1, -1, std::vector<int>(), 0, DirectionalShadowShader);
     }
     glEnable( GL_CULL_FACE );
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -167,7 +177,7 @@ void RenderManager::GenerateAdditionalShadows() {
         AdditionalShadowShader->setFloat("far_plane", far_plane);
         AdditionalShadowShader->setVec3("lightPos", lightPos);
         for(const auto& renderer : renderers){
-            renderer->Draw(glm::mat4(), glm::mat4(), -1, std::vector<int>(), 0, AdditionalShadowShader);
+            renderer->Draw(glm::mat4(), glm::mat4(), -1, -1, std::vector<int>(), 0, AdditionalShadowShader);
         }
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, config::SCR_WIDTH, config::SCR_HEIGHT);
@@ -204,33 +214,7 @@ void RenderManager::Initialize() {
 
 void RenderManager::InitializeSkyBox()
 {
-    //stbi_set_flip_vertically_on_load(false);
-    glGenTextures(1, &skyboxTexture);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
-
-    int width, height, nrChannels;
-    for (unsigned int i = 0; i < faces.size(); i++)
-    {
-        unsigned char *data = stbi_load((skyboxLocation+ faces[i]).c_str(), &width, &height, &nrChannels, 0);
-        if (data)
-        {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-                         0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
-            );
-            stbi_image_free(data);
-        }
-        else
-        {
-            std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
-            stbi_image_free(data);
-        }
-    }
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
+    //setup skybox vertex data
     glGenVertexArrays(1, &skyboxVAO);
     glGenBuffers(1, &skyboxVBO);
     glBindVertexArray(skyboxVAO);
@@ -238,7 +222,118 @@ void RenderManager::InitializeSkyBox()
     glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    //stbi_set_flip_vertically_on_load(true);
+    //setup framebuffer
+    unsigned int captureFBO;
+    unsigned int captureRBO;
+    glGenFramebuffers(1, &captureFBO);
+    glGenRenderbuffers(1, &captureRBO);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+    glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
+    //load hdr texture
+    stbi_set_flip_vertically_on_load(true);
+    int width, height, nrComponents;
+    float *data = stbi_loadf(skyboxLocation.c_str(), &width, &height, &nrComponents, 0);
+    if (data)
+    {
+        glGenTextures(1, &hdrTexture);
+        glBindTexture(GL_TEXTURE_2D, hdrTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, data);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        stbi_image_free(data);
+    }
+    else
+    {
+        std::cout << "Failed to load HDR image." << std::endl;
+    }
+    //setup cubemap for capturing
+    glGenTextures(1, &skyboxTexture);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
+    for (unsigned int i = 0; i < 6; ++i)
+    {
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 512, 512, 0, GL_RGB, GL_FLOAT, nullptr);
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    //setup projection and view matrices
+    glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+    glm::mat4 captureViews[] =
+            {
+                    glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+                    glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+                    glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
+                    glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
+                    glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+                    glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
+            };
+    //map hdr environment to cubemap
+    skyboxMappingShader->use();
+    skyboxMappingShader->setInt("equirectangularMap", 0);
+    skyboxMappingShader->setMat4("projection", captureProjection);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, hdrTexture);
+
+    glViewport(0, 0, 512, 512); // don't forget to configure the viewport to the capture dimensions.
+    glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+    for (unsigned int i = 0; i < 6; ++i)
+    {
+        skyboxMappingShader->setMat4("view", captureViews[i]);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, skyboxTexture, 0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glBindVertexArray(skyboxVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+    }
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    //setup irradiance map
+    glGenTextures(1, &irradianceMap);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
+    for (unsigned int i = 0; i < 6; ++i)
+    {
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 32, 32, 0, GL_RGB, GL_FLOAT, nullptr);
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+    glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 32, 32);
+    //create the irradiance map
+    irradianceShader->use();
+    irradianceShader->setInt("environmentMap", 0);
+    irradianceShader->setMat4("projection", captureProjection);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
+
+    glViewport(0, 0, 32, 32); // don't forget to configure the viewport to the capture dimensions.
+    glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+    for (unsigned int i = 0; i < 6; ++i)
+    {
+        irradianceShader->setMat4("view", captureViews[i]);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, irradianceMap, 0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glBindVertexArray(skyboxVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+    }
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    glViewport(0, 0, 800, 600);
 }
 
 void RenderManager::HotReloadShaders() {

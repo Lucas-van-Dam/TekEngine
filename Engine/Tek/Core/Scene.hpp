@@ -15,6 +15,7 @@ public:
     Scene(const shared_ptr<EditorCamera>& camera);
     void AddGameObject(std::shared_ptr<GameObject> gameObject);
     void UpdateScene(float deltaTime);
+    void PrintSceneHierarchy();
     EditorCamera* GetEditorCamera();
     std::shared_ptr<EditorCamera> camera;
     std::shared_ptr<LightManager> lightManager;

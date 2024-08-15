@@ -20,3 +20,7 @@ Scene::Scene(const shared_ptr<EditorCamera>& camera) {
     lightManager = std::make_unique<LightManager>(5);
     renderManager = std::make_unique<RenderManager>(lightManager, camera);
 }
+
+void Scene::PrintSceneHierarchy() {
+    cout << gameObjects.size() << std::endl;
+}
