@@ -33,6 +33,10 @@ const float ZOOM        =  45.0f;
 class EditorCamera
 {
 public:
+    static std::shared_ptr<EditorCamera> GetInstance() {
+        static std::shared_ptr<EditorCamera> instance(new EditorCamera());
+        return instance;
+    }
     // camera Attributes
     glm::vec3 Position;
     glm::vec3 Front;

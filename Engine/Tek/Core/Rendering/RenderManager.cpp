@@ -124,8 +124,8 @@ void RenderManager::GenerateMainLightShadows() {
     }
     glm::mat4 lightProjection, lightView;
     glm::mat4 lightSpaceMatrix;
-    float near_plane = -100.0f, far_plane = 100;
-    mainLightProj = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, near_plane, far_plane);
+    float near_plane = -20.0f, far_plane = 100;
+    mainLightProj = glm::ortho(-30.0f, 30.0f, -30.0f, 30.0f, near_plane, far_plane);
 
     mainLightView = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), (light->gameObject->GetTransform()->localRotation * glm::vec3(0.0f, 0.0f, 1.0f)), (light->gameObject->GetTransform()->localRotation * glm::vec3(0.0f, 1.0f, 0.0f)));
     lightSpaceMatrix = mainLightProj * mainLightView;

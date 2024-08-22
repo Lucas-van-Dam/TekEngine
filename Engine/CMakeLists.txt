@@ -43,7 +43,11 @@ add_executable(TekEngine main.cpp
         Tek/Core/SceneManager.cpp
         Tek/Core/SceneManager.hpp
         Tek/Core/Rendering/Material.cpp
-        Tek/Core/Rendering/Material.hpp)
+        Tek/Core/Rendering/Material.hpp
+        Tek/Core/Application.cpp
+        Tek/Core/Application.hpp
+        Tek/Core/Window.cpp
+        Tek/Core/Window.hpp)
 
 find_package(glfw3 CONFIG REQUIRED)
 target_link_libraries(TekEngine PRIVATE glfw)

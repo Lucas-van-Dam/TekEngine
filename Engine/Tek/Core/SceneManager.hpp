@@ -7,7 +7,7 @@
 
 class SceneManager {
 public:
-    std::shared_ptr<Scene> activeScene;
+    static std::shared_ptr<Scene> GetActiveScene();
 };
 
 

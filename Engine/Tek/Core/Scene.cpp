@@ -15,8 +15,8 @@ EditorCamera* Scene::GetEditorCamera() {
     return camera.get();
 }
 
-Scene::Scene(const shared_ptr<EditorCamera>& camera) {
-    this->camera = camera;
+Scene::Scene() {
+    this->camera = EditorCamera::GetInstance();
     lightManager = std::make_unique<LightManager>(5);
     renderManager = std::make_unique<RenderManager>(lightManager, camera);
 }

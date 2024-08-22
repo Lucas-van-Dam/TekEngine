@@ -12,7 +12,7 @@
 
 class Scene: public std::enable_shared_from_this<Scene> {
 public:
-    Scene(const shared_ptr<EditorCamera>& camera);
+    Scene();
     void AddGameObject(std::shared_ptr<GameObject> gameObject);
     void UpdateScene(float deltaTime);
     void PrintSceneHierarchy();
