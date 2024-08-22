@@ -15,6 +15,11 @@ public:
 
     // Get Euler angles (roll, pitch, yaw) from the quaternion
     glm::vec3 getEulerAngles() const;
+
+    Quaternion& operator*=(const glm::quat other) {
+        glm::quat::operator*=(other);
+        return *this;
+    }
 };
 
 

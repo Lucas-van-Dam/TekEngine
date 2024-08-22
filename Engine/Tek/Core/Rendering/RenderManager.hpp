@@ -23,8 +23,8 @@ private:
     void RenderSkyBox();
     void RenderAll();
 
-    shared_ptr<Shader> DirectionalShadowShader;
-    shared_ptr<Shader> AdditionalShadowShader;
+    shared_ptr<Shader> DirectionalShadowShader = make_shared<Shader>("DirectionalShadow.vert", "DirectionalShadow.frag");
+    shared_ptr<Shader> AdditionalShadowShader = make_shared<Shader>("OmnidirectionalShadow.vert", "OmnidirectionalShadow.frag", "OmnidirectionalShadow.geom");
     unsigned int depthMapFBO;
     unsigned int depthMap;
     const unsigned int MAIN_SHADOW_WIDTH = 4096, MAIN_SHADOW_HEIGHT = 4096;
@@ -35,7 +35,7 @@ private:
     glm::mat4 mainLightProj;
     std::vector<std::shared_ptr<Light>> pointLights;
 
-    shared_ptr<Shader> screenShader;
+    shared_ptr<Shader> screenShader = make_shared<Shader>("fullScreen.vert", "fullScreen.frag");
     float quadVertices[24] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
             // positions   // texCoords
             -1.0f,  1.0f,  0.0f, 1.0f,
@@ -53,9 +53,13 @@ private:
     unsigned int skyboxTexture;
     unsigned int hdrTexture;
     unsigned int irradianceMap;
-    std::shared_ptr<Shader> irradianceShader;
-    std::shared_ptr<Shader> skyboxShader;
-    std::shared_ptr<Shader> skyboxMappingShader;
+    unsigned int prefilterMap;
+    unsigned int brdfLUTTexture;
+    std::shared_ptr<Shader> irradianceShader = make_shared<Shader>("CubeProjection.vert", "IrradianceMap.frag");
+    std::shared_ptr<Shader> skyboxShader = make_shared<Shader>("SkyBox.vert", "SkyBox.frag");
+    std::shared_ptr<Shader> skyboxMappingShader = make_shared<Shader>("CubeProjection.vert", "CubeProjection.frag");
+    std::shared_ptr<Shader> preFilterShader = make_shared<Shader>("CubeProjection.vert","PreFilter.frag");
+    std::shared_ptr<Shader> brdfShader = make_shared<Shader>("brdf.vert", "brdf.frag");
     std::string skyboxLocation = "../Tek/Textures/brown_photostudio_02_4k.hdr";
     void InitializeSkyBox();
 

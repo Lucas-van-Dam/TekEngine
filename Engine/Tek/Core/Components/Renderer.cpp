@@ -5,7 +5,7 @@
 #include "../GameObject.hpp"
 #include "../Scene.hpp"
 
-void Renderer::Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, int skyboxId, int irradianceMapId, std::vector<int> depthCubeId, int shadowMapId,
+void Renderer::Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, int skyboxId, int irradianceMapId, int prefilterMapId, int brdfLUTTextureId, std::vector<int> depthCubeId, int shadowMapId,
                     const shared_ptr<Shader>& overrideShader) {
     auto data = SetLightingBuffer(mainLightView, mainLightProj);
     if(overrideShader != nullptr){
@@ -30,15 +30,21 @@ void Renderer::Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, int skybox
         glUniform1i(glGetUniformLocation(material->shader->ID, "skyboxCube"), 5);
         glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxId);
 
-        if(irradianceMapId >= 0){
-            glActiveTexture(GL_TEXTURE6);
-            glUniform1i(glGetUniformLocation(material->shader->ID, "irradianceMap"), 6);
-            glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMapId);
-        }
+        glActiveTexture(GL_TEXTURE6);
+        glUniform1i(glGetUniformLocation(material->shader->ID, "irradianceMap"), 6);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMapId);
+
+        glActiveTexture(GL_TEXTURE7);
+        glUniform1i(glGetUniformLocation(material->shader->ID, "preFilterMap"), 7);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMapId);
+
+        glActiveTexture(GL_TEXTURE8);
+        glUniform1i(glGetUniformLocation(material->shader->ID, "brdfLUT"), 8);
+        glBindTexture(GL_TEXTURE_2D,brdfLUTTextureId);
     }
 
     for (int i = 0; i < depthCubeId.size(); i++) {
-        glBindTextureUnit(7 + i, depthCubeId[i]);
+        glBindTextureUnit(9 + i, depthCubeId[i]);
     }
 
     mesh->Draw(*material, data);
@@ -48,7 +54,7 @@ void Renderer::Update(float deltaTime) {
     if(transform == nullptr){
         transform = gameObject->GetTransform();
     }
-    modelMatrix = transform->GetTransformationMatrix();
+    modelMatrix = transform->GetWorldTransform();
     viewMatrix = gameObject->GetScene()->GetEditorCamera()->GetViewMatrix();
     projectionMatrix = gameObject->GetScene()->GetEditorCamera()->GetProjectionMatrix();
 }
@@ -66,7 +72,7 @@ std::vector<LightData> Renderer::SetLightingBuffer(glm::mat4 mainLightView, glm:
         unsigned int depthCube = -1;
         Light* light = gameObject->GetScene()->lightManager->lights[i].get();
 
-        LightData data(light->intensity,light->color, light->gameObject->GetTransform()->position,
+        LightData data(light->intensity,light->color, light->gameObject->GetTransform()->localPosition,
                        light->gameObject->GetTransform()->GetForwardVector(), light->innerCutOff, light->outerCutOff, light->type, mainLightProj, mainLightView);
         lights.emplace_back(data);
     }

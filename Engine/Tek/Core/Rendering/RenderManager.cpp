@@ -42,7 +42,7 @@ void RenderManager::RenderOpaques() {
         shader->use();
 
         for (const auto &renderer: renderersFromShader) {
-            renderer->Draw(mainLightView, mainLightProj, skyboxTexture, irradianceMap, depthCubeMaps, depthMap);
+            renderer->Draw(mainLightView, mainLightProj, skyboxTexture, irradianceMap, prefilterMap, brdfLUTTexture, depthCubeMaps, depthMap);
         }
     }
 }
@@ -66,13 +66,7 @@ void RenderManager::GenerateShadows() {
     GenerateAdditionalShadows();
 }
 
-RenderManager::RenderManager(std::shared_ptr<LightManager> lightManager, std::shared_ptr<EditorCamera> camera) : lightManager(std::move(lightManager)), DirectionalShadowShader(
-        make_shared<Shader>("DirectionalShadow.vert", "DirectionalShadow.frag")),
-        AdditionalShadowShader(make_shared<Shader>("OmnidirectionalShadow.vert", "OmnidirectionalShadow.frag", "OmnidirectionalShadow.geom")),
-        screenShader(make_shared<Shader>("fullScreen.vert", "fullScreen.frag")),
-        skyboxShader(make_shared<Shader>("SkyBox.vert", "SkyBox.frag")),
-        skyboxMappingShader(make_shared<Shader>("CubeProjection.vert", "CubeProjection.frag")),
-        irradianceShader(make_shared<Shader>("CubeProjection.vert", "IrradianceMap.frag")){
+RenderManager::RenderManager(std::shared_ptr<LightManager> lightManager, std::shared_ptr<EditorCamera> camera) : lightManager(std::move(lightManager)){
     //Initialize main light shadow maps
     this->camera = std::move(camera);
     glGenFramebuffers(1, &depthMapFBO);
@@ -130,10 +124,10 @@ void RenderManager::GenerateMainLightShadows() {
     }
     glm::mat4 lightProjection, lightView;
     glm::mat4 lightSpaceMatrix;
-    float near_plane = -20.0f, far_plane = 100;
-    mainLightProj = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, near_plane, far_plane);
+    float near_plane = -100.0f, far_plane = 100;
+    mainLightProj = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, near_plane, far_plane);
 
-    mainLightView = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), (light->gameObject->GetTransform()->rotation * glm::vec3(0.0f,0.0f,1.0f)), (light->gameObject->GetTransform()->rotation * glm::vec3(0.0f,1.0f,0.0f)));
+    mainLightView = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), (light->gameObject->GetTransform()->localRotation * glm::vec3(0.0f, 0.0f, 1.0f)), (light->gameObject->GetTransform()->localRotation * glm::vec3(0.0f, 1.0f, 0.0f)));
     lightSpaceMatrix = mainLightProj * mainLightView;
 
 
@@ -144,8 +138,9 @@ void RenderManager::GenerateMainLightShadows() {
     DirectionalShadowShader->use();
     DirectionalShadowShader->setMat4("lightSpaceMatrix", lightSpaceMatrix);
     glDisable( GL_CULL_FACE );
+    glDepthFunc(GL_LESS);
     for(const auto& renderer : renderers){
-        renderer->Draw(mainLightView, mainLightProj, -1, -1, std::vector<int>(), 0, DirectionalShadowShader);
+        renderer->Draw(mainLightView, mainLightProj, -1, -1, -1, -1, std::vector<int>(), 0, DirectionalShadowShader);
     }
     glEnable( GL_CULL_FACE );
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -157,7 +152,7 @@ void RenderManager::GenerateMainLightShadows() {
 void RenderManager::GenerateAdditionalShadows() {
     for (int i = 0; i < pointLights.size(); ++i){
         std::shared_ptr<Light> light = pointLights[i];
-        glm::vec3 lightPos = light->gameObject->GetTransform()->position;
+        glm::vec3 lightPos = light->gameObject->GetTransform()->localPosition;
         float near_plane = 1.0f;
         float far_plane  = 100.0f;
         glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), (float)ADDITIONAL_SHADOW_WIDTH / (float)ADDITIONAL_SHADOW_HEIGHT, near_plane, far_plane);
@@ -177,7 +172,7 @@ void RenderManager::GenerateAdditionalShadows() {
         AdditionalShadowShader->setFloat("far_plane", far_plane);
         AdditionalShadowShader->setVec3("lightPos", lightPos);
         for(const auto& renderer : renderers){
-            renderer->Draw(glm::mat4(), glm::mat4(), -1, -1, std::vector<int>(), 0, AdditionalShadowShader);
+            renderer->Draw(glm::mat4(), glm::mat4(), -1, -1, -1, -1, std::vector<int>(), 0, AdditionalShadowShader);
         }
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, config::SCR_WIDTH, config::SCR_HEIGHT);
@@ -296,6 +291,9 @@ void RenderManager::InitializeSkyBox()
         glBindVertexArray(0);
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
+    glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
     //setup irradiance map
     glGenTextures(1, &irradianceMap);
     glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
@@ -331,6 +329,80 @@ void RenderManager::InitializeSkyBox()
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
     }
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    // setup pre-filter cubemap
+    glGenTextures(1, &prefilterMap);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
+    for (unsigned int i = 0; i < 6; ++i)
+    {
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 128, 128, 0, GL_RGB, GL_FLOAT, nullptr);
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // generate mipmaps for the cubemap so OpenGL automatically allocates the required memory.
+    glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+
+    preFilterShader->use();
+    preFilterShader->setInt("environmentMap", 0);
+    preFilterShader->setMat4("projection", captureProjection);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+    unsigned int maxMipLevels = 5;
+    for (unsigned int mip = 0; mip < maxMipLevels; ++mip)
+    {
+        // reisze framebuffer according to mip-level size.
+        unsigned int mipWidth  = static_cast<unsigned int>(128 * std::pow(0.5, mip));
+        unsigned int mipHeight = static_cast<unsigned int>(128 * std::pow(0.5, mip));
+        glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipWidth, mipHeight);
+        glViewport(0, 0, mipWidth, mipHeight);
+
+        float roughness = (float)mip / (float)(maxMipLevels - 1);
+        preFilterShader->setFloat("roughness", roughness);
+        for (unsigned int i = 0; i < 6; ++i)
+        {
+            preFilterShader->setMat4("view", captureViews[i]);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, prefilterMap, mip);
+
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            glBindVertexArray(skyboxVAO);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+            glBindVertexArray(0);
+        }
+    }
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // generate 2d LUT
+    glGenTextures(1, &brdfLUTTexture);
+
+    // pre-allocate enough memory for the LUT texture.
+    glBindTexture(GL_TEXTURE_2D, brdfLUTTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, 512, 512, 0, GL_RG, GL_FLOAT, 0);
+    // be sure to set wrapping mode to GL_CLAMP_TO_EDGE
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // then re-configure capture framebuffer object and render screen-space quad with BRDF shader.
+    glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+    glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, brdfLUTTexture, 0);
+
+    glViewport(0, 0, 512, 512);
+    brdfShader->use();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glBindVertexArray(quadVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     glViewport(0, 0, 800, 600);

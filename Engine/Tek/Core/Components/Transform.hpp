@@ -8,27 +8,24 @@
 
 class Transform : public Component{
 public:
-    glm::vec3 position; // Position (translation)
-    Quaternion rotation; // Quaternion for rotation
-    glm::vec3 scale;    // Scale factors (x, y, z)
+    glm::vec3 localPosition; // Position (translation)
+    Quaternion localRotation; // Quaternion for rotation
+    glm::vec3 localScale;    // Scale factors (x, y, z)
 
     Transform()
-            : position(glm::vec3(0.0f)), rotation(1.0f, 0.0f, 0.0f, 0.0f), scale(glm::vec3(1.0f)) {}
+            : localPosition(glm::vec3(0.0f)), localRotation(1.0f, 0.0f, 0.0f, 0.0f), localScale(glm::vec3(1.0f)) {}
 
     // Get the transformation matrix
-    glm::mat4 GetTransformationMatrix() const {
-        glm::mat4 transformationMatrix = CreateRotationMatrix(rotation);
-        transformationMatrix = glm::scale(transformationMatrix, scale);
-        transformationMatrix = glm::translate(transformationMatrix, position);
+    glm::mat4 GetTransformationMatrix() const;
 
-        return transformationMatrix;
-    }
+    glm::mat4 GetWorldTransform() const;
 
-    glm::vec3 GetForwardVector() const {
-        // Assuming your rotation quaternion is normalized
-        glm::vec3 forward = glm::mat3_cast(glm::normalize(rotation)) * glm::vec3(0.0f, 0.0f, 1.0f);
-        return glm::normalize(forward);
-    }
+    glm::vec3 GetForwardVector() const;
+
+    glm::vec3 GetWorldPosition() const;
+    Quaternion GetWorldRotation() const;
+    glm::vec3 GetWorldScale() const;
+
     void Update(float deltaTime) override;
 
 
@@ -37,6 +34,8 @@ private:
     static glm::mat4 CreateRotationMatrix(const Quaternion& quat) {
         return glm::mat4_cast(quat);
     }
+
+
 };
 
 

@@ -42,6 +42,7 @@ void GameObject::SetScene(const std::shared_ptr<Scene>& newScene) {
         throw std::logic_error("Scene already assigned to GameObject");
     }
     scene.reset(newScene.get()); // Explicitly reset scene
+    transform->gameObject = shared_from_this();
     for(const auto& component : components){
         component->OnGameObjectAddedToScene();
     }

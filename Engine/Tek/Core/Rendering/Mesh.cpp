@@ -113,12 +113,8 @@ void Mesh::Draw(Material &material, std::vector<LightData> lightData)
     }
     else{
         glActiveTexture(GL_TEXTURE3);
-        glUniform1i(glGetUniformLocation(material.shader->ID, "texture_metallic"), 3);
         glBindTexture(GL_TEXTURE_2D, material.MetallicTexture->id);
     }
-//    material->shader->setFloat("roughness", material->Roughness);
-//    material->shader->setFloat("metallic", material->Metallic);
-//    material->shader->setVec4("diffuse", material->AlbedoColor);
 
     if(!lightData.empty()) {
         LightData *lightDataStatic = &lightData.front();
