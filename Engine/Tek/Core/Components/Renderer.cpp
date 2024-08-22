@@ -2,7 +2,6 @@
 
 #include <utility>
 #include "Transform.hpp"
-#include "../GameObject.hpp"
 #include "../Scene.hpp"
 
 void Renderer::Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, int skyboxId, int irradianceMapId, int prefilterMapId, int brdfLUTTextureId, std::vector<int> depthCubeId, int shadowMapId,

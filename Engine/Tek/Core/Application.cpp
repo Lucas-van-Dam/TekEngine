@@ -34,26 +34,17 @@ void Application::Cleanup() {
 void Application::MainLoop() {
     while (!m_Window->ShouldClose()) {
         try {
-            // per-frame time logic
-            // --------------------
             float currentFrame = static_cast<float>(glfwGetTime());
             deltaTime = currentFrame - lastFrame;
             lastFrame = currentFrame;
 
-            // input
-            // -----
             m_Window->PollEvents();
-
-            // render
-            // ------
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 
             SceneManager::GetActiveScene()->UpdateScene(deltaTime);
             SceneManager::GetActiveScene()->renderManager->Render();
-
-
 
             m_Window->SwapBuffers();
             glfwPollEvents();

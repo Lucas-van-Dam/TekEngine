@@ -7,7 +7,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include "../../External/stb_image.h"
+#include "stb_img_wrapper.hpp"
 #include "../Config.hpp"
 #include "glm/glm.hpp"
 #include "LightManager.hpp"

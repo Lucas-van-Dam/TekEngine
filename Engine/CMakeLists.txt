@@ -47,7 +47,9 @@ add_executable(TekEngine main.cpp
         Tek/Core/Application.cpp
         Tek/Core/Application.hpp
         Tek/Core/Window.cpp
-        Tek/Core/Window.hpp)
+        Tek/Core/Window.hpp
+        Tek/Core/Rendering/stb_img_wrapper.hpp
+        Tek/Core/Rendering/stb_img_wrapper.cpp)
 
 find_package(glfw3 CONFIG REQUIRED)
 target_link_libraries(TekEngine PRIVATE glfw)

@@ -1,6 +1,7 @@
 #ifndef APPLICATION_HPP
 #define APPLICATION_HPP
 
+#include "Rendering/stb_img_wrapper.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
