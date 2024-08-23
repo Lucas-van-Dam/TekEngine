@@ -1,6 +1,18 @@
 # TekEngine
-Engine Project
+TekEngine is a game engine written in C++ 20 and GLSL, 
 
-Last project was my lighting and model loading, i have implemented the blinn-phong lighting model and used assimp to load my models, this is the final result:
+## Features
+### Rendering
+- Full PRB renderer with IBL
+- Model loading through Assimp
+- Basic support for post processing (preset post processing effects coming later)
 
-![Specular Correct](https://github.com/Lucas-van-Dam/TekEngine/assets/138235847/86fa9d6b-3778-496b-bf4f-e8ccd9298358)
+### Gameobject Component Patern
+- Parent child structure
+- Custom component support using templates
+
+## Dependencies
+- GLFW
+- OpenGL
+- GLM
+- GLAD
