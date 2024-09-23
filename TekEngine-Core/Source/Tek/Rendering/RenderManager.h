@@ -27,7 +27,7 @@ namespace TEK {
         std::shared_ptr<Shader> AdditionalShadowShader = std::make_shared<Shader>("OmnidirectionalShadow.vert", "OmnidirectionalShadow.frag", "OmnidirectionalShadow.geom");
         unsigned int depthMapFBO;
         unsigned int depthMap;
-        const unsigned int MAIN_SHADOW_WIDTH = 4096*2, MAIN_SHADOW_HEIGHT = 4096*2;
+        const unsigned int MAIN_SHADOW_WIDTH = 4096, MAIN_SHADOW_HEIGHT = 4096;
         const unsigned int ADDITIONAL_SHADOW_WIDTH = 1024, ADDITIONAL_SHADOW_HEIGHT = 1024;
         std::shared_ptr<LightManager> lightManager;
         std::shared_ptr<EditorCamera> camera;

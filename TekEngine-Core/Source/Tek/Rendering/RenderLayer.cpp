@@ -2,6 +2,7 @@
 #include "RenderLayer.h"
 #include "RenderManager.h"
 #include "Tek/GameHierarchy/SceneManager.h"
+#include "Tek/KeyCodes.h"
 
 namespace TEK {
 
@@ -33,6 +34,20 @@ namespace TEK {
 	void RenderLayer::OnImGuiRender()
 	{
 
+	}
+
+	void RenderLayer::OnEvent(Event& event)
+	{
+		EventDispatcher dispatcher(event);
+		dispatcher.Dispatch<KeyPressedEvent>(TEK_BIND_EVENT_FN(RenderLayer::ProcessKeyPress));
+	}
+
+	bool RenderLayer::ProcessKeyPress(KeyPressedEvent& event)
+	{
+		if (event.GetKeyCode() == TEK_KEY_F2 && event.GetRepeatCount() == 0) {
+			SceneManager::Get()->GetCurrentScene()->renderManager->HotReloadShaders();
+		}
+		return false;
 	}
 
 	void RenderLayer::Begin()

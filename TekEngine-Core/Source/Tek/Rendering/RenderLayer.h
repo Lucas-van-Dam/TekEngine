@@ -3,6 +3,7 @@
 #include "Tek/Layer.h"
 
 #include "Tek/Core.h"
+#include <Tek/Events/KeyEvent.h>
 
 namespace TEK {
 
@@ -16,6 +17,9 @@ namespace TEK {
 		void OnAttach() override;
 		void OnUpdate() override;
 		void OnImGuiRender() override;
+		void OnEvent(Event& event) override;
+
+		bool ProcessKeyPress(KeyPressedEvent& event);
 
 		void Begin();
 		void End();

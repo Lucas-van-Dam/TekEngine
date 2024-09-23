@@ -101,24 +101,28 @@ namespace TEK {
 
 	void GameLogicLayer::CheckKeyPressed()
 	{
+		auto camera = SceneManager::Get()->GetCurrentScene()->GetEditorCamera();
+
 		if (Input::IsKeyPressed(TEK_KEY_W)) {
-			SceneManager::Get()->GetCurrentScene()->GetEditorCamera()->ProcessKeyboard(FORWARD, deltaTime);
+			camera->ProcessKeyboard(FORWARD, deltaTime);
 		}
 		if (Input::IsKeyPressed(TEK_KEY_D)) {
-			SceneManager::Get()->GetCurrentScene()->GetEditorCamera()->ProcessKeyboard(RIGHT, deltaTime);
+			camera->ProcessKeyboard(RIGHT, deltaTime);
 		}
 		if (Input::IsKeyPressed(TEK_KEY_S)) {
-			SceneManager::Get()->GetCurrentScene()->GetEditorCamera()->ProcessKeyboard(BACKWARD, deltaTime);
+			camera->ProcessKeyboard(BACKWARD, deltaTime);
 		}
 		if (Input::IsKeyPressed(TEK_KEY_A)) {
-			SceneManager::Get()->GetCurrentScene()->GetEditorCamera()->ProcessKeyboard(LEFT, deltaTime);
+			camera->ProcessKeyboard(LEFT, deltaTime);
 		}
 		if (Input::IsKeyPressed(TEK_KEY_E)) {
-			SceneManager::Get()->GetCurrentScene()->GetEditorCamera()->ProcessKeyboard(UP, deltaTime);
+			camera->ProcessKeyboard(UP, deltaTime);
 		}
 		if (Input::IsKeyPressed(TEK_KEY_Q)) {
-			SceneManager::Get()->GetCurrentScene()->GetEditorCamera()->ProcessKeyboard(DOWN, deltaTime);
+			camera->ProcessKeyboard(DOWN, deltaTime);
 		}
+		
+		camera->ProcessShiftKey(Input::IsKeyPressed(TEK_KEY_LEFT_SHIFT));
 	}
 
 	bool GameLogicLayer::OnMouseMoved(MouseMovedEvent& event)
