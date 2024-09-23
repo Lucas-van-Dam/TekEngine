@@ -445,3 +445,5 @@ Binaries/
 *.vcxproj
 *.filters
 TekEngine-Editor/imgui.ini
+
+!Vendor/Binaries/Premake/
