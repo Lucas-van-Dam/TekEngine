@@ -1,0 +1,15 @@
+[submodule "TekEngine-Core/vendor/spdlog"]
+	path = TekEngine-Core/vendor/spdlog
+	url = https://github.com/gabime/spdlog
+[submodule "TekEngine-Core/vendor/imgui"]
+	path = TekEngine-Core/vendor/imgui
+	url = https://github.com/Lucas-van-Dam/imgui
+[submodule "TekEngine-Core/vendor/glm"]
+	path = TekEngine-Core/vendor/glm
+	url = https://github.com/g-truc/glm
+[submodule "TekEngine-Core/vendor/GLFW"]
+	path = TekEngine-Core/vendor/GLFW
+	url = https://github.com/Lucas-van-Dam/glfw
+[submodule "TekEngine-Core/vendor/assimp"]
+	path = TekEngine-Core/vendor/assimp
+	url = https://github.com/Lucas-van-Dam/assimp
