@@ -447,3 +447,5 @@ Binaries/
 TekEngine-Editor/imgui.ini
 
 !Vendor/Binaries/Premake/
+*.sln
+*.vcxproj

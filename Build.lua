@@ -1,7 +1,7 @@
 workspace "TekEngine"
    architecture "x64"
    configurations { "Debug", "Release", "Dist" }
-   startproject "TekEngine-Editor"
+   startproject "Editor"
 
 OutputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
