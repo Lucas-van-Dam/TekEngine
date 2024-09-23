@@ -444,8 +444,8 @@ FodyWeavers.xsd
 Binaries/
 *.vcxproj
 *.filters
+*.user
 TekEngine-Editor/imgui.ini
 
 !Vendor/Binaries/Premake/
 *.sln
-*.vcxproj
