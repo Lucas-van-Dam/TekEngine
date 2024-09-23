@@ -1,27 +1,41 @@
 #include "tekpch.h"
 #include "Model.h"
 
-#include "assimp/Importer.hpp"
-#include "assimp/postprocess.h"
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include "Tek/Rendering/Shader.h"
 #include "Tek/Rendering/Structs/LightData.h"
 #include "Tek/Rendering/Structs/Texture.h"
 #include "Tek/Rendering/Mesh.h"
 #include "Tek/GameHierarchy/Components/Renderer.h"
-#include "Tek/GameHierarchy/GameObject.h"
+#include "Tek/GameHierarchy/Components/Transform.h"
+#include <assimp/pbrmaterial.h>
+#include <glm/gtx/matrix_decompose.hpp>
+
 
 namespace TEK {
 
-    void Model::Draw(Shader& shader, std::vector<LightData> lightData) {
-        //for(auto & mesh : meshes)
-        //mesh.Draw(shader, lightData);
+    // Helper function to convert aiMatrix4x4 to glm::mat4
+    glm::mat4 Model::ConvertToGLM(const aiMatrix4x4& aiMat) {
+        glm::mat4 mat;
+        mat[0][0] = aiMat.a1; mat[1][0] = aiMat.a2; mat[2][0] = aiMat.a3; mat[3][0] = aiMat.a4;
+        mat[0][1] = aiMat.b1; mat[1][1] = aiMat.b2; mat[2][1] = aiMat.b3; mat[3][1] = aiMat.b4;
+        mat[0][2] = aiMat.c1; mat[1][2] = aiMat.c2; mat[2][2] = aiMat.c3; mat[3][2] = aiMat.c4;
+        mat[0][3] = aiMat.d1; mat[1][3] = aiMat.d2; mat[2][3] = aiMat.d3; mat[3][3] = aiMat.d4;
+        return mat;
+    }
+
+    // Helper function to decompose glm::mat4 into translation, rotation, and scale
+    void Model::DecomposeTransform(const glm::mat4& transform, glm::vec3& translation, Quaternion rotation, glm::vec3& scale) {
+        glm::vec3 skew;
+        glm::vec4 perspective;
+        glm::decompose(transform, scale, rotation, translation, skew, perspective);
     }
 
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
     void Model::loadModel(std::string const& path, const std::shared_ptr<GameObject>& parent) {
         // read file via ASSIMP
         Assimp::Importer importer;
-        importer.SetPropertyInteger("UpdateImporterScale", 100);
         const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals |
             aiProcess_CalcTangentSpace | aiProcess_PreTransformVertices);
         // check for errors
@@ -30,9 +44,6 @@ namespace TEK {
             std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
             return;
         }
-        double factor(0.0);
-        scene->mMetaData->Get("UpdateImporterScale", factor);
-        scene->mMetaData->Set("UpdateImporterScale", 100.0);
 
         // retrieve the directory path of the filepath
         directory = path.substr(0, path.find_last_of('/'));
@@ -46,6 +57,16 @@ namespace TEK {
         auto gameObject = std::make_shared<GameObject>();
         gameObject->SetName(node->mName.C_Str());
         parent->AddChild(gameObject);
+
+        // Extract and apply the node's transformation
+        glm::mat4 transform = ConvertToGLM(node->mTransformation);
+        glm::vec3 translation, scale;
+        Quaternion rotation;
+        DecomposeTransform(transform, translation, rotation, scale);
+
+        gameObject->GetTransform()->localPosition = translation;
+        gameObject->GetTransform()->localRotation = rotation;
+        gameObject->GetTransform()->localScale = scale;
 
         // process each mesh located at the current node
         for (unsigned int i = 0; i < node->mNumMeshes; i++) {
@@ -129,11 +150,11 @@ namespace TEK {
         // normal: texture_normalN
 
         auto color = aiColor4D(1, 1, 1, 1);
-        aiGetMaterialColor(aiMaterial, AI_MATKEY_BASE_COLOR, &color);
+        aiGetMaterialColor(aiMaterial, AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_BASE_COLOR_FACTOR, &color);
         float metallic = -1;
-        aiGetMaterialFloat(aiMaterial, AI_MATKEY_METALLIC_FACTOR, &metallic);
+        aiGetMaterialFloat(aiMaterial, AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_METALLIC_FACTOR, &metallic);
         float roughness = -1;
-        aiGetMaterialFloat(aiMaterial, AI_MATKEY_ROUGHNESS_FACTOR, &roughness);
+        aiGetMaterialFloat(aiMaterial, AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_ROUGHNESS_FACTOR, &roughness);
 
         //    // 1. diffuse maps
         //    vector<Texture> diffuseMaps = loadMaterialTextures(aiMaterial, aiTextureType_DIFFUSE, "texture_diffuse");
@@ -151,10 +172,12 @@ namespace TEK {
         //    vector<Texture> metallicMaps = loadMaterialTextures(aiMaterial, aiTextureType_METALNESS, "texture_metallic");
         //    textures.insert(textures.end(), metallicMaps.begin(), metallicMaps.end());
 
-        material->AlbedoTexture = loadMaterialTextures(aiMaterial, aiTextureType_DIFFUSE, "texture_diffuse");
-        material->NormalTexture = loadMaterialTextures(aiMaterial, aiTextureType_NORMALS, "texture_normal");
-        material->RoughnessTexture = loadMaterialTextures(aiMaterial, aiTextureType_SHININESS, "texture_shininess");
-        material->MetallicTexture = loadMaterialTextures(aiMaterial, aiTextureType_METALNESS, "texture_metallic");
+        //TODO: ADD METALLIC ROUGHNESS TOGETHER
+
+        material->AlbedoTexture = LoadMaterialTextures(aiMaterial, aiTextureType_DIFFUSE, "texture_diffuse", directory);
+        material->NormalTexture = LoadMaterialTextures(aiMaterial, aiTextureType_NORMALS, "texture_normal", directory);
+        material->RoughnessTexture = LoadMaterialTextures(aiMaterial, aiTextureType_SHININESS, "texture_shininess", directory);
+        //material->MetallicTexture = LoadMaterialTextures(aiMaterial, aiTextureType_METALNESS, "texture_metallic", directory);
 
         material->Metallic = metallic;
         material->Roughness = roughness;

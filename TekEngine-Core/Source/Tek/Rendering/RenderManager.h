@@ -4,7 +4,10 @@
 #include "Tek/Rendering/LightManager.h"
 #include "Tek/EditorCamera.h"
 
+
+
 namespace TEK {
+    class GameObject;
 
     class RenderManager {
     private:
@@ -19,13 +22,12 @@ namespace TEK {
         void GenerateMainLightShadows();
         void GenerateAdditionalShadows();
         void RenderSkyBox();
-        void RenderAll();
 
         std::shared_ptr<Shader> DirectionalShadowShader = std::make_shared<Shader>("DirectionalShadow.vert", "DirectionalShadow.frag");
         std::shared_ptr<Shader> AdditionalShadowShader = std::make_shared<Shader>("OmnidirectionalShadow.vert", "OmnidirectionalShadow.frag", "OmnidirectionalShadow.geom");
         unsigned int depthMapFBO;
         unsigned int depthMap;
-        const unsigned int MAIN_SHADOW_WIDTH = 4096, MAIN_SHADOW_HEIGHT = 4096;
+        const unsigned int MAIN_SHADOW_WIDTH = 4096*2, MAIN_SHADOW_HEIGHT = 4096*2;
         const unsigned int ADDITIONAL_SHADOW_WIDTH = 1024, ADDITIONAL_SHADOW_HEIGHT = 1024;
         std::shared_ptr<LightManager> lightManager;
         std::shared_ptr<EditorCamera> camera;
@@ -58,7 +60,7 @@ namespace TEK {
         std::shared_ptr<Shader> skyboxMappingShader = std::make_shared<Shader>("CubeProjection.vert", "CubeProjection.frag");
         std::shared_ptr<Shader> preFilterShader = std::make_shared<Shader>("CubeProjection.vert", "PreFilter.frag");
         std::shared_ptr<Shader> brdfShader = std::make_shared<Shader>("brdf.vert", "brdf.frag");
-        std::string skyboxLocation = "../TekEngine-Core/Source/Textures/brown_photostudio_02_4k.hdr";
+        std::string skyboxLocation = "Assets/Textures/brown_photostudio_02_4k.hdr";
         void InitializeSkyBox();
 
 #pragma region data

@@ -15,7 +15,7 @@ namespace TEK {
 
         Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
 
-        void Draw(Material& material, std::vector<LightData> lightData);
+        void Draw(Material& material, std::vector<LightData> lightData) const;
         void Destroy();
 
     private:

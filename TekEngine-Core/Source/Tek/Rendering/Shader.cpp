@@ -17,8 +17,8 @@ namespace TEK {
         gShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
         try {
             // open files
-            vertexPath = std::string(/*config::TEK_SHADER_PATH*/"" + vertexFileName);
-            fragmentPath = std::string(/*config::TEK_SHADER_PATH*/"" + fragmentFileName);
+            vertexPath = std::string("Assets/Shaders/" + vertexFileName);
+            fragmentPath = std::string("Assets/Shaders/" + fragmentFileName);
             vShaderFile.open(vertexPath);
             if (!vShaderFile.is_open()) {
                 std::cerr << "Error opening file: " << strerror(errno) << std::endl;
@@ -38,7 +38,7 @@ namespace TEK {
             vertexCode = vShaderStream.str();
             fragmentCode = fShaderStream.str();
             if (!geometryFileName.empty()) {
-                geometryPath = std::string(""/*config::TEK_SHADER_PATH*/ + geometryFileName);
+                geometryPath = std::string("Assets/Shaders/" + geometryFileName);
                 gShaderFile.open(geometryPath);
                 std::stringstream gShaderStream;
                 gShaderStream << gShaderFile.rdbuf();

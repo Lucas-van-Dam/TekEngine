@@ -442,3 +442,6 @@ FodyWeavers.xsd
 # End of https://www.toptal.com/developers/gitignore/api/premake-gmake,visualstudio,c++
 
 Binaries/
+*.vcxproj
+*.filters
+TekEngine-Editor/imgui.ini

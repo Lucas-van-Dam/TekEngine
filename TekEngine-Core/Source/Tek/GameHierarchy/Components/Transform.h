@@ -4,6 +4,8 @@
 #include "Tek/Math/Quaternion.h"
 #include "Tek/GameHierarchy/Components/Component.h"
 
+class GameObject;
+
 namespace TEK {
 
     class Transform : public Component {

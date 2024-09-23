@@ -14,6 +14,7 @@ namespace TEK {
 
 		void OnDetach() override;
 		void OnAttach() override;
+		void OnUpdate() override;
 		void OnImGuiRender() override;
 
 		void Begin();

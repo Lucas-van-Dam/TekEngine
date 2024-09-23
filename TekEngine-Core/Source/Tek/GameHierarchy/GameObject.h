@@ -2,12 +2,12 @@
 
 #include <string>
 #include <memory>
-
-class Scene;
-class Component;
-class Transform;
+#include "Tek/GameHierarchy/Components/Component.h"
 
 namespace TEK {
+
+    class Scene;
+    class Transform;
 
     class GameObject : public std::enable_shared_from_this<GameObject> {
     public:
@@ -49,7 +49,7 @@ namespace TEK {
 
         std::string GetName();
 
-        void SetScene(const std::shared_ptr<Scene>& newScene);
+        void SetScene(std::shared_ptr<Scene> newScene);
 
 
     private:

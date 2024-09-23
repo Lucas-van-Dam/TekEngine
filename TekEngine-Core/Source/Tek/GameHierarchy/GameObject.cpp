@@ -2,7 +2,6 @@
 #include "GameObject.h"
 
 #include "Tek/GameHierarchy/Scene.h"
-#include "Tek/GameHierarchy/Components/Component.h"
 #include "Tek/GameHierarchy/Components/Transform.h"
 
 
@@ -40,7 +39,7 @@ namespace TEK {
         return scene;
     }
 
-    void GameObject::SetScene(const std::shared_ptr<Scene>& newScene) {
+    void GameObject::SetScene(std::shared_ptr<Scene> newScene) {
         scene.reset(newScene.get()); // Explicitly reset scene
         transform->gameObject = shared_from_this();
         for (const auto& component : components) {

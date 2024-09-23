@@ -6,6 +6,7 @@
 #include "Tek/GameHierarchy/Components/Transform.h"
 #include "Tek/GameHierarchy/Components/Light.h"
 
+
 namespace TEK {
 
     void Renderer::Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, int skyboxId, int irradianceMapId, int prefilterMapId, int brdfLUTTextureId, std::vector<int> depthCubeId, int shadowMapId,
@@ -72,7 +73,7 @@ namespace TEK {
     }
 
     std::vector<LightData> Renderer::SetLightingBuffer(glm::mat4 mainLightView, glm::mat4 mainLightProj) {
-        int amountOfLights = gameObject->GetScene()->lightManager->lights.size();
+        size_t amountOfLights = gameObject->GetScene()->lightManager->lights.size();
         int pointIndex = 0;
         std::vector<LightData> lights;
         for (int i = 0; i < amountOfLights; ++i) {

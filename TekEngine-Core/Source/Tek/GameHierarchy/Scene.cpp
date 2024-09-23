@@ -14,8 +14,8 @@ namespace TEK {
         }
     }
 
-    EditorCamera* Scene::GetEditorCamera() {
-        return camera.get();
+    std::shared_ptr<EditorCamera> Scene::GetEditorCamera() {
+        return camera;
     }
 
     Scene::Scene() {

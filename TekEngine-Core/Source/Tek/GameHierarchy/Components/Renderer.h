@@ -9,10 +9,12 @@
 #include "Tek/GameHierarchy/Components/Component.h"
 #include "glm/glm.hpp"
 
-class Transform;
-class GameObject;
+
 
 namespace TEK {
+
+    class Transform;
+    class GameObject;
 
     class Renderer : public Component, public std::enable_shared_from_this<Renderer> {
     public:

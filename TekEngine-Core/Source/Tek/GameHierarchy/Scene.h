@@ -14,7 +14,7 @@ namespace TEK {
         void AddGameObject(std::shared_ptr<GameObject> gameObject);
         void UpdateScene(float deltaTime);
         void PrintSceneHierarchy();
-        EditorCamera* GetEditorCamera();
+        std::shared_ptr<EditorCamera> GetEditorCamera();
         std::shared_ptr<EditorCamera> camera;
         std::shared_ptr<LightManager> lightManager;
         std::unique_ptr<RenderManager> renderManager;

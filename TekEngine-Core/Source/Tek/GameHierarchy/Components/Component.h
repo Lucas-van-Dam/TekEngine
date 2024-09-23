@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Tek/GameHierarchy/GameObject.h"
-
 namespace TEK {
+
+    class GameObject;
 
     class Component {
     public:

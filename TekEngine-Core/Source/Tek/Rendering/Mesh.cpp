@@ -75,7 +75,7 @@ namespace TEK {
     }
 
     // render the mesh
-    void Mesh::Draw(Material& material, std::vector<LightData> lightData)
+    void Mesh::Draw(Material& material, std::vector<LightData> lightData) const
     {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -123,7 +123,7 @@ namespace TEK {
             LightData* lightDataStatic = &lightData.front();
 
             glBindBuffer(GL_SHADER_STORAGE_BUFFER, SSBO);
-            int totalSize = sizeof(LightData) * lightData.size();
+            size_t totalSize = sizeof(LightData) * lightData.size();
             glBufferData(GL_SHADER_STORAGE_BUFFER, totalSize, lightDataStatic,
                 GL_DYNAMIC_DRAW);
             glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, SSBO);

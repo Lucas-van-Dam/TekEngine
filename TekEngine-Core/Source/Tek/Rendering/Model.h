@@ -1,8 +1,23 @@
 #pragma once
 
 #include "assimp/DefaultLogger.hpp"
+#include "assimp/Logger.hpp"
+#include "assimp/Importer.hpp"
+#include "assimp/postprocess.h"
+#include "assimp/scene.h"
+#include "Tek/GameHierarchy/GameObject.h"
+#include <glm/glm.hpp>
+#include "Tek/Math/Quaternion.h"
+
+struct aiNode;
+struct aiMesh;
+
 
 namespace TEK {
+    struct Texture;
+    class Mesh;
+    class Shader;
+    struct LightData;
 
     class Model {
     public:
@@ -14,25 +29,22 @@ namespace TEK {
         explicit Model(const char* path, const std::shared_ptr<GameObject>& parent) {
             Assimp::DefaultLogger::create("", Assimp::Logger::VERBOSE);
             Assimp::LogStream* stderrStream = Assimp::LogStream::createDefaultStream(aiDefaultLogStream_STDERR);
-            Assimp::DefaultLogger::get()->attachStream(stderrStream, Assimp::Logger::NORMAL | Assimp::Logger::DEBUGGING |
+            Assimp::DefaultLogger::get()->attachStream(stderrStream, Assimp::Logger::VERBOSE | Assimp::Logger::Debugging |
                 Assimp::Logger::VERBOSE);
             loadModel(path, parent);
             Assimp::DefaultLogger::kill();
         }
 
-        void Draw(Shader& shader, std::vector<LightData> lightData);
-
         static void LoadModelToGameObject(const char filePath[], const std::shared_ptr<GameObject>& parentObject);
 
     private:
+        glm::mat4 ConvertToGLM(const aiMatrix4x4& aiMat);
+        void DecomposeTransform(const glm::mat4& transform, glm::vec3& translation, Quaternion rotation, glm::vec3& scale);
         void loadModel(const std::string& path, const std::shared_ptr<GameObject>& parent);
 
         void processNode(aiNode* node, const aiScene* scene, const std::shared_ptr<GameObject>& parent);
 
         std::shared_ptr<GameObject> processMesh(aiMesh* mesh, const aiScene* scene);
-
-        std::shared_ptr<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type,
-            const std::string& typeName);
 
     };
 

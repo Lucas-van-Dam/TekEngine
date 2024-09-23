@@ -13,13 +13,14 @@ project "Core"
     "Source/**.h", 
     "Source/**.cpp",
     "vendor/glm/glm/**.hpp",
-    "vendor/glm/glm/**.inl"
+    "vendor/glm/glm/**.inl",
+    "vendor/stb_image/**.cpp",
+    "vendor/stb_image/**.h"
    }
 
    includedirs
    {
       "Source",
-
       "vendor/spdlog/include",
       "%{IncludeDir.GLFW}",
       "%{IncludeDir.GLAD}",
@@ -45,7 +46,6 @@ project "Core"
        defines 
         { 
             "TEK_PLATFORM_WINDOWS" ,
-            "_CRT_SECURE_NO_WARNINGS",
             "GLFW_INCLUDE_NONE"
         }
 

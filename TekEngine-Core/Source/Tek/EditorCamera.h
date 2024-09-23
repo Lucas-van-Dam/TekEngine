@@ -3,6 +3,7 @@
 #include "glm/glm.hpp"
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
+#include <Platform/Windows/WindowsInput.h>
 
 namespace TEK {
 
@@ -21,7 +22,7 @@ namespace TEK {
     const float PITCH = 0.0f;
     const float SPEED = 2.5f;
     const float SHIFTSPEED = 5.0f;
-    const float SENSITIVITY = 0.1f;
+    const float SENSITIVITY = 0.3f;
     const float ZOOM = 45.0f;
 
 
@@ -50,7 +51,7 @@ namespace TEK {
         float Zoom;
 
         // constructor with vectors
-        EditorCamera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), ShiftSpeed(SHIFTSPEED), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
+        EditorCamera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), ShiftSpeed(SHIFTSPEED), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM), Speed(SPEED)
         {
             Position = position;
             WorldUp = up;
@@ -60,7 +61,7 @@ namespace TEK {
             //std::cout << Zoom;
         }
         // constructor with scalar values
-        EditorCamera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), ShiftSpeed(SHIFTSPEED), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
+        EditorCamera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), ShiftSpeed(SHIFTSPEED), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM), Speed(SPEED)
         {
             Position = glm::vec3(posX, posY, posZ);
             WorldUp = glm::vec3(upX, upY, upZ);

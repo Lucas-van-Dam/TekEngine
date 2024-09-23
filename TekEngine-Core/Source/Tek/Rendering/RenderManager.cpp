@@ -1,6 +1,10 @@
 #include "tekpch.h"
 #include "RenderManager.h"
 
+#include "Tek/GameHierarchy/Components/Transform.h"
+#include "Tek/GameHierarchy/GameObject.h"
+#include "stb_image_wrapper.h"
+
 namespace TEK {
 
     void RenderManager::Render() {
@@ -91,14 +95,14 @@ namespace TEK {
 
         glGenTextures(1, &textureColorbuffer);
         glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, config::SCR_WIDTH, config::SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
 
         glGenRenderbuffers(1, &rbo);
         glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, config::SCR_WIDTH, config::SCR_HEIGHT);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -123,10 +127,9 @@ namespace TEK {
             printf("No main light found\n");
             return;
         }
-        glm::mat4 lightProjection, lightView;
         glm::mat4 lightSpaceMatrix;
-        float near_plane = -20.0f, far_plane = 100;
-        mainLightProj = glm::ortho(-30.0f, 30.0f, -30.0f, 30.0f, near_plane, far_plane);
+        float near_plane = -50.0f, far_plane = 100;
+        mainLightProj = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, near_plane, far_plane);
 
         mainLightView = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), (light->gameObject->GetTransform()->localRotation * glm::vec3(0.0f, 0.0f, 1.0f)), (light->gameObject->GetTransform()->localRotation * glm::vec3(0.0f, 1.0f, 0.0f)));
         lightSpaceMatrix = mainLightProj * mainLightView;
@@ -146,7 +149,7 @@ namespace TEK {
         glEnable(GL_CULL_FACE);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        glViewport(0, 0, config::SCR_WIDTH, config::SCR_HEIGHT);
+        glViewport(0, 0, 800, 600);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
@@ -176,7 +179,7 @@ namespace TEK {
                 renderer->Draw(glm::mat4(), glm::mat4(), -1, -1, -1, -1, std::vector<int>(), 0, AdditionalShadowShader);
             }
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            glViewport(0, 0, config::SCR_WIDTH, config::SCR_HEIGHT);
+            glViewport(0, 0, 800, 600);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
     }

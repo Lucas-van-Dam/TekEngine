@@ -8,6 +8,11 @@ OutputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
    -- Workspace-wide build options for MSVC
    filter "system:windows"
       buildoptions { "/EHsc", "/Zc:preprocessor", "/Zc:__cplusplus" }
+      defines
+      {
+         "_CRT_SECURE_NO_WARNINGS",
+         "_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS"
+      }
 
 group "Core"
 	include "TekEngine-Core/Build-Core.lua"

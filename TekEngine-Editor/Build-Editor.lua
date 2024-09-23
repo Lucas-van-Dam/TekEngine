@@ -10,7 +10,8 @@ project "Editor"
    includedirs
    {
       "Source",
-
+      "Assets",
+      
 	  -- Include Core
 	  "../TekEngine-Core/Source",
       "../TekEngine-Core/vendor/spdlog/include",

@@ -8,6 +8,7 @@
 
 #include "Tek/ImGui/ImGuiLayer.h"
 #include "Rendering/RenderLayer.h"
+#include "GameHierarchy/GameLogicLayer.h"
 
 namespace TEK {
 
@@ -33,6 +34,7 @@ namespace TEK {
 		std::unique_ptr<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
 		RenderLayer* m_RenderLayer;
+		GameLogicLayer* m_GameLogicLayer;
 		LayerStack m_LayerStack;
 
 	private:
