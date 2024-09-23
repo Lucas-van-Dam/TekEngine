@@ -116,3 +116,5 @@ Engine/Tek/Models
 # CLion project files
 .idea
 cmake-build-*
+.vs
+Binaries
