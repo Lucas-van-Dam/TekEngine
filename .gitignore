@@ -446,4 +446,4 @@ Binaries/
 *.filters
 TekEngine-Editor/imgui.ini
 
-!premake/
+!Vendor/Binaries/Premake/
