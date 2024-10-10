@@ -9,6 +9,11 @@
 
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
+#include "ImGuizmo.h"
+#include <glm/ext/matrix_float4x4.hpp>
+#include "Tek/GameHierarchy/SceneManager.h"
+#include "Tek/GameHierarchy/Components/Transform.h"
+#include <glm/gtc/type_ptr.hpp>
 
 namespace TEK {
 
@@ -59,7 +64,41 @@ namespace TEK {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+
+		// Set up the main window as a dockspace
+		ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+		ImGuiViewport* viewport = ImGui::GetMainViewport();
+		ImGui::SetNextWindowPos(viewport->Pos);
+		ImGui::SetNextWindowSize(viewport->Size);
+		ImGui::SetNextWindowViewport(viewport->ID);
+		windowFlags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+		windowFlags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+
+		// Begin the dockspace window
+		ImGui::Begin("DockSpace", nullptr, windowFlags);
+
+		// Dockspace ID
+		ImGuiID dockspaceID = ImGui::GetID("MyDockSpace");
+		ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None);
+
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("File"))
+			{
+				// Add menu items
+				if (ImGui::MenuItem("Exit")) {
+					// Handle exit
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
+
+		ImGui::End();
+
+		ImGuizmo::BeginFrame();
 	}
+
 	void ImGuiLayer::End()
 	{
 		ImGuiIO& io = ImGui::GetIO();
@@ -77,10 +116,9 @@ namespace TEK {
 			glfwMakeContextCurrent(backup_current_context);
 		}
 	}
-
+	
 	void ImGuiLayer::OnImGuiRender()
 	{
-		static bool show = true;
-		ImGui::ShowDemoWindow(&show);
+		
 	}
 }

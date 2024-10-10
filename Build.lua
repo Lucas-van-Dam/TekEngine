@@ -28,6 +28,7 @@ IncludeDir["ImGui"] = "vendor/imgui"
 IncludeDir["glm"] = "vendor/glm"
 IncludeDir["stb_image"] = "vendor/stb_image"
 IncludeDir["assimp"] = "vendor/assimp/include"
+IncludeDir["ImGuizmo"] = "vendor/ImGuizmo"
 
 include "TekEngine-Core/vendor/GLFW/premake5.lua"
 include "TekEngine-Core/vendor/GLAD/premake5.lua"

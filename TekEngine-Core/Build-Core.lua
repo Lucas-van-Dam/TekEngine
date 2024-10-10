@@ -15,7 +15,9 @@ project "Core"
     "vendor/glm/glm/**.hpp",
     "vendor/glm/glm/**.inl",
     "vendor/stb_image/**.cpp",
-    "vendor/stb_image/**.h"
+    "vendor/stb_image/**.h",
+    "vendor/ImGuizmo/**.h",
+    "vendor/ImGuizmo/**.cpp"
    }
 
    includedirs
@@ -27,7 +29,8 @@ project "Core"
       "%{IncludeDir.ImGui}",
       "%{IncludeDir.glm}",
       "%{IncludeDir.stb_image}",
-      "%{IncludeDir.assimp}"
+      "%{IncludeDir.assimp}",
+      "%{IncludeDir.ImGuizmo}"
    }
 
    links{

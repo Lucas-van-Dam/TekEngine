@@ -44,7 +44,7 @@ namespace TEK {
 
         void processNode(aiNode* node, const aiScene* scene, const std::shared_ptr<GameObject>& parent);
 
-        std::shared_ptr<GameObject> processMesh(aiMesh* mesh, const aiScene* scene);
+        void processMesh(aiMesh* mesh, const aiScene* scene, std::shared_ptr<GameObject> parent);
 
     };
 

@@ -4,6 +4,8 @@
 #include "Tek/GameHierarchy/Components/Transform.h"
 #include "Tek/GameHierarchy/GameObject.h"
 #include "stb_image_wrapper.h"
+#include "Tek/Application.h"
+#include "Tek/EditorCamera.h"
 
 namespace TEK {
 
@@ -12,12 +14,23 @@ namespace TEK {
         RenderOpaques();
         RenderTransparents();
         RenderSkyBox();
-        RenderPostProcessing();
+        //RenderPostProcessing();
     }
-
+    
     void RenderManager::AddRenderer(const std::shared_ptr<Renderer>& renderer) {
         shaderToRenderer[renderer->material->shader].push_back(renderer);
         renderers.push_back(renderer);
+    }
+
+    void RenderManager::RemoveRenderer(std::shared_ptr<Renderer> renderer)
+    {
+        if (renderer->GetOwner()->GetName() == "Sphere.216")
+            auto i = 0;
+        TEK_CORE_WARN("Removing renderer from object: {0}", renderer->GetOwner()->GetName());
+        TEK_CORE_WARN("Renderer use count: {0}", renderer.use_count());
+        TEK_CORE_WARN("Renderers size: {0}", renderers.size());
+        renderers.erase(std::remove(renderers.begin(), renderers.end(), renderer), renderers.end());
+        TEK_CORE_INFO("Succesfully Removed renderer from object: {0}", renderer->GetOwner()->GetName());
     }
 
     void RenderManager::RenderSkyBox() {
@@ -40,15 +53,20 @@ namespace TEK {
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         glEnable(GL_DEPTH_TEST);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        for (const auto& pair : shaderToRenderer) {
-            std::shared_ptr<Shader> shader = pair.first;
-            const auto& renderersFromShader = pair.second;
+        //for (const auto& pair : shaderToRenderer) {
+        //    std::shared_ptr<Shader> shader = pair.first;
+        //    const auto& renderersFromShader = pair.second;
 
-            shader->use();
+        //    shader->use();
 
-            for (const auto& renderer : renderersFromShader) {
-                renderer->Draw(mainLightView, mainLightProj, skyboxTexture, irradianceMap, prefilterMap, brdfLUTTexture, depthCubeMaps, depthMap);
-            }
+        //    for (const auto& renderer : renderersFromShader) {
+        //        renderer->Draw(mainLightView, mainLightProj, skyboxTexture, irradianceMap, prefilterMap, brdfLUTTexture, depthCubeMaps, depthMap);
+        //    }
+        //}
+
+        for (const auto& renderer : renderers) {
+            renderer->material->shader->use();
+            renderer->Draw(mainLightView, mainLightProj, skyboxTexture, irradianceMap, prefilterMap, brdfLUTTexture, depthCubeMaps, depthMap);
         }
     }
 
@@ -72,6 +90,9 @@ namespace TEK {
     }
 
     RenderManager::RenderManager(std::shared_ptr<LightManager> lightManager, std::shared_ptr<EditorCamera> camera) : lightManager(std::move(lightManager)) {
+        m_Width = Application::Get().GetWindow().GetWidth();
+        m_Height = Application::Get().GetWindow().GetHeight();
+        
         //Initialize main light shadow maps
         this->camera = std::move(camera);
         glGenFramebuffers(1, &depthMapFBO);
@@ -95,14 +116,14 @@ namespace TEK {
 
         glGenTextures(1, &textureColorbuffer);
         glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_Width, m_Height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
 
         glGenRenderbuffers(1, &rbo);
         glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_Width, m_Height);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -129,9 +150,9 @@ namespace TEK {
         }
         glm::mat4 lightSpaceMatrix;
         float near_plane = -50.0f, far_plane = 100;
-        mainLightProj = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, near_plane, far_plane);
+        mainLightProj = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
 
-        mainLightView = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), (light->gameObject->GetTransform()->localRotation * glm::vec3(0.0f, 0.0f, 1.0f)), (light->gameObject->GetTransform()->localRotation * glm::vec3(0.0f, 1.0f, 0.0f)));
+        mainLightView = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), (light->GetOwner()->GetTransform()->localRotation * glm::vec3(0.0f, 0.0f, 1.0f)), (light->GetOwner()->GetTransform()->localRotation * glm::vec3(0.0f, 1.0f, 0.0f)));
         lightSpaceMatrix = mainLightProj * mainLightView;
 
 
@@ -149,14 +170,14 @@ namespace TEK {
         glEnable(GL_CULL_FACE);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        glViewport(0, 0, 800, 600);
+        glViewport(0, 0, m_Width, m_Height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     void RenderManager::GenerateAdditionalShadows() {
         for (int i = 0; i < pointLights.size(); ++i) {
             std::shared_ptr<Light> light = pointLights[i];
-            glm::vec3 lightPos = light->gameObject->GetTransform()->localPosition;
+            glm::vec3 lightPos = light->GetOwner()->GetTransform()->localPosition;
             float near_plane = 1.0f;
             float far_plane = 100.0f;
             glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), (float)ADDITIONAL_SHADOW_WIDTH / (float)ADDITIONAL_SHADOW_HEIGHT, near_plane, far_plane);
@@ -179,7 +200,7 @@ namespace TEK {
                 renderer->Draw(glm::mat4(), glm::mat4(), -1, -1, -1, -1, std::vector<int>(), 0, AdditionalShadowShader);
             }
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            glViewport(0, 0, 800, 600);
+            glViewport(0, 0, m_Width, m_Height);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
     }
@@ -341,6 +362,7 @@ namespace TEK {
         {
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 128, 128, 0, GL_RGB, GL_FLOAT, nullptr);
         }
+
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
@@ -382,13 +404,10 @@ namespace TEK {
         }
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        // generate 2d LUT
         glGenTextures(1, &brdfLUTTexture);
 
-        // pre-allocate enough memory for the LUT texture.
         glBindTexture(GL_TEXTURE_2D, brdfLUTTexture);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, 512, 512, 0, GL_RG, GL_FLOAT, 0);
-        // be sure to set wrapping mode to GL_CLAMP_TO_EDGE
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -409,7 +428,7 @@ namespace TEK {
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        glViewport(0, 0, 800, 600);
+        glViewport(0, 0, width, height);
     }
 
     void RenderManager::HotReloadShaders() {
@@ -419,6 +438,31 @@ namespace TEK {
         DirectionalShadowShader->ReloadShader();
         AdditionalShadowShader->ReloadShader();
         screenShader->ReloadShader();
+    }
+
+    unsigned int RenderManager::GetEndBuffer()
+    {
+        return textureColorbuffer;
+    }
+
+    void RenderManager::SetRenderDimensions(int width, int height)
+    {
+        m_Width = width;
+        m_Height = height;
+        glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_Width, m_Height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_Width, m_Height);
+    }
+
+    int RenderManager::GetRenderWidth()
+    {
+        return m_Width;
+    }
+
+    int RenderManager::GetRenderHeight()
+    {
+        return m_Height;
     }
 
 }

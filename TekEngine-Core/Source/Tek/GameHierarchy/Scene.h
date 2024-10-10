@@ -11,9 +11,12 @@ namespace TEK {
     class Scene : public std::enable_shared_from_this<Scene> {
     public:
         Scene();
+        ~Scene();
         void AddGameObject(std::shared_ptr<GameObject> gameObject);
+        void DeleteGameObject(std::shared_ptr<GameObject> gameObject);
         void UpdateScene(float deltaTime);
-        void PrintSceneHierarchy();
+        void ProcessGameObjectDeletion();
+        std::shared_ptr<GameObject> GetGameObject(int index);
         std::shared_ptr<EditorCamera> GetEditorCamera();
         std::shared_ptr<EditorCamera> camera;
         std::shared_ptr<LightManager> lightManager;
@@ -21,6 +24,7 @@ namespace TEK {
 
     private:
         std::vector<std::shared_ptr<GameObject>> gameObjects;
+        std::vector<std::weak_ptr<GameObject>> gameObjectsToDelete;
     };
 
 }

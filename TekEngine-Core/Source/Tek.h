@@ -3,6 +3,8 @@
 #include "Tek/Application.h"
 #include "Tek/Layer.h"
 #include "Tek/Logger.h"
+#include "Tek/GameHierarchy/SceneManager.h"
+#include "Tek/GameHierarchy/Scene.h"
 
 #include "Tek/Input.h"
 #include "Tek/KeyCodes.h"

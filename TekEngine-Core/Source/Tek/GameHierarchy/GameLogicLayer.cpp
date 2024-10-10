@@ -1,13 +1,15 @@
 #include "tekpch.h"
 #include "GameLogicLayer.h"
 
-#include "Tek/GameHierarchy/GameObject.h"
 #include "Tek/GameHierarchy/SceneManager.h"
 #include "Tek/Rendering/Model.h"
 #include "Tek/GameHierarchy/Components/Transform.h"
 #include "Tek/GameHierarchy/Components/Light.h"
+#include "Tek/Application.h"
 
 #include "Tek/KeyCodes.h"
+#include "Tek/MouseButtonCodes.h"
+#include <GLFW/glfw3.h>
 
 namespace TEK {
 
@@ -48,13 +50,16 @@ namespace TEK {
 	void GameLogicLayer::OnEvent(Event& event)
 	{
 		EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<MouseMovedEvent>(TEK_BIND_EVENT_FN(GameLogicLayer::OnMouseMoved));
+		//dispatcher.Dispatch<MouseMovedEvent>(TEK_BIND_EVENT_FN(GameLogicLayer::OnMouseMoved));
+		dispatcher.Dispatch<KeyPressedEvent>(TEK_BIND_EVENT_FN(GameLogicLayer::OnKeyPressed));
 	}
 
 
 	void GameLogicLayer::InitializeTestScene()
 	{
-		char path[] = "Assets/Models/SPHERES/untitled.gltf";
+		char path[] = "Assets/Models/crystal_stone_rock/scene.gltf";
+
+		// PBR_Textures_ORCA
 
 		//std::cout << "Current working directory: " << std::filesystem::current_path() << std::endl;
 
@@ -64,7 +69,8 @@ namespace TEK {
 
 		m_Scene->AddGameObject(backPack);
 		Model::LoadModelToGameObject(path, backPack);
-		m_Scene->PrintSceneHierarchy();
+
+
 
 		//    std::shared_ptr<GameObject> cube = std::make_shared<GameObject>();
 		//    scene->AddGameObject(cube);
@@ -75,7 +81,7 @@ namespace TEK {
 		//    cube->GetTransform()->localRotation.setFromEulerAngles(0.0f, 12.5f, 0.0f);
 
 		backPack->GetTransform()->localPosition = glm::vec3(0.0f, 0.0f, 0.0f);
-		//backPack->GetTransform()->localScale = glm::vec3(0.5f, 0.5f, 0.5f);
+		//backPack->GetTransform()->localScale = glm::vec3(0.01f, 0.01f, 0.01f);
 
 		std::shared_ptr<GameObject> light = std::make_shared<GameObject>();
 		std::shared_ptr<Light> lightComponent = std::make_shared<Light>(LightType::Point, 3, glm::vec3(300.0f, 300.0f, 300.0f));
@@ -101,6 +107,8 @@ namespace TEK {
 
 	void GameLogicLayer::CheckKeyPressed()
 	{
+		if (!Input::IsMouseButtonPressed(TEK_MOUSE_BUTTON_2))
+			return;
 		auto camera = SceneManager::Get()->GetCurrentScene()->GetEditorCamera();
 
 		if (Input::IsKeyPressed(TEK_KEY_W)) {
@@ -127,15 +135,16 @@ namespace TEK {
 
 	bool GameLogicLayer::OnMouseMoved(MouseMovedEvent& event)
 	{
-		static float lastX = 0;
-		static float lastY = 0;
-		float Xoffset = event.GetX() - lastX;
-		float Yoffset = lastY - event.GetY();
-		lastX = event.GetX();
-		lastY = event.GetY();
-		SceneManager::Get()->GetCurrentScene()->GetEditorCamera()->ProcessMouseMovement(Xoffset, Yoffset);
-
 		return false;
 	}
-
+	bool GameLogicLayer::OnKeyPressed(KeyPressedEvent& event)
+	{
+		if (event.GetKeyCode() == TEK_KEY_DELETE && event.GetRepeatCount() == 0) {
+			auto obj = SceneManager::Get()->GetCurrentScene()->GetGameObject(0);
+			if (obj != nullptr) {
+				SceneManager::Get()->GetCurrentScene()->DeleteGameObject(obj);
+			}
+		}
+		return false;
+	}
 }

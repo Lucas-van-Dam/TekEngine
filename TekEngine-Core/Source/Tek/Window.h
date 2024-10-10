@@ -12,8 +12,8 @@ namespace TEK {
 		unsigned int Height;
 
 		WindowProperties(const std::string& title = "TekEngine",
-			unsigned int width = 800,
-			unsigned int height = 600)
+			unsigned int width = 1200,
+			unsigned int height = 800)
 			: Title(title), Width(width), Height(height) {}
 	};
 

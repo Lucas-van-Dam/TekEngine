@@ -3,7 +3,8 @@
 #include "Tek/Layer.h"
 
 #include "Tek/Core.h"
-#include <Tek/Events/KeyEvent.h>
+#include "Tek/Events/KeyEvent.h"
+#include "Tek/Events/MouseEvent.h"
 
 namespace TEK {
 
@@ -20,9 +21,11 @@ namespace TEK {
 		void OnEvent(Event& event) override;
 
 		bool ProcessKeyPress(KeyPressedEvent& event);
-
-		void Begin();
-		void End();
+		void ProcessMouseMove();
+	private:
+		bool m_SceneHovered = false;
+		double m_SavedX, m_SavedY;
+		bool m_CursorLocked;
 	};
 
 }

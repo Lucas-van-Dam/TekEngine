@@ -15,16 +15,20 @@ namespace TEK {
         for (const auto& child : children) {
             child->Update(deltaTime);
         }
+        
     }
 
     void GameObject::AddChild(std::shared_ptr<GameObject> child) {
         child->SetParent(shared_from_this());
-        child->SetScene(scene);
+        child->SetScene(scene.lock());
         children.emplace_back(std::move(child));
     }
 
     std::shared_ptr<GameObject> GameObject::GetParent() {
-        return parent;
+        if(auto parentPtr = parent.lock())
+            return parentPtr;
+        //TEK_CORE_ERROR("Object has been deleted but is trying to be accessed");
+        return nullptr;
     }
 
     void GameObject::SetParent(std::shared_ptr<GameObject> newParent) {
@@ -36,19 +40,40 @@ namespace TEK {
     }
 
     std::shared_ptr<Scene> GameObject::GetScene() {
-        return scene;
+        if(scene.lock());
+            return scene.lock();
     }
 
     void GameObject::SetScene(std::shared_ptr<Scene> newScene) {
-        scene.reset(newScene.get()); // Explicitly reset scene
-        transform->gameObject = shared_from_this();
+        if (scene.lock())
+            scene.lock().reset(newScene.get());
+        else
+            scene = newScene; // Explicitly reset scene
+        transform->SetOwner(shared_from_this());
         for (const auto& component : components) {
             component->OnGameObjectAddedToScene();
         }
     }
 
+    void GameObject::OnGameObjectDeleted()
+    {
+        for (auto component : components) {
+            component->OnComponentDetach();
+        }
+        components.clear();
+        for (auto child : children) {
+            child->OnGameObjectDeleted();
+        }
+        children.clear();
+        transform.reset();
+    }
+
     GameObject::GameObject() : components() {
         transform = std::make_shared<Transform>();
+    }
+
+    GameObject::~GameObject()
+    {
     }
 
     GameObject::GameObject(const GameObject&) {
@@ -62,5 +87,7 @@ namespace TEK {
     std::string GameObject::GetName() {
         return name;
     }
+
+
 
 }

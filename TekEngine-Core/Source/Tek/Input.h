@@ -10,8 +10,8 @@ namespace TEK {
 
 		static bool IsMouseButtonPressed(int button) { return s_Instance->IsMouseButtonPressedImpl(button); }
 		static std::pair<float, float> GetMousePosition() { return s_Instance->GetMousePositionImpl(); }
-		static float GetMouseX(int keyCode) { return s_Instance->GetMouseXImpl(); }
-		static float GetMouseY(int keyCode) { return s_Instance->GetMouseYImpl(); }
+		static float GetMouseX() { return s_Instance->GetMouseXImpl(); }
+		static float GetMouseY() { return s_Instance->GetMouseYImpl(); }
 
 	protected:
 		virtual bool IsKeyPressedImpl(int keyCode) const = 0;

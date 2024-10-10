@@ -176,8 +176,8 @@ void main()
     vec4 diffuseColor = useAlbedoTexture ? texture(texture_albedo, TexCoords).xyzw : albedo;
 
     roughnessInternal = useRoughnessTexture ? texture(texture_roughness, TexCoords).r : roughness;
-    roughnessInternal = useMetallicTexture ? texture(texture_metallic, TexCoords).g : roughness;
-    metallicInternal = useMetallicTexture ? texture(texture_metallic, TexCoords).r : metallic;
+    //roughnessInternal = useMetallicTexture ? texture(texture_metallic, TexCoords).g : roughness;
+    metallicInternal = useRoughnessTexture ? texture(texture_roughness, TexCoords).g : metallic;
 
     N = useNormalTexture ? texture(texture_normal, TexCoords).rgb : N;
     //normal.y * -1;

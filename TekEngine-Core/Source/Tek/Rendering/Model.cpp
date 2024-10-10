@@ -73,8 +73,10 @@ namespace TEK {
             // the node object only contains indices to index the actual objects in the scene.
             // the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            auto meshObject = processMesh(mesh, scene);
-            gameObject->AddChild(meshObject);
+            auto meshObject = std::shared_ptr<GameObject>();
+            processMesh(mesh, scene, node->mNumMeshes > 1 ? meshObject : gameObject);
+            if(node->mNumMeshes > 1)
+                gameObject->AddChild(meshObject);
         }
         // after we've processed all of the meshes (if any) we then recursively process each of the children nodes
         for (unsigned int i = 0; i < node->mNumChildren; i++) {
@@ -83,9 +85,7 @@ namespace TEK {
 
     }
 
-    std::shared_ptr<GameObject> Model::processMesh(aiMesh* mesh, const aiScene* scene) {
-        auto gameObject = std::make_shared<GameObject>();
-        gameObject->SetName(mesh->mName.C_Str());
+    void Model::processMesh(aiMesh* mesh, const aiScene* scene, std::shared_ptr<GameObject> parent) {
         // data to fill
         std::vector<Vertex> vertices;
         std::vector<unsigned int> indices;
@@ -150,7 +150,7 @@ namespace TEK {
         // normal: texture_normalN
 
         auto color = aiColor4D(1, 1, 1, 1);
-        aiGetMaterialColor(aiMaterial, AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_BASE_COLOR_FACTOR, &color);
+        aiGetMaterialColor(aiMaterial, AI_MATKEY_COLOR_DIFFUSE, &color);
         float metallic = -1;
         aiGetMaterialFloat(aiMaterial, AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_METALLIC_FACTOR, &metallic);
         float roughness = -1;
@@ -174,9 +174,20 @@ namespace TEK {
 
         //TODO: ADD METALLIC ROUGHNESS TOGETHER
 
+        aiString normalMapPath;
+
+        // Check if the material has a normal map
+        if (aiMaterial->GetTexture(aiTextureType_NORMALS, 0, &normalMapPath) == AI_SUCCESS) {
+            // Successfully retrieved the normal map path
+            std::cout << "Normal map texture found: " << normalMapPath.C_Str() << std::endl;
+        }
+        else {
+            std::cout << "No normal map found for material " << std::endl;
+        }
+
         material->AlbedoTexture = LoadMaterialTextures(aiMaterial, aiTextureType_DIFFUSE, "texture_diffuse", directory);
         material->NormalTexture = LoadMaterialTextures(aiMaterial, aiTextureType_NORMALS, "texture_normal", directory);
-        material->RoughnessTexture = LoadMaterialTextures(aiMaterial, aiTextureType_SHININESS, "texture_shininess", directory);
+        material->RoughnessTexture = LoadMaterialTextures(aiMaterial, aiTextureType_SHININESS, "texture_roughness", directory);
         //material->MetallicTexture = LoadMaterialTextures(aiMaterial, aiTextureType_METALNESS, "texture_metallic", directory);
 
         material->Metallic = metallic;
@@ -186,10 +197,7 @@ namespace TEK {
         std::shared_ptr<Mesh> meshObj = std::make_shared<Mesh>(vertices, indices);
 
         std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>(meshObj, material);
-        gameObject->AddComponent(renderer);
-
-        // return a mesh object created from the extracted mesh data
-        return gameObject;
+        parent->AddComponent(renderer);
     }
 
     void Model::LoadModelToGameObject(const char filePath[], const std::shared_ptr<GameObject>& parentObject) {

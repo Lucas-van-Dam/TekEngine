@@ -17,13 +17,13 @@ project "Editor"
       "../TekEngine-Core/vendor/spdlog/include",
       "../TekEngine-Core/vendor",
 
-      "%{IncludeDir.glm}"
+      "%{IncludeDir.glm}",
 
    }
 
    links
    {
-      "Core"
+      "Core",
    }
 
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")

@@ -21,5 +21,4 @@ namespace TEK {
 		static std::shared_ptr<SceneManager> instance = std::make_shared<SceneManager>();
 		return instance;
 	}
-
 }

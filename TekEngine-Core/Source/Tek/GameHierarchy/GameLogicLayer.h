@@ -3,6 +3,8 @@
 
 #include "Tek/Core.h"
 
+#include "Tek/GameHierarchy/GameObject.h"
+
 #include "Tek/Events/KeyEvent.h"
 #include "Tek/Events/MouseEvent.h"
 
@@ -24,10 +26,12 @@ namespace TEK {
 
 		void CheckKeyPressed();
 		bool OnMouseMoved(MouseMovedEvent& event);
+		bool OnKeyPressed(KeyPressedEvent& event);
 
 	private:
 		float deltaTime = 0.0f;
 		std::chrono::high_resolution_clock::time_point lastTime;
+		
 	};
 
 }

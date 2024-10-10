@@ -56,39 +56,51 @@ namespace TEK {
 
     void Renderer::Update(float deltaTime) {
         if (transform == nullptr) {
-            transform = gameObject->GetTransform();
+            transform = GetOwner()->GetTransform();
         }
         modelMatrix = transform->GetWorldTransform();
-        viewMatrix = gameObject->GetScene()->GetEditorCamera()->GetViewMatrix();
-        projectionMatrix = gameObject->GetScene()->GetEditorCamera()->GetProjectionMatrix();
+        viewMatrix = GetOwner()->GetScene()->GetEditorCamera()->GetViewMatrix();
+        projectionMatrix = GetOwner()->GetScene()->GetEditorCamera()->GetProjectionMatrix();
+    }
+
+    void Renderer::SetOwner(std::shared_ptr<GameObject> owner)
+    {
+        Component::SetOwner(owner);
+        GetOwner()->GetScene()->renderManager->AddRenderer(shared_from_this());
     }
 
     Renderer::Renderer(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material) : mesh(std::move(mesh)), material(std::move(material))
     {
-
+        
     }
 
     Renderer::~Renderer()
     {
+        
     }
 
     std::vector<LightData> Renderer::SetLightingBuffer(glm::mat4 mainLightView, glm::mat4 mainLightProj) {
-        size_t amountOfLights = gameObject->GetScene()->lightManager->lights.size();
+        size_t amountOfLights = GetOwner()->GetScene()->lightManager->lights.size();
         int pointIndex = 0;
         std::vector<LightData> lights;
         for (int i = 0; i < amountOfLights; ++i) {
             unsigned int depthCube = -1;
-            Light* light = gameObject->GetScene()->lightManager->lights[i].get();
+            Light* light = GetOwner()->GetScene()->lightManager->lights[i].get();
 
-            LightData data(light->intensity, light->color, light->gameObject->GetTransform()->localPosition,
-                light->gameObject->GetTransform()->GetForwardVector(), light->innerCutOff, light->outerCutOff, (int)light->type, mainLightProj, mainLightView);
+            LightData data(light->intensity, light->color, light->GetOwner()->GetTransform()->localPosition,
+                light->GetOwner()->GetTransform()->GetForwardVector(), light->innerCutOff, light->outerCutOff, (int)light->type, mainLightProj, mainLightView);
             lights.emplace_back(data);
         }
         return lights;
     }
 
     void Renderer::OnGameObjectAddedToScene() {
-        gameObject->GetScene()->renderManager->AddRenderer(shared_from_this());
+        //GetOwner()->GetScene()->renderManager->AddRenderer(shared_from_this());
+    }
+
+    void Renderer::OnComponentDetach()
+    {
+        GetOwner()->GetScene()->renderManager->RemoveRenderer(shared_from_this());
     }
 
 

@@ -4,6 +4,7 @@
 #include "Input.h"
 
 #include "glad/glad.h"
+#include "Tek/GameHierarchy/SceneManager.h"
 
 namespace TEK {
 
@@ -70,6 +71,8 @@ namespace TEK {
 			m_ImGuiLayer->End();
 
 			m_Window->OnUpdate();
+
+			SceneManager::Get()->GetCurrentScene()->ProcessGameObjectDeletion();
 		}
 	}
 

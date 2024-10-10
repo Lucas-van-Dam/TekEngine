@@ -17,6 +17,8 @@ namespace TEK {
         Transform()
             : localPosition(glm::vec3(0.0f)), localRotation(1.0f, 0.0f, 0.0f, 0.0f), localScale(glm::vec3(1.0f)) {}
 
+        ~Transform();
+
         // Get the transformation matrix
         glm::mat4 GetTransformationMatrix() const;
 
@@ -30,12 +32,18 @@ namespace TEK {
 
         void Update(float deltaTime) override;
 
+        void SetWorldTransform(const glm::mat4& matrix);
+
+        void UpdateLocalMatrix();
+
 
     private:
         // Create the rotation matrix from a quaternion
         static glm::mat4 CreateRotationMatrix(const Quaternion& quat) {
             return glm::mat4_cast(quat);
         }
+
+        glm::mat4 localMatrix;
 
 
     };

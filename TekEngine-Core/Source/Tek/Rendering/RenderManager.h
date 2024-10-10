@@ -2,12 +2,13 @@
 
 #include "Tek/GameHierarchy/Components/Renderer.h"
 #include "Tek/Rendering/LightManager.h"
-#include "Tek/EditorCamera.h"
+
 
 
 
 namespace TEK {
     class GameObject;
+    class EditorCamera;
 
     class RenderManager {
     private:
@@ -63,16 +64,8 @@ namespace TEK {
         std::string skyboxLocation = "Assets/Textures/brown_photostudio_02_4k.hdr";
         void InitializeSkyBox();
 
+        int m_Width, m_Height;
 #pragma region data
-        std::vector<std::string> faces
-        {
-            "right.jpg",
-                    "left.jpg",
-                    "top.jpg",
-                    "bottom.jpg",
-                    "front.jpg",
-                    "back.jpg"
-        };
         float skyboxVertices[108] = {
             // positions
             -1.0f,  1.0f, -1.0f,
@@ -122,9 +115,14 @@ namespace TEK {
     public:
         void Render();
         void AddRenderer(const std::shared_ptr<Renderer>& renderer);
+        void RemoveRenderer(std::shared_ptr<Renderer> renderer);
         RenderManager(std::shared_ptr<LightManager> lightManager, std::shared_ptr<EditorCamera> camera);
         void Initialize();
         void HotReloadShaders();
+        unsigned int GetEndBuffer();
+        void SetRenderDimensions(int width, int height);
+        int GetRenderWidth();
+        int GetRenderHeight();
     };
 
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#define GLM_ENABLE_EXPERIMENTAL
+
 #ifdef TEK_PLATFORM_WINDOWS
 #else
 	#error TEK engine does not support any other platform other than windows

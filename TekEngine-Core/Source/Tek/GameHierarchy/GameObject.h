@@ -14,13 +14,13 @@ namespace TEK {
         bool enabled = true;
 
         GameObject();
-        ~GameObject() = default;
+        ~GameObject();
         GameObject(const GameObject&);
 
         template <typename T>
         T* AddComponent(std::shared_ptr<T> component) {
             components.emplace_back(component);
-            components.back()->gameObject = shared_from_this();
+            components.back()->SetOwner(shared_from_this());
             return dynamic_cast<T*>(components.back().get());
         }
 
@@ -51,16 +51,18 @@ namespace TEK {
 
         void SetScene(std::shared_ptr<Scene> newScene);
 
+        void OnGameObjectDeleted();
+
 
     private:
         std::vector<std::shared_ptr<Component>> components;
         std::vector<std::shared_ptr<GameObject>> children;
-        std::shared_ptr<GameObject> parent;
+        std::weak_ptr<GameObject> parent;
         std::string name;
 
         std::shared_ptr<Transform> transform;
 
-        std::shared_ptr<Scene> scene;
+        std::weak_ptr<Scene> scene;
 
         void SetParent(std::shared_ptr<GameObject> newParent);
 

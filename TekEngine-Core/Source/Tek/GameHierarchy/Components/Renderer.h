@@ -27,7 +27,10 @@ namespace TEK {
 
         void Update(float deltaTime) override;
 
+        void SetOwner(std::shared_ptr<GameObject> owner) override;
+
         void OnGameObjectAddedToScene() override;
+        void OnComponentDetach() override;
 
     private:
         std::vector<LightData> SetLightingBuffer(glm::mat4 mainLightView, glm::mat4 mainLightProj);
