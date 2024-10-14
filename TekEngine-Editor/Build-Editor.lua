@@ -17,8 +17,13 @@ project "Editor"
       "../TekEngine-Core/vendor/spdlog/include",
       "../TekEngine-Core/vendor",
 
-      "%{IncludeDir.glm}",
-
+      "../TekEngine-Core/%{IncludeDir.GLFW}",
+      "../TekEngine-Core/%{IncludeDir.GLAD}",
+      "../TekEngine-Core/%{IncludeDir.ImGui}",
+      "../TekEngine-Core/%{IncludeDir.glm}",
+      "../TekEngine-Core/%{IncludeDir.stb_image}",
+      "../TekEngine-Core/%{IncludeDir.assimp}",
+      "../TekEngine-Core/%{IncludeDir.ImGuizmo}"
    }
 
    links

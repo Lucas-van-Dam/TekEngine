@@ -1,11 +1,11 @@
 #pragma once
 
-
+#include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <Platform/Windows/WindowsInput.h>
 #include "Tek/GameHierarchy/SceneManager.h"
-#include "glm/glm.hpp"
+
 
 namespace TEK {
 
@@ -53,6 +53,7 @@ namespace TEK {
 
         // constructor with vectors
         EditorCamera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
+
         // constructor with scalar values
         EditorCamera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
 
