@@ -3,9 +3,12 @@
 #include "stb_image_wrapper.h"
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
+#include "glad/glad.h"
+#include "GLFW/glfw3.h"
+
 namespace TEK {
     struct Texture {
-        unsigned int id;
+        unsigned int id = 0;
         std::string type;
         std::string path;
     };

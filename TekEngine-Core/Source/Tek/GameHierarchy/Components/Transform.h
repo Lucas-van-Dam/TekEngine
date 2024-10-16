@@ -15,7 +15,7 @@ namespace TEK {
         glm::vec3 localScale;    // Scale factors (x, y, z)
 
         Transform()
-            : localPosition(glm::vec3(0.0f)), localRotation(1.0f, 0.0f, 0.0f, 0.0f), localScale(glm::vec3(1.0f)) {}
+            : localPosition(glm::vec3(0.0f)), localRotation(1.0f, 0.0f, 0.0f, 0.0f), localScale(glm::vec3(1.0f)), localMatrix(1.0f) {}
 
         ~Transform();
 

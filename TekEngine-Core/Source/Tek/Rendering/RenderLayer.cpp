@@ -99,7 +99,7 @@ namespace TEK {
 					glfwSetInputMode((GLFWwindow*)Application::Get().GetWindow().GetNativeWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 				}
 				
-				float Xoffset = Input::GetMouseX() - m_SavedX;
+				float Xoffset = Input::GetMouseX() - (float)m_SavedX;
 				float Yoffset = m_SavedY - Input::GetMouseY();
 				SceneManager::Get()->GetCurrentScene()->GetEditorCamera()->ProcessMouseMovement(Xoffset, Yoffset);
 				glfwSetCursorPos((GLFWwindow*)Application::Get().GetWindow().GetNativeWindow(), m_SavedX, m_SavedY);

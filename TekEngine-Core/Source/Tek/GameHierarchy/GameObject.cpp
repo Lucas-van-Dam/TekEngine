@@ -40,7 +40,7 @@ namespace TEK {
     }
 
     std::shared_ptr<Scene> GameObject::GetScene() {
-        if(scene.lock());
+        if(scene.lock())
             return scene.lock();
     }
 

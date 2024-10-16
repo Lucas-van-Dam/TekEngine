@@ -1,4 +1,4 @@
-project "Runtime"
+project "ReflectionTool"
    kind "ConsoleApp"
    language "C++"
    cppdialect "C++20"
@@ -13,6 +13,11 @@ project "Runtime"
 
 	  -- Include Core
 	  "../TekEngine-Core/Source"
+   }
+
+   libdirs
+   {
+      "C:/"
    }
 
    links

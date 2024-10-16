@@ -23,7 +23,7 @@ project "Editor"
       "../TekEngine-Core/%{IncludeDir.glm}",
       "../TekEngine-Core/%{IncludeDir.stb_image}",
       "../TekEngine-Core/%{IncludeDir.assimp}",
-      "../TekEngine-Core/%{IncludeDir.ImGuizmo}"
+      "../TekEngine-Core/%{IncludeDir.ImGuizmo}",
    }
 
    links

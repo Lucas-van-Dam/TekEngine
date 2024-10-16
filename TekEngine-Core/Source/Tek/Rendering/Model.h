@@ -8,14 +8,14 @@
 #include "Tek/GameHierarchy/GameObject.h"
 #include <glm/glm.hpp>
 #include "Tek/Math/Quaternion.h"
+#include "Tek/Rendering/Structs/Texture.h"
+#include "Tek/Rendering/Mesh.h"
 
 struct aiNode;
 struct aiMesh;
 
 
 namespace TEK {
-    struct Texture;
-    class Mesh;
     class Shader;
     struct LightData;
 

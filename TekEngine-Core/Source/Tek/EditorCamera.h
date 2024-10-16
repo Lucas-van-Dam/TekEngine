@@ -6,7 +6,6 @@
 #include <Platform/Windows/WindowsInput.h>
 #include "Tek/GameHierarchy/SceneManager.h"
 
-
 namespace TEK {
 
     class Scene;

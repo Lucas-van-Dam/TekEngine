@@ -24,8 +24,8 @@ namespace TEK {
 		void ProcessMouseMove();
 	private:
 		bool m_SceneHovered = false;
-		double m_SavedX, m_SavedY;
-		bool m_CursorLocked;
+		double m_SavedX = 0, m_SavedY = 0;
+		bool m_CursorLocked = false;
 	};
 
 }

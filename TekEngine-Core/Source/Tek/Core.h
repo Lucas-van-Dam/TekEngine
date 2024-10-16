@@ -1,5 +1,3 @@
-#pragma once
-
 #define GLM_ENABLE_EXPERIMENTAL
 
 #ifdef TEK_PLATFORM_WINDOWS

@@ -5,9 +5,13 @@ workspace "TekEngine"
 
 OutputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-   -- Workspace-wide build options for MSVC
+   -- Workspace-wide build options
    filter "system:windows"
-      buildoptions { "/EHsc", "/Zc:preprocessor", "/Zc:__cplusplus" }
+      toolset "clang"
+      buildoptions
+      {
+         "-m64",
+      }
       defines
       {
          "_CRT_SECURE_NO_WARNINGS",

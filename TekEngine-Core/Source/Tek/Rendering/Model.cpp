@@ -5,8 +5,7 @@
 
 #include "Tek/Rendering/Shader.h"
 #include "Tek/Rendering/Structs/LightData.h"
-#include "Tek/Rendering/Structs/Texture.h"
-#include "Tek/Rendering/Mesh.h"
+
 #include "Tek/GameHierarchy/Components/Renderer.h"
 #include "Tek/GameHierarchy/Components/Transform.h"
 #include <assimp/pbrmaterial.h>

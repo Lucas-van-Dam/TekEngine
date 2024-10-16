@@ -37,10 +37,10 @@ namespace TEK {
         double cy = cos(yaw * 0.5);
         double sy = sin(yaw * 0.5);
 
-        this->w = cr * cp * cy + sr * sp * sy;
-        this->x = sr * cp * cy - cr * sp * sy;
-        this->y = cr * sp * cy + sr * cp * sy;
-        this->z = cr * cp * sy - sr * sp * cy;
+        this->w = (float)(cr * cp * cy + sr * sp * sy);
+        this->x = (float)(sr * cp * cy - cr * sp * sy);
+        this->y = (float)(cr * sp * cy + sr * cp * sy);
+        this->z = (float)(cr * cp * sy - sr * sp * cy);
     }
 
 }

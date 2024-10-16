@@ -30,7 +30,7 @@ project "Core"
       "%{IncludeDir.glm}",
       "%{IncludeDir.stb_image}",
       "%{IncludeDir.assimp}",
-      "%{IncludeDir.ImGuizmo}"
+      "%{IncludeDir.ImGuizmo}",
    }
 
    links{
