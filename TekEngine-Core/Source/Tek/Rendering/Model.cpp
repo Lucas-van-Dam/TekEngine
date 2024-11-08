@@ -185,9 +185,9 @@ namespace TEK {
             std::cout << "No normal map found for material " << std::endl;
         }
 
-        material->AlbedoTexture = LoadTexture(aiMaterial, aiTextureType_DIFFUSE, "texture_diffuse", directory);
-        material->NormalTexture = LoadTexture(aiMaterial, aiTextureType_NORMALS, "texture_normal", directory);
-        material->RoughnessTexture = LoadTexture(aiMaterial, aiTextureType_UNKNOWN, "texture_roughness", directory);
+        material->AlbedoTexture = LoadTexture(aiMaterial, aiTextureType_DIFFUSE,directory);
+        material->NormalTexture = LoadTexture(aiMaterial, aiTextureType_NORMALS, directory);
+        material->RoughnessTexture = LoadTexture(aiMaterial, aiTextureType_UNKNOWN, directory);
         //material->MetallicTexture = LoadMaterialTextures(aiMaterial, aiTextureType_METALNESS, "texture_metallic", directory);
 
         material->Metallic = metallic;
@@ -200,19 +200,19 @@ namespace TEK {
         parent->AddComponent(renderer);
     }
 
-    std::shared_ptr<Texture> Model::LoadTexture(aiMaterial* mat, aiTextureType type, const std::string& typeName, const std::string& directory) {
+    std::shared_ptr<Texture> Model::LoadTexture(aiMaterial* mat, aiTextureType type, const std::string& directory) {
         std::shared_ptr<Texture> texture;
         
         if (mat->GetTextureCount(type) > 0) {
             aiString str;
             mat->GetTexture(type, 0, &str);
 
-            texture = AssetManager::GetInstance().LoadAsset<Texture>(directory + "/" + str.C_Str(), typeName);
+            texture = AssetManager::GetInstance().LoadAsset<Texture>(directory + "/" + str.C_Str());
 
             return texture;
         }
         else {
-            TEK_CORE_WARN("No textures of type {0} found", typeName);
+            TEK_CORE_WARN("No textures of type found");
         }
 
         return texture;

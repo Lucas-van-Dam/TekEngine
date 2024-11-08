@@ -101,7 +101,7 @@ namespace TEK {
 		std::shared_ptr<Light> lightComponent4 = std::make_shared<Light>(LightType::Directional, 3, glm::vec3(1, 1, 1));
 		m_Scene->AddGameObject(light4);
 		light4->AddComponent<Light>(lightComponent4);
-		light4->GetTransform()->localRotation.setFromEulerAngles(70, 0, 0);
+		light4->GetTransform()->localRotation.setFromEulerAngles(110, 0, 0);
 		m_Scene->lightManager->AddLight(lightComponent4);
 	}
 

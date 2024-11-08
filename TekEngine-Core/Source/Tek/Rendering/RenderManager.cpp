@@ -150,7 +150,7 @@ namespace TEK {
         }
         glm::mat4 lightSpaceMatrix;
         float near_plane = -50.0f, far_plane = 100;
-        mainLightProj = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+        mainLightProj = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, near_plane, far_plane);
 
         mainLightView = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), (light->GetOwner()->GetTransform()->localRotation * glm::vec3(0.0f, 0.0f, 1.0f)), (light->GetOwner()->GetTransform()->localRotation * glm::vec3(0.0f, 1.0f, 0.0f)));
         lightSpaceMatrix = mainLightProj * mainLightView;

@@ -5,14 +5,6 @@ namespace TEK {
 
     void Texture::Load(const std::string& filePath, std::any metadata)
 	{
-        std::string typeName;
-        if (metadata.has_value()) {
-            typeName = std::any_cast<std::string>(metadata);
-        }
-        else {
-            TEK_CORE_ERROR("No type name given at loading of texture: {0}", filePath);
-        }
-
         unsigned int textureID;
         glGenTextures(1, &textureID);
 
@@ -39,7 +31,6 @@ namespace TEK {
             stbi_image_free(data);
 
             id = textureID;
-            type = typeName;
         }
         else {
             std::cout << "Texture failed to load at path: " << filePath << std::endl;

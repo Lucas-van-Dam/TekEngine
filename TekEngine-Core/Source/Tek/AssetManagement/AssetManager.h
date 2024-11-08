@@ -39,7 +39,7 @@ namespace TEK {
 
 		auto asset = std::make_shared<AssetType>();
 
-		asset->Load(path);
+		asset->Load(path, metadata);
 		assets[assetID] = asset;
 
 		return asset;
