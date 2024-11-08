@@ -2,7 +2,7 @@
 
 #ifdef TEK_PLATFORM_WINDOWS
 #else
-	#error TEK engine does not support any other platform other than windows
+	#error Resonance does not support any other platform other than windows
 #endif
 
 #ifdef TEK_ENABLE_ASSERTS

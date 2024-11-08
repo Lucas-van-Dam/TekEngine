@@ -57,7 +57,7 @@ namespace TEK {
 
 	void GameLogicLayer::InitializeTestScene()
 	{
-		char path[] = "Assets/Models/crystal_stone_rock/scene.gltf";
+		char path[] = "Assets/Models/test/GoldStarBake2.gltf";
 
 		// PBR_Textures_ORCA
 
@@ -84,24 +84,24 @@ namespace TEK {
 		//backPack->GetTransform()->localScale = glm::vec3(0.01f, 0.01f, 0.01f);
 
 		std::shared_ptr<GameObject> light = std::make_shared<GameObject>();
-		std::shared_ptr<Light> lightComponent = std::make_shared<Light>(LightType::Point, 3, glm::vec3(300.0f, 300.0f, 300.0f));
+		std::shared_ptr<Light> lightComponent = std::make_shared<Light>(LightType::Point, 10, glm::vec3(30.0f, 0.5f, 0.5f));
 		m_Scene->AddGameObject(light);
 		light->AddComponent<Light>(lightComponent);
 		light->GetTransform()->localPosition = glm::vec3(-7, 3, 3);
-		m_Scene->lightManager->AddLight(lightComponent);
+		//m_Scene->lightManager->AddLight(lightComponent);
 
 		std::shared_ptr<GameObject> light2 = std::make_shared<GameObject>();
-		std::shared_ptr<Light> lightComponent2 = std::make_shared<Light>(LightType::Point, 3, glm::vec3(30.0f, 300.0f, 30.0f));
+		std::shared_ptr<Light> lightComponent2 = std::make_shared<Light>(LightType::Point, 3, glm::vec3(1.0f, 1.0f, 1.0f));
 		m_Scene->AddGameObject(light2);
 		light2->AddComponent<Light>(lightComponent2);
 		light2->GetTransform()->localPosition = glm::vec3(-5, 4, 3);
-		m_Scene->lightManager->AddLight(lightComponent2);
+		//m_Scene->lightManager->AddLight(lightComponent2);
 
 		std::shared_ptr<GameObject> light4 = std::make_shared<GameObject>();
-		std::shared_ptr<Light> lightComponent4 = std::make_shared<Light>(LightType::Directional, 10, glm::vec3(10, 10, 10));
+		std::shared_ptr<Light> lightComponent4 = std::make_shared<Light>(LightType::Directional, 3, glm::vec3(1, 1, 1));
 		m_Scene->AddGameObject(light4);
 		light4->AddComponent<Light>(lightComponent4);
-		light4->GetTransform()->localRotation.setFromEulerAngles(90, 0, 0);
+		light4->GetTransform()->localRotation.setFromEulerAngles(70, 0, 0);
 		m_Scene->lightManager->AddLight(lightComponent4);
 	}
 

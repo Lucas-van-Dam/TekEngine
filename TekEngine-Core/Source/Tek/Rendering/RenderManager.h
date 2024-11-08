@@ -61,7 +61,7 @@ namespace TEK {
         std::shared_ptr<Shader> skyboxMappingShader = std::make_shared<Shader>("CubeProjection.vert", "CubeProjection.frag");
         std::shared_ptr<Shader> preFilterShader = std::make_shared<Shader>("CubeProjection.vert", "PreFilter.frag");
         std::shared_ptr<Shader> brdfShader = std::make_shared<Shader>("brdf.vert", "brdf.frag");
-        std::string skyboxLocation = "Assets/Textures/brown_photostudio_02_4k.hdr";
+        std::string skyboxLocation = "Assets/Textures/Black Outside.jpg";
         void InitializeSkyBox();
 
         int m_Width, m_Height;

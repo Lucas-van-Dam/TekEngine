@@ -141,7 +141,7 @@ float MainShadowCalculation(vec4 fragPosLightSpace)
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     projCoords.xyz = projCoords.xyz * 0.5 + 0.5;
     float currentDepth = projCoords.z;
-    float bias = max(0.005 * (1.0 - dot(normalize(Normal), normalize(lights[0].position.xyz-lights[0].direction.xyz))), 0.0005);
+    float bias = max(0.005 * (1.0 - abs(dot(normalize(Normal), normalize(lights[0].direction.xyz)))), 0.0005);
 
     float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
@@ -175,9 +175,9 @@ void main()
 
     vec4 diffuseColor = useAlbedoTexture ? texture(texture_albedo, TexCoords).xyzw : albedo;
 
-    roughnessInternal = useRoughnessTexture ? texture(texture_roughness, TexCoords).r : roughness;
+    roughnessInternal = useRoughnessTexture ? texture(texture_roughness, TexCoords).g : roughness;
     //roughnessInternal = useMetallicTexture ? texture(texture_metallic, TexCoords).g : roughness;
-    metallicInternal = useRoughnessTexture ? texture(texture_roughness, TexCoords).g : metallic;
+    metallicInternal = useRoughnessTexture ? texture(texture_roughness, TexCoords).b : metallic;
 
     N = useNormalTexture ? texture(texture_normal, TexCoords).rgb : N;
     //normal.y * -1;

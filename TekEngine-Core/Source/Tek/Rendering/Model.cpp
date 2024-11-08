@@ -186,7 +186,7 @@ namespace TEK {
 
         material->AlbedoTexture = LoadMaterialTextures(aiMaterial, aiTextureType_DIFFUSE, "texture_diffuse", directory);
         material->NormalTexture = LoadMaterialTextures(aiMaterial, aiTextureType_NORMALS, "texture_normal", directory);
-        material->RoughnessTexture = LoadMaterialTextures(aiMaterial, aiTextureType_SHININESS, "texture_roughness", directory);
+        material->RoughnessTexture = LoadMaterialTextures(aiMaterial, aiTextureType_UNKNOWN, "texture_roughness", directory);
         //material->MetallicTexture = LoadMaterialTextures(aiMaterial, aiTextureType_METALNESS, "texture_metallic", directory);
 
         material->Metallic = metallic;
