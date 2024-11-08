@@ -10,6 +10,7 @@
 #include "Tek/GameHierarchy/Components/Transform.h"
 #include <assimp/pbrmaterial.h>
 #include <glm/gtx/matrix_decompose.hpp>
+#include <Tek/AssetManagement/AssetManager.h>
 
 
 namespace TEK {
@@ -184,9 +185,9 @@ namespace TEK {
             std::cout << "No normal map found for material " << std::endl;
         }
 
-        material->AlbedoTexture = LoadMaterialTextures(aiMaterial, aiTextureType_DIFFUSE, "texture_diffuse", directory);
-        material->NormalTexture = LoadMaterialTextures(aiMaterial, aiTextureType_NORMALS, "texture_normal", directory);
-        material->RoughnessTexture = LoadMaterialTextures(aiMaterial, aiTextureType_UNKNOWN, "texture_roughness", directory);
+        material->AlbedoTexture = LoadTexture(aiMaterial, aiTextureType_DIFFUSE, "texture_diffuse", directory);
+        material->NormalTexture = LoadTexture(aiMaterial, aiTextureType_NORMALS, "texture_normal", directory);
+        material->RoughnessTexture = LoadTexture(aiMaterial, aiTextureType_UNKNOWN, "texture_roughness", directory);
         //material->MetallicTexture = LoadMaterialTextures(aiMaterial, aiTextureType_METALNESS, "texture_metallic", directory);
 
         material->Metallic = metallic;
@@ -197,6 +198,24 @@ namespace TEK {
 
         std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>(meshObj, material);
         parent->AddComponent(renderer);
+    }
+
+    std::shared_ptr<Texture> Model::LoadTexture(aiMaterial* mat, aiTextureType type, const std::string& typeName, const std::string& directory) {
+        std::shared_ptr<Texture> texture;
+        
+        if (mat->GetTextureCount(type) > 0) {
+            aiString str;
+            mat->GetTexture(type, 0, &str);
+
+            texture = AssetManager::GetInstance().LoadAsset<Texture>(directory + "/" + str.C_Str(), typeName);
+
+            return texture;
+        }
+        else {
+            TEK_CORE_WARN("No textures of type {0} found", typeName);
+        }
+
+        return texture;
     }
 
     void Model::LoadModelToGameObject(const char filePath[], const std::shared_ptr<GameObject>& parentObject) {

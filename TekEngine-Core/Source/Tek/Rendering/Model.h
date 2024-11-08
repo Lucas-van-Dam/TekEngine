@@ -46,6 +46,8 @@ namespace TEK {
 
         void processMesh(aiMesh* mesh, const aiScene* scene, std::shared_ptr<GameObject> parent);
 
+        std::shared_ptr<Texture> LoadTexture(aiMaterial* mat, aiTextureType type, const std::string& typeName, const std::string& directory);
+
     };
 
 }
