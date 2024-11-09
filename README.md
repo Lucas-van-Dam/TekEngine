@@ -1,5 +1,5 @@
-# TekEngine
-TekEngine is a game engine written in C++ 17 and GLSL, 
+# Resonance
+Resonance is a game engine written in C++ 20 and GLSL, 
 
 ## Features
 ### Rendering
