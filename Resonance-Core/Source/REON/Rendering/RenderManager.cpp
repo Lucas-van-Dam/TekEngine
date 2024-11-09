@@ -175,6 +175,8 @@ namespace REON {
     }
 
     void RenderManager::GenerateAdditionalShadows() {
+        if (pointLights.size() == 0)
+            Initialize();
         for (int i = 0; i < pointLights.size(); ++i) {
             std::shared_ptr<Light> light = pointLights[i];
             glm::vec3 lightPos = light->GetOwner()->GetTransform()->localPosition;

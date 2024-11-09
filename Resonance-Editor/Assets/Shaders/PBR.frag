@@ -112,12 +112,14 @@ vec3(0.355, - 0.355, 0.0),
 vec3(- 0.355, - 0.355, 0.0)
 };
 
-float AdditionalShadowCalculation(vec3 fragPos, Light light, int index) {
+float AdditionalShadowCalculation(vec3 normal, vec3 fragPos, Light light, int index) {
     // get vector between fragment position and light position
     vec3 fragToLight = fragPos - light.position.xyz;
     // use the light to fragment vector to sample from the depth map
     float currentDepth = length(fragToLight);
-    float bias = 0.05;
+    // float bias = max((0.005 + 0.0005 * currentDepth) * (1.0 - abs(dot(normalize(normal), normalize(fragToLight)))), 0.0005);
+    float angleFactor = 1.0 - abs(dot(normalize(normal), normalize(-fragToLight)));
+    float bias = max((0.0005 * exp(5.0 * angleFactor)) * (1.0 - angleFactor), 0.00005);
     float shadow = 0.0;
     int samples = 4; // Number of samples for PCF
     float diskRadius = 0.05; // Radius of the sampling disk
@@ -212,7 +214,10 @@ void main()
             float distance = length(lights[i].position.xyz - fragPosition);
             float attenuation = 1.0 / (distance * distance);
             radiance = lights[i].lightColor.xyz * attenuation;
-            shadow = AdditionalShadowCalculation(fragPosition, lights[i], pointLightCount++);
+            shadow = AdditionalShadowCalculation(N, fragPosition, lights[i], pointLightCount++);
+
+            // FragColor = vec4(shadow,0,0,1);
+            // return;
         }
 
         vec3 H = normalize(V + L);

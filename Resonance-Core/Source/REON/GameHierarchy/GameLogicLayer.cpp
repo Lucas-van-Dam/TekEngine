@@ -88,14 +88,14 @@ namespace REON {
 		m_Scene->AddGameObject(light);
 		light->AddComponent<Light>(lightComponent);
 		light->GetTransform()->localPosition = glm::vec3(-7, 3, 3);
-		//m_Scene->lightManager->AddLight(lightComponent);
+		m_Scene->lightManager->AddLight(lightComponent);
 
 		std::shared_ptr<GameObject> light2 = std::make_shared<GameObject>();
 		std::shared_ptr<Light> lightComponent2 = std::make_shared<Light>(LightType::Point, 3, glm::vec3(1.0f, 1.0f, 1.0f));
 		m_Scene->AddGameObject(light2);
 		light2->AddComponent<Light>(lightComponent2);
 		light2->GetTransform()->localPosition = glm::vec3(-5, 4, 3);
-		//m_Scene->lightManager->AddLight(lightComponent2);
+		m_Scene->lightManager->AddLight(lightComponent2);
 
 		std::shared_ptr<GameObject> light4 = std::make_shared<GameObject>();
 		std::shared_ptr<Light> lightComponent4 = std::make_shared<Light>(LightType::Directional, 3, glm::vec3(1, 1, 1));
