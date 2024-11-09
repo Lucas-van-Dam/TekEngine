@@ -10,6 +10,6 @@
 [submodule "TekEngine-Core/vendor/GLFW"]
 	path = TekEngine-Core/vendor/GLFW
 	url = https://github.com/Lucas-van-Dam/glfw
-[submodule "TekEngine-Core/vendor/assimp"]
-	path = TekEngine-Core/vendor/assimp
+[submodule "Resonance-Core/vendor/assimp"]
+	path = Resonance-Core/vendor/assimp
 	url = https://github.com/Lucas-van-Dam/assimp
