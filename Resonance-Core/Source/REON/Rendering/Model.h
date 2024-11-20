@@ -21,11 +21,6 @@ namespace REON {
 
     class Model {
     public:
-        // model data
-        std::vector<Texture> textures_loaded;    // stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
-        std::vector<Mesh> meshes;
-        std::string directory;
-
         explicit Model(const char* path, const std::shared_ptr<GameObject>& parent) {
             Assimp::DefaultLogger::create("", Assimp::Logger::VERBOSE);
             Assimp::LogStream* stderrStream = Assimp::LogStream::createDefaultStream(aiDefaultLogStream_STDERR);
@@ -48,6 +43,8 @@ namespace REON {
 
         std::shared_ptr<Texture> LoadTexture(aiMaterial* mat, aiTextureType type, const std::string& directory);
 
+    private:
+        std::string m_Directory;
     };
 
 }

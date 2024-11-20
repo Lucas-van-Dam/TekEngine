@@ -30,8 +30,6 @@ namespace REON {
 	class Event {
 		friend class EventDispatcher;
 	public:
-		bool Handled = false;
-	public:
 		virtual EventType GetEventType() const = 0;
 		virtual const char* GetName() const = 0;
 		virtual int GetCategoryFlags() const = 0;
@@ -40,6 +38,8 @@ namespace REON {
 		inline bool IsInCategory(EventCategory category) {
 			return GetCategoryFlags() & category;
 		}
+	public:
+		bool Handled = false;
 	};
 
 	class EventDispatcher {

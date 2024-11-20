@@ -7,16 +7,18 @@ namespace REON {
 
     class Material {
     public:
-        std::shared_ptr<Texture> AlbedoTexture;
-        glm::vec4 AlbedoColor;
-        std::shared_ptr<Texture> MetallicTexture;
-        float Metallic;
-        std::shared_ptr<Texture> RoughnessTexture;
-        float Roughness;
-        std::shared_ptr<Texture> NormalTexture;
-        std::shared_ptr<Shader> shader;
         Material(std::shared_ptr<Shader> shader);
         Material();
+
+    public:
+        std::shared_ptr<Texture> albedoTexture;
+        glm::vec4 albedoColor;
+        std::shared_ptr<Texture> metallicTexture;
+        float metallic;
+        std::shared_ptr<Texture> roughnessTexture;
+        float roughness;
+        std::shared_ptr<Texture> normalTexture;
+        std::shared_ptr<Shader> shader;
     };
 }
 

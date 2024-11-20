@@ -12,6 +12,7 @@ project "Core"
    { 
     "Source/**.h", 
     "Source/**.cpp",
+    "Reflection/**.h",
     "vendor/glm/glm/**.hpp",
     "vendor/glm/glm/**.inl",
     "vendor/stb_image/**.cpp",

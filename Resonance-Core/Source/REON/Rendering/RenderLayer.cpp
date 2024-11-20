@@ -41,7 +41,7 @@ namespace REON {
 
 	void RenderLayer::OnImGuiRender()
 	{
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+		/*ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
 
 		if (ImGui::Begin("Scene", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoCollapse))
@@ -73,7 +73,7 @@ namespace REON {
 		}
 		ImGui::End();
 
-		ImGui::PopStyleVar(2);
+		ImGui::PopStyleVar(2);*/
 	}
 
 	void RenderLayer::OnEvent(Event& event)

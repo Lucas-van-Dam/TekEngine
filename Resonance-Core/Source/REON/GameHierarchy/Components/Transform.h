@@ -10,12 +10,8 @@ namespace REON {
 
     class Transform : public Component {
     public:
-        glm::vec3 localPosition; // Position (translation)
-        Quaternion localRotation; // Quaternion for rotation
-        glm::vec3 localScale;    // Scale factors (x, y, z)
-
         Transform()
-            : localPosition(glm::vec3(0.0f)), localRotation(1.0f, 0.0f, 0.0f, 0.0f), localScale(glm::vec3(1.0f)), localMatrix(1.0f) {}
+            : localPosition(glm::vec3(0.0f)), localRotation(1.0f, 0.0f, 0.0f, 0.0f), localScale(glm::vec3(1.0f)), m_LocalMatrix(1.0f) {}
 
         ~Transform();
 
@@ -36,6 +32,10 @@ namespace REON {
 
         void UpdateLocalMatrix();
 
+    public:
+        glm::vec3 localPosition; // Position (translation)
+        Quaternion localRotation; // Quaternion for rotation
+        glm::vec3 localScale;    // Scale factors (x, y, z)
 
     private:
         // Create the rotation matrix from a quaternion
@@ -43,9 +43,12 @@ namespace REON {
             return glm::mat4_cast(quat);
         }
 
-        glm::mat4 localMatrix;
+        // Inherited via Component
+        void OnGameObjectAddedToScene() override;
+        void OnComponentDetach() override;
 
-
+    private:
+        glm::mat4 m_LocalMatrix;
     };
 
 }

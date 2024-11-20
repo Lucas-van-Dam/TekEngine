@@ -5,7 +5,7 @@
 #include "REON/Events/KeyEvent.h"
 #include "REON/Events/MouseEvent.h"
 
-#include "Platform/OpenGL/OpenGLContext.h"
+#include "REON/Platform/OpenGL/OpenGLContext.h"
 
 namespace REON {
 

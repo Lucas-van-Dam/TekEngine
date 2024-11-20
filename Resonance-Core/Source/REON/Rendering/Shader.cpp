@@ -17,13 +17,13 @@ namespace REON {
         gShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
         try {
             // open files
-            vertexPath = std::string("Assets/Shaders/" + vertexFileName);
-            fragmentPath = std::string("Assets/Shaders/" + fragmentFileName);
-            vShaderFile.open(vertexPath);
+            m_VertexPath = std::string("Assets/Shaders/" + vertexFileName);
+            m_FragmentPath = std::string("Assets/Shaders/" + fragmentFileName);
+            vShaderFile.open(m_VertexPath);
             if (!vShaderFile.is_open()) {
                 std::cerr << "Error opening file: " << strerror(errno) << std::endl;
             }
-            fShaderFile.open(fragmentPath);
+            fShaderFile.open(m_FragmentPath);
             if (!fShaderFile.is_open()) {
                 std::cerr << "Error opening file: " << strerror(errno) << std::endl;
             }
@@ -38,8 +38,8 @@ namespace REON {
             vertexCode = vShaderStream.str();
             fragmentCode = fShaderStream.str();
             if (!geometryFileName.empty()) {
-                geometryPath = std::string("Assets/Shaders/" + geometryFileName);
-                gShaderFile.open(geometryPath);
+                m_GeometryPath = std::string("Assets/Shaders/" + geometryFileName);
+                gShaderFile.open(m_GeometryPath);
                 std::stringstream gShaderStream;
                 gShaderStream << gShaderFile.rdbuf();
                 gShaderFile.close();
@@ -53,37 +53,37 @@ namespace REON {
         const char* fShaderCode = fragmentCode.c_str();
         // 2. compile shaders
         // vertex shader
-        vertexID = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertexID, 1, &vShaderCode, nullptr);
-        glCompileShader(vertexID);
-        checkCompileErrors(vertexID, "VERTEX");
+        m_VertexID = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(m_VertexID, 1, &vShaderCode, nullptr);
+        glCompileShader(m_VertexID);
+        checkCompileErrors(m_VertexID, "VERTEX");
         // fragment Shader
-        fragmentID = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragmentID, 1, &fShaderCode, nullptr);
-        glCompileShader(fragmentID);
-        checkCompileErrors(fragmentID, "FRAGMENT");
+        m_FragmentID = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(m_FragmentID, 1, &fShaderCode, nullptr);
+        glCompileShader(m_FragmentID);
+        checkCompileErrors(m_FragmentID, "FRAGMENT");
         // geometry shader if provided
         if (!geometryFileName.empty())
         {
             const char* gShaderCode = geometryCode.c_str();
-            geometryID = glCreateShader(GL_GEOMETRY_SHADER);
-            glShaderSource(geometryID, 1, &gShaderCode, nullptr);
-            glCompileShader(geometryID);
-            checkCompileErrors(geometryID, "GEOMETRY");
+            m_GeometryID = glCreateShader(GL_GEOMETRY_SHADER);
+            glShaderSource(m_GeometryID, 1, &gShaderCode, nullptr);
+            glCompileShader(m_GeometryID);
+            checkCompileErrors(m_GeometryID, "GEOMETRY");
         }
         // shader Program
         ID = glCreateProgram();
-        glAttachShader(ID, vertexID);
-        glAttachShader(ID, fragmentID);
+        glAttachShader(ID, m_VertexID);
+        glAttachShader(ID, m_FragmentID);
         if (!geometryFileName.empty())
-            glAttachShader(ID, geometryID);
+            glAttachShader(ID, m_GeometryID);
         glLinkProgram(ID);
         checkCompileErrors(ID, "PROGRAM");
         // delete the shaders as they're linked into our program now and no longer necessary
-        glDeleteShader(vertexID);
-        glDeleteShader(fragmentID);
+        glDeleteShader(m_VertexID);
+        glDeleteShader(m_FragmentID);
         if (!geometryFileName.empty())
-            glDeleteShader(geometryID);
+            glDeleteShader(m_GeometryID);
     }
 
     void Shader::use() const {
@@ -178,11 +178,11 @@ namespace REON {
         fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
         gShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
         try {
-            vShaderFile.open(vertexPath);
+            vShaderFile.open(m_VertexPath);
             if (!vShaderFile.is_open()) {
                 std::cerr << "Error opening file: " << strerror(errno) << std::endl;
             }
-            fShaderFile.open(fragmentPath);
+            fShaderFile.open(m_FragmentPath);
             if (!fShaderFile.is_open()) {
                 std::cerr << "Error opening file: " << strerror(errno) << std::endl;
             }
@@ -196,8 +196,8 @@ namespace REON {
             // convert stream into string
             vertexCode = vShaderStream.str();
             fragmentCode = fShaderStream.str();
-            if (!geometryPath.empty()) {
-                gShaderFile.open(geometryPath);
+            if (!m_GeometryPath.empty()) {
+                gShaderFile.open(m_GeometryPath);
                 std::stringstream gShaderStream;
                 gShaderStream << gShaderFile.rdbuf();
                 gShaderFile.close();
@@ -211,37 +211,37 @@ namespace REON {
         const char* fShaderCode = fragmentCode.c_str();
         // 2. compile shaders
         // vertex shader
-        vertexID = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertexID, 1, &vShaderCode, nullptr);
-        glCompileShader(vertexID);
-        checkCompileErrors(vertexID, "VERTEX");
+        m_VertexID = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(m_VertexID, 1, &vShaderCode, nullptr);
+        glCompileShader(m_VertexID);
+        checkCompileErrors(m_VertexID, "VERTEX");
         // fragment Shader
-        fragmentID = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragmentID, 1, &fShaderCode, nullptr);
-        glCompileShader(fragmentID);
-        checkCompileErrors(fragmentID, "FRAGMENT");
+        m_FragmentID = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(m_FragmentID, 1, &fShaderCode, nullptr);
+        glCompileShader(m_FragmentID);
+        checkCompileErrors(m_FragmentID, "FRAGMENT");
         // geometry shader if provided
-        if (!geometryPath.empty())
+        if (!m_GeometryPath.empty())
         {
             const char* gShaderCode = geometryCode.c_str();
-            geometryID = glCreateShader(GL_GEOMETRY_SHADER);
-            glShaderSource(geometryID, 1, &gShaderCode, nullptr);
-            glCompileShader(geometryID);
-            checkCompileErrors(geometryID, "GEOMETRY");
+            m_GeometryID = glCreateShader(GL_GEOMETRY_SHADER);
+            glShaderSource(m_GeometryID, 1, &gShaderCode, nullptr);
+            glCompileShader(m_GeometryID);
+            checkCompileErrors(m_GeometryID, "GEOMETRY");
         }
         // shader Program
         ID = glCreateProgram();
-        glAttachShader(ID, vertexID);
-        glAttachShader(ID, fragmentID);
-        if (!geometryPath.empty())
-            glAttachShader(ID, geometryID);
+        glAttachShader(ID, m_VertexID);
+        glAttachShader(ID, m_FragmentID);
+        if (!m_GeometryPath.empty())
+            glAttachShader(ID, m_GeometryID);
         glLinkProgram(ID);
         checkCompileErrors(ID, "PROGRAM");
         // delete the shaders as they're linked into our program now and no longer necessary
-        glDeleteShader(vertexID);
-        glDeleteShader(fragmentID);
-        if (!geometryPath.empty())
-            glDeleteShader(geometryID);
+        glDeleteShader(m_VertexID);
+        glDeleteShader(m_FragmentID);
+        if (!m_GeometryPath.empty())
+            glDeleteShader(m_GeometryID);
     }
 
 }

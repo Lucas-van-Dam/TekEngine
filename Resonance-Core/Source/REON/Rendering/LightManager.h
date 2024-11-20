@@ -8,9 +8,11 @@ namespace REON {
     public:
         LightManager(int maxLights);
 
+        void AddLight(const std::shared_ptr<Light>& light);
+
+    public:
         std::vector<std::shared_ptr<Light>> lights;
         int maxLights;
-        void AddLight(const std::shared_ptr<Light>& light);
         std::shared_ptr<Light> mainLight;
     };
 

@@ -11,18 +11,18 @@ namespace REON {
         //virtual void Initialize() = 0;
 
         std::shared_ptr<GameObject> GetOwner() const {
-            return gameObject.lock();
+            return m_GameObject.lock();
         }
 
         virtual void SetOwner(std::shared_ptr<GameObject> owner) {
-            gameObject = owner;
+            m_GameObject = owner;
         }
 
-        virtual void OnGameObjectAddedToScene();
-        virtual void OnComponentDetach();
+        virtual void OnGameObjectAddedToScene() = 0;
+        virtual void OnComponentDetach() = 0;
 
     private:
-        std::weak_ptr<GameObject> gameObject;
+        std::weak_ptr<GameObject> m_GameObject;
     };
 }
 

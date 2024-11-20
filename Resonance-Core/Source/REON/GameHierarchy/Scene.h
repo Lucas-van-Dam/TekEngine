@@ -18,13 +18,15 @@ namespace REON {
         void ProcessGameObjectDeletion();
         std::shared_ptr<GameObject> GetGameObject(int index);
         std::shared_ptr<EditorCamera> GetEditorCamera();
+
+    public:
         std::shared_ptr<EditorCamera> camera;
         std::shared_ptr<LightManager> lightManager;
         std::unique_ptr<RenderManager> renderManager;
 
     private:
-        std::vector<std::shared_ptr<GameObject>> gameObjects;
-        std::vector<std::weak_ptr<GameObject>> gameObjectsToDelete;
+        std::vector<std::shared_ptr<GameObject>> m_GameObjects;
+        std::vector<std::weak_ptr<GameObject>> m_GameObjectsToDelete;
     };
 
 }

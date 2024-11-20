@@ -30,7 +30,8 @@ namespace REON {
 
             stbi_image_free(data);
 
-            id = textureID;
+            m_Id = textureID;
+            m_Path = filePath;
         }
         else {
             std::cout << "Texture failed to load at path: " << filePath << std::endl;
@@ -40,10 +41,15 @@ namespace REON {
 
 	void Texture::Unload()
 	{
-        if (id) {
-            glDeleteTextures(1, &id);
-            id = 0;
+        if (m_Id) {
+            glDeleteTextures(1, &m_Id);
+            m_Id = 0;
         }
 	}
+
+    unsigned int Texture::GetId()
+    {
+        return m_Id;
+    }
 
 }

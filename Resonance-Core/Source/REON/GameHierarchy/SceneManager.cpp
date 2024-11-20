@@ -4,7 +4,7 @@
 namespace REON {
 	SceneManager::SceneManager()
 	{
-		currentScene = std::make_shared<Scene>();
+		m_CurrentScene = std::make_shared<Scene>();
 	}
 
 	SceneManager::~SceneManager()
@@ -13,7 +13,7 @@ namespace REON {
 
 	std::shared_ptr<Scene> SceneManager::GetCurrentScene()
 	{
-		return currentScene;
+		return m_CurrentScene;
 	}
 
 	std::shared_ptr<SceneManager> SceneManager::Get()

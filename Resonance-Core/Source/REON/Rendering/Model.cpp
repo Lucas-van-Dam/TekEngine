@@ -46,7 +46,7 @@ namespace REON {
         }
 
         // retrieve the directory path of the filepath
-        directory = path.substr(0, path.find_last_of('/'));
+        m_Directory = path.substr(0, path.find_last_of('/'));
 
         // process ASSIMP's root node recursively
         processNode(scene->mRootNode, scene, parent);
@@ -185,14 +185,14 @@ namespace REON {
             std::cout << "No normal map found for material " << std::endl;
         }
 
-        material->AlbedoTexture = LoadTexture(aiMaterial, aiTextureType_DIFFUSE,directory);
-        material->NormalTexture = LoadTexture(aiMaterial, aiTextureType_NORMALS, directory);
-        material->RoughnessTexture = LoadTexture(aiMaterial, aiTextureType_UNKNOWN, directory);
+        material->albedoTexture = LoadTexture(aiMaterial, aiTextureType_DIFFUSE,m_Directory);
+        material->normalTexture = LoadTexture(aiMaterial, aiTextureType_NORMALS, m_Directory);
+        material->roughnessTexture = LoadTexture(aiMaterial, aiTextureType_UNKNOWN, m_Directory);
         //material->MetallicTexture = LoadMaterialTextures(aiMaterial, aiTextureType_METALNESS, "texture_metallic", directory);
 
-        material->Metallic = metallic;
-        material->Roughness = roughness;
-        material->AlbedoColor = glm::vec4(color.r, color.g, color.b, color.a);
+        material->metallic = metallic;
+        material->roughness = roughness;
+        material->albedoColor = glm::vec4(color.r, color.g, color.b, color.a);
 
         std::shared_ptr<Mesh> meshObj = std::make_shared<Mesh>(vertices, indices);
 

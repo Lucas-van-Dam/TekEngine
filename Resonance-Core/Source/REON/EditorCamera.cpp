@@ -32,7 +32,6 @@ namespace REON {
     {
         //   std::cout << "test" << Zoom;
        //    Zoom =45;
-        //TODO: CHANGE TO ACTUAL ACCURATE SCREEN SIZE, VERY BAD HARD CODE!!!!
         return glm::perspective(glm::radians(Zoom), (float)SceneManager::Get()->GetCurrentScene()->renderManager->GetRenderWidth() / (float)SceneManager::Get()->GetCurrentScene()->renderManager->GetRenderHeight(), 0.1f, 100.0f);
     }
 

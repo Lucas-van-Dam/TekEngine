@@ -8,22 +8,22 @@ namespace REON {
 
     class Mesh {
     public:
-        // mesh data
-        std::vector<Vertex> vertices;
-        std::vector<unsigned int> indices;
-        unsigned int VAO, SSBO;
-
         Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
 
         void Draw(Material& material, std::vector<LightData> lightData) const;
         void Destroy();
 
     private:
-        //  render data
-        unsigned int VBO, EBO;
-        const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
-        unsigned int depthMap;
-
         void setupMesh();
+
+    private:
+        //  render data
+        unsigned int m_VBO, m_EBO;
+        unsigned int m_DepthMap;
+        // mesh data
+        std::vector<Vertex> m_Vertices;
+        std::vector<unsigned int> m_Indices;
+        unsigned int m_VAO, m_SSBO;
+
     };
 }

@@ -22,6 +22,7 @@ namespace REON {
 
 		bool ProcessKeyPress(KeyPressedEvent& event);
 		void ProcessMouseMove();
+
 	private:
 		bool m_SceneHovered = false;
 		double m_SavedX = 0, m_SavedY = 0;

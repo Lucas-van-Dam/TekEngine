@@ -11,13 +11,17 @@
 namespace REON {
     class Texture : public Asset {
     public:
-        Texture() : id(0) {}
+        Texture() : m_Id(0) {}
         ~Texture() override { Unload(); }
-        unsigned int id;
 
         // Inherited via Asset
         virtual void Load(const std::string& filePath, std::any metadata = {}) override;
 
         void Unload() override;
+
+        unsigned int GetId();
+
+    private:
+        unsigned int m_Id;
     };
 }

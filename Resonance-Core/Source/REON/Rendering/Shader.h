@@ -7,9 +7,6 @@ namespace REON {
 
     class Shader {
     public:
-        // the program ID
-        unsigned int ID;
-
         // constructor reads and builds the shader
         Shader(const std::string& vertexFileName, const std::string& fragmentFileName, const std::string& geometryFileName = "");
         // use/activate the shader
@@ -30,12 +27,17 @@ namespace REON {
 
         void ReloadShader();
 
+    public:
+        // the program ID
+        unsigned int ID;
+
     private:
         // utility function for checking shader compilation/linking errors.
         // ------------------------------------------------------------------------
         static void checkCompileErrors(unsigned int shader, const std::string& type);
 
-        std::string vertexPath, fragmentPath, geometryPath;
-        GLuint fragmentID, vertexID, geometryID;
+    private:
+        std::string m_VertexPath, m_FragmentPath, m_GeometryPath;
+        GLuint m_FragmentID, m_VertexID, m_GeometryID;
     };
 }

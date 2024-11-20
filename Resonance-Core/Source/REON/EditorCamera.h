@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
-#include <Platform/Windows/WindowsInput.h>
+#include "REON/Platform/Windows/WindowsInput.h"
 #include "REON/GameHierarchy/SceneManager.h"
 
 namespace REON {
@@ -34,21 +34,6 @@ namespace REON {
     {
     public:
         static std::shared_ptr<EditorCamera> GetInstance();
-        // camera Attributes
-        glm::vec3 Position;
-        glm::vec3 Front;
-        glm::vec3 Up;
-        glm::vec3 Right;
-        glm::vec3 WorldUp;
-        // euler Angles
-        float Yaw;
-        float Pitch;
-        // camera options
-        float MovementSpeed;
-        float ShiftSpeed;
-        float Speed;
-        float MouseSensitivity;
-        float Zoom;
 
         // constructor with vectors
         EditorCamera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
@@ -75,6 +60,23 @@ namespace REON {
         void ProcessMouseScroll(float yoffset);
 
         void ProcessShiftKey(bool shift);
+
+    public:
+        // camera Attributes
+        glm::vec3 Position;
+        glm::vec3 Front;
+        glm::vec3 Up;
+        glm::vec3 Right;
+        glm::vec3 WorldUp;
+        // euler Angles
+        float Yaw;
+        float Pitch;
+        // camera options
+        float MovementSpeed;
+        float ShiftSpeed;
+        float Speed;
+        float MouseSensitivity;
+        float Zoom;
 
     private:
         // calculates the front vector from the Camera's (updated) Euler Angles

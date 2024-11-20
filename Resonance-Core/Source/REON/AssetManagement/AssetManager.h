@@ -24,7 +24,8 @@ namespace REON {
 		AssetManager() = default;
 		~AssetManager() = default;
 
-		std::unordered_map<unsigned int, std::shared_ptr<Asset>> assets;
+	private:
+		std::unordered_map<unsigned int, std::shared_ptr<Asset>> m_Assets;
 	};
 
 	template<typename AssetType>
@@ -32,15 +33,15 @@ namespace REON {
 	{
 		unsigned int assetID = std::hash<std::string>{}(path);
 
-		auto it = assets.find(assetID);
-		if (it != assets.end()) {
+		auto it = m_Assets.find(assetID);
+		if (it != m_Assets.end()) {
 			return std::dynamic_pointer_cast<AssetType>(it->second);
 		}
 
 		auto asset = std::make_shared<AssetType>();
 
 		asset->Load(path, metadata);
-		assets[assetID] = asset;
+		m_Assets[assetID] = asset;
 
 		return asset;
 	}

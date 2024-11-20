@@ -28,12 +28,6 @@ namespace REON {
 #define REON_CORE_WARN(...) ::REON::Logger::GetCoreLogger()->warn(__VA_ARGS__)
 #define REON_CORE_INFO(...) ::REON::Logger::GetCoreLogger()->info(__VA_ARGS__)
 #define REON_CORE_TRACE(...) ::REON::Logger::GetCoreLogger()->trace(__VA_ARGS__)
-
-#define REON_CRITICAL(...) ::REON::Logger::GetClientLogger()->critical(__VA_ARGS__)
-#define REON_ERROR(...) ::REON::Logger::GetClientLogger()->error(__VA_ARGS__)
-#define REON_WARN(...) ::REON::Logger::GetClientLogger()->warn(__VA_ARGS__)
-#define REON_INFO(...) ::REON::Logger::GetClientLogger()->info(__VA_ARGS__)
-#define REON_TRACE(...) ::REON::Logger::GetClientLogger()->trace(__VA_ARGS__)
 #else
 #define REON_CORE_CRITICAL(...)
 #define REON_CORE_ERROR(...) 
@@ -42,3 +36,8 @@ namespace REON {
 #define REON_CORE_TRACE(...)
 #endif
 
+#define REON_CRITICAL(...) ::REON::Logger::GetClientLogger()->critical(__VA_ARGS__)
+#define REON_ERROR(...) ::REON::Logger::GetClientLogger()->error(__VA_ARGS__)
+#define REON_WARN(...) ::REON::Logger::GetClientLogger()->warn(__VA_ARGS__)
+#define REON_INFO(...) ::REON::Logger::GetClientLogger()->info(__VA_ARGS__)
+#define REON_TRACE(...) ::REON::Logger::GetClientLogger()->trace(__VA_ARGS__)

@@ -13,4 +13,12 @@ namespace REON {
 
     }
 
+    void Light::OnGameObjectAddedToScene()
+    {
+    }
+
+    void Light::OnComponentDetach()
+    {
+    }
+
 }

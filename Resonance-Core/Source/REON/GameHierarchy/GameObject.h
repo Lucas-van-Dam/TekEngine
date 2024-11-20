@@ -11,22 +11,20 @@ namespace REON {
 
     class GameObject : public std::enable_shared_from_this<GameObject> {
     public:
-        bool enabled = true;
-
         GameObject();
         ~GameObject();
         GameObject(const GameObject&);
 
         template <typename T>
         T* AddComponent(std::shared_ptr<T> component) {
-            components.emplace_back(component);
-            components.back()->SetOwner(shared_from_this());
-            return dynamic_cast<T*>(components.back().get());
+            m_Components.emplace_back(component);
+            m_Components.back()->SetOwner(shared_from_this());
+            return dynamic_cast<T*>(m_Components.back().get());
         }
 
         template <typename T>
         T* GetComponent() {
-            for (const auto& component : components) {
+            for (const auto& component : m_Components) {
                 if (auto ptr = dynamic_cast<T*>(component.get())) {
                     return ptr;
                 }
@@ -53,19 +51,21 @@ namespace REON {
 
         void OnGameObjectDeleted();
 
+    public:
+        bool enabled = true;
 
     private:
-        std::vector<std::shared_ptr<Component>> components;
-        std::vector<std::shared_ptr<GameObject>> children;
-        std::weak_ptr<GameObject> parent;
-        std::string name;
-
-        std::shared_ptr<Transform> transform;
-
-        std::weak_ptr<Scene> scene;
-
         void SetParent(std::shared_ptr<GameObject> newParent);
 
+    private:
+        std::vector<std::shared_ptr<Component>> m_Components;
+        std::vector<std::shared_ptr<GameObject>> m_Children;
+        std::weak_ptr<GameObject> m_Parent;
+        std::string m_Name;
+
+        std::shared_ptr<Transform> m_Transform;
+
+        std::weak_ptr<Scene> m_Scene;
     };
 
 }

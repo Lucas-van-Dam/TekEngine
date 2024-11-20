@@ -18,9 +18,6 @@ namespace REON {
 
     class Renderer : public Component, public std::enable_shared_from_this<Renderer> {
     public:
-        std::shared_ptr<Mesh> mesh;
-        std::shared_ptr<Material> material;
-
         Renderer(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);
         ~Renderer();
         void Draw(glm::mat4 mainLightView, glm::mat4 mainLightProj, int skyboxId, int irradianceMapId, int prefilterMapId, int brdfLUTTextureId, std::vector<int> depthCubeId = std::vector<int>(), int shadowMapId = 0, const std::shared_ptr<Shader>&overrideShader = nullptr);
@@ -32,13 +29,19 @@ namespace REON {
         void OnGameObjectAddedToScene() override;
         void OnComponentDetach() override;
 
+    public:
+        std::shared_ptr<Mesh> mesh;
+        std::shared_ptr<Material> material;
+
     private:
         std::vector<LightData> SetLightingBuffer(glm::mat4 mainLightView, glm::mat4 mainLightProj);
-        glm::mat4 modelMatrix{};
-        glm::mat4 viewMatrix{};
-        glm::mat4 projectionMatrix{};
 
-        std::shared_ptr<Transform> transform = nullptr;
+    private:
+        glm::mat4 m_ModelMatrix{};
+        glm::mat4 m_ViewMatrix{};
+        glm::mat4 m_ProjectionMatrix{};
+
+        std::shared_ptr<Transform> m_Transform = nullptr;
     };
 
 }

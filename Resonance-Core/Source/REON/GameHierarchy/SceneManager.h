@@ -12,7 +12,7 @@ namespace REON {
 		std::shared_ptr<Scene> GetCurrentScene();
 
 	private:
-		std::shared_ptr<Scene> currentScene;
+		std::shared_ptr<Scene> m_CurrentScene;
 	};
 }
 

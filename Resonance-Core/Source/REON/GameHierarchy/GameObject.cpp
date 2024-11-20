@@ -8,11 +8,11 @@
 namespace REON {
 
     void GameObject::Update(float deltaTime) {
-        for (const auto& component : components) {
+        for (const auto& component : m_Components) {
             component->Update(deltaTime);
         }
 
-        for (const auto& child : children) {
+        for (const auto& child : m_Children) {
             child->Update(deltaTime);
         }
         
@@ -20,56 +20,56 @@ namespace REON {
 
     void GameObject::AddChild(std::shared_ptr<GameObject> child) {
         child->SetParent(shared_from_this());
-        child->SetScene(scene.lock());
-        children.emplace_back(std::move(child));
+        child->SetScene(m_Scene.lock());
+        m_Children.emplace_back(std::move(child));
     }
 
     std::shared_ptr<GameObject> GameObject::GetParent() {
-        if(auto parentPtr = parent.lock())
+        if(auto parentPtr = m_Parent.lock())
             return parentPtr;
         //REON_CORE_ERROR("Object has been deleted but is trying to be accessed");
         return nullptr;
     }
 
     void GameObject::SetParent(std::shared_ptr<GameObject> newParent) {
-        parent = std::move(newParent);
+        m_Parent = std::move(newParent);
     }
 
     std::shared_ptr<Transform> GameObject::GetTransform() {
-        return transform;
+        return m_Transform;
     }
 
     std::shared_ptr<Scene> GameObject::GetScene() {
-        if(scene.lock())
-            return scene.lock();
+        if(m_Scene.lock())
+            return m_Scene.lock();
     }
 
     void GameObject::SetScene(std::shared_ptr<Scene> newScene) {
-        if (scene.lock())
-            scene.lock().reset(newScene.get());
+        if (m_Scene.lock())
+            m_Scene.lock().reset(newScene.get());
         else
-            scene = newScene; // Explicitly reset scene
-        transform->SetOwner(shared_from_this());
-        for (const auto& component : components) {
+            m_Scene = newScene; // Explicitly reset scene
+        m_Transform->SetOwner(shared_from_this());
+        for (const auto& component : m_Components) {
             component->OnGameObjectAddedToScene();
         }
     }
 
     void GameObject::OnGameObjectDeleted()
     {
-        for (auto component : components) {
+        for (auto component : m_Components) {
             component->OnComponentDetach();
         }
-        components.clear();
-        for (auto child : children) {
+        m_Components.clear();
+        for (auto child : m_Children) {
             child->OnGameObjectDeleted();
         }
-        children.clear();
-        transform.reset();
+        m_Children.clear();
+        m_Transform.reset();
     }
 
-    GameObject::GameObject() : components() {
-        transform = std::make_shared<Transform>();
+    GameObject::GameObject() : m_Components() {
+        m_Transform = std::make_shared<Transform>();
     }
 
     GameObject::~GameObject()
@@ -81,11 +81,11 @@ namespace REON {
     }
 
     void GameObject::SetName(std::string newName) {
-        this->name = std::move(newName);
+        this->m_Name = std::move(newName);
     }
 
     std::string GameObject::GetName() {
-        return name;
+        return m_Name;
     }
 
 

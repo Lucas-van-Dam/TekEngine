@@ -4,30 +4,30 @@
 namespace REON {
 
     void Scene::AddGameObject(std::shared_ptr<GameObject> gameObject) {
-        gameObjects.push_back(gameObject);
+        m_GameObjects.push_back(gameObject);
         gameObject->SetScene(shared_from_this());
     }
 
     void Scene::DeleteGameObject(std::shared_ptr<GameObject> gameObject)
     {
-        gameObjectsToDelete.push_back(gameObject);
+        m_GameObjectsToDelete.push_back(gameObject);
     }
 
     void Scene::UpdateScene(float deltaTime) {
-        for (const auto& gameObject : gameObjects) {
+        for (const auto& gameObject : m_GameObjects) {
             gameObject->Update(deltaTime);
         }
     }
 
     void Scene::ProcessGameObjectDeletion() {
-        for (const auto& gameObject : gameObjectsToDelete) {
+        for (const auto& gameObject : m_GameObjectsToDelete) {
             auto obj = gameObject.lock();
             if (obj) {
                 obj->OnGameObjectDeleted();
-                gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), obj), gameObjects.end());
+                m_GameObjects.erase(std::remove(m_GameObjects.begin(), m_GameObjects.end(), obj), m_GameObjects.end());
             }
         }
-        gameObjectsToDelete.clear();
+        m_GameObjectsToDelete.clear();
     }
 
 
@@ -42,13 +42,13 @@ namespace REON {
     }
 
     Scene::~Scene() {
-        gameObjects.clear();
+        m_GameObjects.clear();
     }
 
     std::shared_ptr<GameObject> Scene::GetGameObject(int index)
     {
-        if (index >= 0 && index < static_cast<int>(gameObjects.size())) {
-            auto gameObject = gameObjects[index];
+        if (index >= 0 && index < static_cast<int>(m_GameObjects.size())) {
+            auto gameObject = m_GameObjects[index];
             if (gameObject) {
                 return gameObject;
             }

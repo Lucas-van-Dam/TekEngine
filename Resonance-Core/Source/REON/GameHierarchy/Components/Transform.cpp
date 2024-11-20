@@ -50,7 +50,15 @@ namespace REON {
         glm::mat4 rotation = glm::toMat4(localRotation);
         glm::mat4 scale = glm::scale(glm::mat4(1.0f), localScale);
 
-        localMatrix = translation * rotation * scale;
+        m_LocalMatrix = translation * rotation * scale;
+    }
+
+    void Transform::OnGameObjectAddedToScene()
+    {
+    }
+
+    void Transform::OnComponentDetach()
+    {
     }
 
     Transform::~Transform()

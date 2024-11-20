@@ -4,38 +4,38 @@
 namespace REON {
 
     Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices) {
-        this->vertices = vertices;
-        this->indices = indices;
+        this->m_Vertices = vertices;
+        this->m_Indices = indices;
 
         setupMesh();
     }
 
     void Mesh::Destroy()
     {
-        glDeleteVertexArrays(1, &VAO);
-        glDeleteBuffers(1, &VBO);
-        glDeleteBuffers(1, &EBO);
+        glDeleteVertexArrays(1, &m_VAO);
+        glDeleteBuffers(1, &m_VBO);
+        glDeleteBuffers(1, &m_EBO);
     }
 
     // initializes all the buffer objects/arrays
     void Mesh::setupMesh()
     {
         // create buffers/arrays
-        glGenVertexArrays(1, &VAO);
-        glGenBuffers(1, &VBO);
-        glGenBuffers(1, &EBO);
-        glGenBuffers(1, &SSBO);
+        glGenVertexArrays(1, &m_VAO);
+        glGenBuffers(1, &m_VBO);
+        glGenBuffers(1, &m_EBO);
+        glGenBuffers(1, &m_SSBO);
 
-        glBindVertexArray(VAO);
+        glBindVertexArray(m_VAO);
         // load data into vertex buffers
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
         // A great thing about structs is that their memory layout is sequential for all its items.
         // The effect is that we can simply pass a pointer to the struct and it translates perfectly to a glm::vec3/2 array which
         // again translates to 3/2 floats which translates to a byte array.
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, m_Vertices.size() * sizeof(Vertex), &m_Vertices[0], GL_STATIC_DRAW);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(unsigned int), &m_Indices[0], GL_STATIC_DRAW);
 
         // set the vertex attribute pointers
         // vertex Positions
@@ -70,58 +70,58 @@ namespace REON {
         glBindTexture(GL_TEXTURE_2D, 0);
         //load textures or flat values
         //diffuse
-        if (material.AlbedoTexture == nullptr) {
+        if (material.albedoTexture == nullptr) {
             material.shader->setBool("useAlbedoTexture", false);
-            material.shader->setVec4("albedo", material.AlbedoColor);
+            material.shader->setVec4("albedo", material.albedoColor);
         }
         else {
             glActiveTexture(GL_TEXTURE0);
             glUniform1i(glGetUniformLocation(material.shader->ID, "texture_albedo"), 0);
-            glBindTexture(GL_TEXTURE_2D, material.AlbedoTexture->id);
+            glBindTexture(GL_TEXTURE_2D, material.albedoTexture->GetId());
         }
         //normal
-        if (material.NormalTexture == nullptr) {
+        if (material.normalTexture == nullptr) {
             material.shader->setBool("useNormalTexture", false);
         }
         else {
             glActiveTexture(GL_TEXTURE1);
             glUniform1i(glGetUniformLocation(material.shader->ID, "texture_normal"), 1);
-            glBindTexture(GL_TEXTURE_2D, material.NormalTexture->id);
+            glBindTexture(GL_TEXTURE_2D, material.normalTexture->GetId());
         }
         //roughness
-        if (material.RoughnessTexture == nullptr) {
+        if (material.roughnessTexture == nullptr) {
             material.shader->setBool("useRoughnessTexture", false);
-            material.shader->setFloat("roughness", material.Roughness);
+            material.shader->setFloat("roughness", material.roughness);
         }
         else {
             glActiveTexture(GL_TEXTURE2);
             glUniform1i(glGetUniformLocation(material.shader->ID, "texture_roughness"), 2);
-            glBindTexture(GL_TEXTURE_2D, material.RoughnessTexture->id);
+            glBindTexture(GL_TEXTURE_2D, material.roughnessTexture->GetId());
         }
         //metallic
-        if (material.MetallicTexture == nullptr) {
+        if (material.metallicTexture == nullptr) {
             material.shader->setBool("useMetallicTexture", false);
-            material.shader->setFloat("metallic", material.Metallic);
+            material.shader->setFloat("metallic", material.metallic);
         }
         else {
             glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, material.MetallicTexture->id);
+            glBindTexture(GL_TEXTURE_2D, material.metallicTexture->GetId());
         }
 
         if (!lightData.empty()) {
             LightData* lightDataStatic = &lightData.front();
 
-            glBindBuffer(GL_SHADER_STORAGE_BUFFER, SSBO);
+            glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_SSBO);
             size_t totalSize = sizeof(LightData) * lightData.size();
             glBufferData(GL_SHADER_STORAGE_BUFFER, totalSize, lightDataStatic,
                 GL_DYNAMIC_DRAW);
-            glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, SSBO);
+            glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, m_SSBO);
             glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // unbind
         }
 
         // draw mesh
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(m_VAO);
+        glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(m_Indices.size()), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
         // always good practice to set everything back to defaults once configured.

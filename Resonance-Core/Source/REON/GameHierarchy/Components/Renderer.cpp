@@ -14,16 +14,16 @@ namespace REON {
         auto data = SetLightingBuffer(mainLightView, mainLightProj);
         if (overrideShader != nullptr) {
             overrideShader->use();
-            overrideShader->setMat4("model", modelMatrix);
-            overrideShader->setMat4("view", viewMatrix);
-            overrideShader->setMat4("projection", projectionMatrix);
+            overrideShader->setMat4("model", m_ModelMatrix);
+            overrideShader->setMat4("view", m_ViewMatrix);
+            overrideShader->setMat4("projection", m_ProjectionMatrix);
             Material overrideMaterial(overrideShader);
             mesh->Draw(overrideMaterial, data);
             return;
         }
-        material->shader->setMat4("model", modelMatrix);
-        material->shader->setMat4("view", viewMatrix);
-        material->shader->setMat4("projection", projectionMatrix);
+        material->shader->setMat4("model", m_ModelMatrix);
+        material->shader->setMat4("view", m_ViewMatrix);
+        material->shader->setMat4("projection", m_ProjectionMatrix);
         material->shader->setFloat("far_plane", 100.0f);
         glActiveTexture(GL_TEXTURE4);
         glUniform1i(glGetUniformLocation(material->shader->ID, "shadowMap"), 4);
@@ -55,12 +55,12 @@ namespace REON {
     }
 
     void Renderer::Update(float deltaTime) {
-        if (transform == nullptr) {
-            transform = GetOwner()->GetTransform();
+        if (m_Transform == nullptr) {
+            m_Transform = GetOwner()->GetTransform();
         }
-        modelMatrix = transform->GetWorldTransform();
-        viewMatrix = GetOwner()->GetScene()->GetEditorCamera()->GetViewMatrix();
-        projectionMatrix = GetOwner()->GetScene()->GetEditorCamera()->GetProjectionMatrix();
+        m_ModelMatrix = m_Transform->GetWorldTransform();
+        m_ViewMatrix = GetOwner()->GetScene()->GetEditorCamera()->GetViewMatrix();
+        m_ProjectionMatrix = GetOwner()->GetScene()->GetEditorCamera()->GetProjectionMatrix();
     }
 
     void Renderer::SetOwner(std::shared_ptr<GameObject> owner)
